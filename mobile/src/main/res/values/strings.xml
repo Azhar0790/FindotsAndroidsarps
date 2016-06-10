@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">FinDots</string>
+
+
+    <string name="logout">Logout</string>
+    <string name="openDrawer">open drawer</string>
+    <string name="closeDrawer">close drawer</string>
+    <string name="tracking_list">Tracking List</string>
+    <string name="network_available">Connected to </string>
+    <string name="network_not_available">Network is not available</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="grant">GRANT</string>
+    <string name="enable">ENABLE</string>
+    <string name="runtime_permissions_txt">Please enable ALL permissions from app settings.</string>
+
+    <!-- Login -->
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="donthaveaccount">Don\'t have account?</string>
+    <string name="signup"><u>SignUp</u></string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+
+    <string-array name="menu_items">
+        <item>Tracking Me</item>
+        <item>Destinations</item>
+        <item>Messages</item>
+        <item>Notifications</item>
+        <item>Settings</item>
+        <item>Help</item>
+        <item>Logout</item>
+    </string-array>
+</resources>

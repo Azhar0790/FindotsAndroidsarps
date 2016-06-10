@@ -1,0 +1,7 @@
+<resources>
+
+    <!-- Tool Bar -->
+    <dimen name="tool_bar_paddingTop">24dp</dimen>
+    <dimen name="header_paddingTop">20dp</dimen>
+    
+</resources>
