@@ -51,5 +51,15 @@
     <dimen name="signup_marginLeft">4dp</dimen>
     <dimen name="textview_donthaveaccount_textSize">14sp</dimen>
     <dimen name="textview_signup_textSize">18sp</dimen>
-    
+
+    <!-- Register -->
+    <dimen name="signup_text_marginTopBottom">50dp</dimen>
+    <dimen name="signup_textSize">34sp</dimen>
+    <dimen name="linearLayout_termsCondition_height">50dp</dimen>
+    <dimen name="linearLayout_termsCondition_marginTop">10dp</dimen>
+    <dimen name="button_createAccount_marginTop">10dp</dimen>
+    <dimen name="termsCondition_textSize">12sp</dimen>
+    <dimen name="textView_agree_marginLeft">8dp</dimen>
+    <dimen name="textView_termsCondition_marginLeft">4dp</dimen>
+
 </resources>

@@ -18,6 +18,7 @@
         <item name="drawableSize">24dp</item>
     </style>
 
+
     <style name="edittext">
         <item name="android:layout_marginLeft">@dimen/login_edittext_marginLeftAndRight</item>
         <item name="android:layout_marginRight">@dimen/login_edittext_marginLeftAndRight</item>

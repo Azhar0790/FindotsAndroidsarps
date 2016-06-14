@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/screen"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/signup_text_marginTopBottom"
+        android:layout_marginTop="@dimen/signup_text_marginTopBottom"
+        android:text="@string/signup"
+        android:textColor="@color/black"
+        android:textSize="@dimen/signup_textSize"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/EditText_name"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/name"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/EditText_company"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/company"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/EditText_emailID"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/emailid"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/EditText_mobileNo"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/mobileno"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/EditText_password"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/password"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/EditText_redeemCode"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_edittext_height"
+        android:hint="@string/redeemcode"
+        android:inputType="text" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/linearLayout_termsCondition_height"
+        android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/Switch_onOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/TextView_agree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/textView_agree_marginLeft"
+            android:text="@string/agree"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/termsCondition_textSize"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/TextView_termsCondition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/textView_termsCondition_marginLeft"
+            android:text="@string/termsCondition"
+            android:textColor="@color/app_color"
+            android:textSize="@dimen/termsCondition_textSize"
+            android:textStyle="normal" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/Button_createAccount"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/login_button_height"
+        android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
+        android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
+        android:layout_marginTop="@dimen/button_createAccount_marginTop"
+        android:background="@drawable/selector_login"
+        android:text="@string/create_account"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/login_button_textSize" />
+
+</LinearLayout>
