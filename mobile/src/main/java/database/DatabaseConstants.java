@@ -9,5 +9,6 @@ public class DatabaseConstants {
 
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String AUTHORITY = "findots.bridgetree.com.findots";
+    public static final String Name = BaseColumns._ID;
 
 }
