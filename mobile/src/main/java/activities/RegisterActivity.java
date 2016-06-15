@@ -109,12 +109,12 @@ public class RegisterActivity extends AppCompatActivity {
      *   set Listeners to the UI Widgets
      */
     public void setListeners() {
-        mEditText_name.addTextChangedListener(new AddTextWatcher());
-        mEditText_company.addTextChangedListener(new AddTextWatcher());
-        mEditText_emailID.addTextChangedListener(new AddTextWatcher());
-        mEditText_mobileNo.addTextChangedListener(new AddTextWatcher());
-        mEditText_password.addTextChangedListener(new AddTextWatcher());
-        mEditText_redeemCode.addTextChangedListener(new AddTextWatcher());
+        mEditText_name.addTextChangedListener(new AddTextWatcher(mEditText_name));
+        mEditText_company.addTextChangedListener(new AddTextWatcher(mEditText_company));
+        mEditText_emailID.addTextChangedListener(new AddTextWatcher(mEditText_emailID));
+        mEditText_mobileNo.addTextChangedListener(new AddTextWatcher(mEditText_mobileNo));
+        mEditText_password.addTextChangedListener(new AddTextWatcher(mEditText_password));
+        mEditText_redeemCode.addTextChangedListener(new AddTextWatcher(mEditText_redeemCode));
     }
 
 }

@@ -9,9 +9,14 @@ import android.widget.EditText;
  */
 public class AddTextWatcher implements TextWatcher {
 
+    EditText e = null;
+
+    public AddTextWatcher(EditText e) {
+        this.e = e;
+    }
+
     @Override
     public void afterTextChanged(Editable s) {
-        EditText e = (EditText) s;
         e.setError(null);
     }
 

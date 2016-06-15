@@ -121,7 +121,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            delegate.menuItemsSelected(adapterPosition);
+            delegate.onMenuItemSelected(adapterPosition);
         }
     }
 

@@ -35,7 +35,7 @@
 
     <!-- Login -->
     <dimen name="imageView_logo_width_height">200dp</dimen>
-    <dimen name="imageView_logo_marginTop">15dp</dimen>
+    <dimen name="imageView_logo_marginTop">0dp</dimen>
     <dimen name="login_edittext_height">44dp</dimen>
     <dimen name="login_edittext_marginLeftAndRight">50dp</dimen>
     <dimen name="login_edittext_marginTop">10dp</dimen>
@@ -61,5 +61,16 @@
     <dimen name="termsCondition_textSize">12sp</dimen>
     <dimen name="textView_agree_marginLeft">8dp</dimen>
     <dimen name="textView_termsCondition_marginLeft">4dp</dimen>
+
+    <!-- Destinations -->
+    <dimen name="recyclerView_destinations_marginLeftRight">10dp</dimen>
+    <dimen name="recyclerView_destinations_marginBottom">15dp</dimen>
+
+    <!-- Destination Inflater -->
+    <dimen name="linearLayout_destination_height">220dp</dimen>
+    <dimen name="linearLayout_destination_marginTop">15dp</dimen>
+    <dimen name="linearLayout_destination_padding">8dp</dimen>
+    <dimen name="textView_assignedBy_height">40dp</dimen>
+    <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
 
 </resources>

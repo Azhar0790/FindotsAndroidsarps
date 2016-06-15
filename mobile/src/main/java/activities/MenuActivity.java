@@ -1,6 +1,7 @@
 package activities;
 
 import android.Manifest;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,13 +9,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
 import adapters.MenuItemsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
+import fragments.DestinationFragment;
 import interfaces.IMenuItems;
 
 public class MenuActivity extends RuntimePermissionActivity implements IMenuItems{
@@ -103,6 +107,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             }
         });
 
+        /**
+         *   Fragment Transaction for Destinations
+         */
+
+        FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+        destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
+        destinationTransaction.commit();
+
     }
 
     public void actionBarSettings() {
@@ -129,7 +141,43 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     }
 
     @Override
-    public void menuItemsSelected(int itemPosition) {
+    public void onMenuItemSelected(int itemPosition) {
+
+        switch (itemPosition) {
+            case Constants.TRACKING_ME:
+
+                break;
+
+            case Constants.DESTINATIONS:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+
+                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+                destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
+                destinationTransaction.commit();
+                break;
+
+            case Constants.MESSAGES:
+
+                break;
+
+            case Constants.NOTIFICATIONS:
+
+                break;
+
+            case Constants.SETTINGS:
+
+                break;
+
+            case Constants.HELP:
+
+                break;
+
+            case Constants.LOGOUT:
+
+                break;
+
+            default:break;
+        }
 
     }
 

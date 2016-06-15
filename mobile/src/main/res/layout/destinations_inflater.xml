@@ -7,37 +7,36 @@
     <LinearLayout
         android:id="@+id/LinearLayout_destination"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="@dimen/linearLayout_destination_height"
+        android:layout_marginTop="@dimen/linearLayout_destination_marginTop"
         android:background="@drawable/selector_white_bg"
         android:elevation="5dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="@dimen/linearLayout_destination_padding">
 
         <TextView
-            android:id="@+id/TextView_assignedBy"
+            android:id="@+id/TextView_destinationAssignedBy"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/textView_assignedBy_height"
             android:layout_gravity="center"
             android:background="@color/transparent"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:drawablePadding="10dp"
-            android:drawableStart="@mipmap/ic_launcher"
+            android:drawableLeft="@drawable/destination_timer"
+            android:drawablePadding="@dimen/textView_assignedBy_drawablePadding"
+            android:drawableStart="@drawable/destination_timer"
             android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
             android:singleLine="true"
             android:text="Assigned by Sandra Jones 10 min ago"
             android:textColor="@color/grey"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/TextView_mapLocationName"
+            android:id="@+id/TextView_destinationName"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:background="@color/divider_color"
+            android:background="@drawable/destination_bg"
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -47,9 +46,10 @@
             android:textSize="22sp" />
 
         <LinearLayout
+            android:id="@+id/LinearLayout_checkIncheckOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_checkout"
+            android:background="@drawable/selector_checked_at"
             android:gravity="center">
 
             <Button
@@ -58,12 +58,12 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:background="@null"
-                android:drawableLeft="@mipmap/ic_launcher"
+                android:drawableLeft="@drawable/checkedout_tick"
                 android:drawablePadding="10dp"
                 android:gravity="center"
-                android:text="Check Out"
+                android:text="Checked out at 2.30pm"
                 android:textAllCaps="false"
-                android:textColor="@color/app_color"
+                android:textColor="@color/white"
                 android:textSize="22sp" />
 
         </LinearLayout>

@@ -82,8 +82,8 @@ public class LoginActivity extends AppCompatActivity  {
      *   adding Listeners to UI Widgets
      */
     public void setListeners() {
-        mEditText_userName.addTextChangedListener(new AddTextWatcher());
-        mEditText_password.addTextChangedListener(new AddTextWatcher());
+        mEditText_userName.addTextChangedListener(new AddTextWatcher(mEditText_userName));
+        mEditText_password.addTextChangedListener(new AddTextWatcher(mEditText_password));
     }
 
 
@@ -115,8 +115,8 @@ public class LoginActivity extends AppCompatActivity  {
 
         validateCredentials();
 
-        /*Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-        startActivity(intent);*/
+        Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.TextView_forgotPassword)

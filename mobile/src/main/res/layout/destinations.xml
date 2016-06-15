@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/divider_color">
 
-    <ListView
-        android:id="@+id/ListView_destinations"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/RecyclerView_destinations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
-        android:divider="@color/transparent"
-        android:dividerHeight="15dp" />
+        android:layout_marginBottom="@dimen/recyclerView_destinations_marginBottom"
+        android:layout_marginLeft="@dimen/recyclerView_destinations_marginLeftRight"
+        android:layout_marginRight="@dimen/recyclerView_destinations_marginLeftRight"
+        android:scrollbars="none"
+        android:background="@color/transparent"/>
 
 </LinearLayout>
