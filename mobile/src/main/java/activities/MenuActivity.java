@@ -1,23 +1,41 @@
 package activities;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.ErrorDialogFragment;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import adapters.MenuItemsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import interfaces.IMenuItems;
+import locationUtils.LocationRequestData;
+import locationUtils.TrackLocationService;
 
-public class MenuActivity extends RuntimePermissionActivity implements IMenuItems{
+public class MenuActivity extends RuntimePermissionActivity implements IMenuItems, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
+private GoogleApiClient googleApiClient ;
+private static final int REQUEST_RESOLVE_ERROR = 9999;
+protected FinDotsApplication app;
 
     /**
      *  Menu Items Titles
@@ -102,7 +120,9 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                         REQUEST_PERMISSIONS);
             }
         });
-
+        app = (FinDotsApplication) getApplication();
+        app.setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+        initalizeLocationService();
     }
 
     public void actionBarSettings() {
@@ -128,6 +148,22 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         mRecyclerView_menu_items.setLayoutManager(mLayoutManager);
     }
 
+    public void initalizeLocationService()
+    {
+        if(!(isMyServiceRunning(TrackLocationService.class)))
+            startTracking();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void menuItemsSelected(int itemPosition) {
 
@@ -137,4 +173,88 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     public void onPermissionsGranted(int requestCode) {
 
     }
+    private void showErrorDialog(int errorCode) {
+        //TODO add errors handling
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt("dialog_error", errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    private void stopTracking() {
+        stopService(new Intent(this, TrackLocationService.class));
+    }
+    private void startTracking() {
+        connectGoogleApiClient();
+    }
+
+    private void startTrackLocationService() {
+        Log.d("jomy", "onStartLocation...");
+        startService(new Intent(this, TrackLocationService.class));
+    }
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("jomy", "onConnected");
+        startTrackLocationService();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("jomy", "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.d("jomy", "onConnectionFailed");
+        if (result.hasResolution()) {
+            try {
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                googleApiClient.connect();
+            }
+        } else {
+            showErrorDialog(result.getErrorCode());
+        }
+    }
+
+    private int createGoogleApiClient() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        switch (status) {
+            case ConnectionResult.SUCCESS:
+                googleApiClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
+                break;
+            case ConnectionResult.SERVICE_MISSING:
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+            case ConnectionResult.SERVICE_DISABLED:
+                Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_RESOLVE_ERROR);
+                dialog.show();
+                break;
+        }
+        return status;
+    }
+
+    private void connectGoogleApiClient() {
+        if (googleApiClient == null) {
+            if (createGoogleApiClient() != ConnectionResult.SUCCESS) {
+                return;
+            }
+        }
+
+        if (!(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
+            googleApiClient.connect();
+        } else {
+            Log.d("jomy", "Client is connected");
+            startTrackLocationService();
+        }
+    }
+
 }
