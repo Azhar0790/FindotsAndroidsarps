@@ -5,7 +5,7 @@ package restservice;
  */
 public class RestURLs {
 
-    public static final String MAIN_URL = "";
+    public static final String MAIN_URL = "http://182.73.82.185:80/Findots/";
 
     // ------------------------------------------------------------------------------------
 
