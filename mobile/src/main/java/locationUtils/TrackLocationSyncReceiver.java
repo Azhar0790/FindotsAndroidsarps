@@ -24,6 +24,7 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
         locations = dataHelper.getLocationsToSync();
         for (LocationData d : locations) {
             Log.d("jomy","Lat : "+ d.getLatitude()+"  : Longit : "+d.getLongitude());
+            Log.d("jomy","Lat : "+ d.getTimestamp()+"  : Longit : "+d.getLocationAddress());
         }
 //        new AsyncTask<Void, Void, TrackLocationResponse>() {
 //            private List<LocationData> locations;

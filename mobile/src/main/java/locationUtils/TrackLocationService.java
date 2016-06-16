@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationServices;
 
 import findots.bridgetree.com.findots.FinDotsApplication;
 import locationUtils.LocationModel.LocationData;
+import utils.GeneralUtils;
 
 //import com.techmagic.locationapp.webclient.ITrackLocationClient;
 //import com.techmagic.locationapp.webclient.TrackLocationClient;
@@ -172,15 +173,17 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         Location startLocation = app.getStartLocation();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
-                (float) startLocation.getLongitude(),
-                (float) latitude,
-                (float) longitude);
+        String address= GeneralUtils.LatLongToAddress(latitude,longitude,getApplicationContext());
+        String timeInGmt=GeneralUtils.DateTimeInGMT();
+//        float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
+//                (float) startLocation.getLongitude(),
+//                (float) latitude,
+//                (float) longitude);
 
-        String timeText = Utils.formatTime(System.currentTimeMillis());
+//        String timeText = Utils.formatTime(System.currentTimeMillis());
 
-        dataHelper.saveLocation(LocationData.getInstance(latitude, longitude));
-        updateNotification(timeText);
+        dataHelper.saveLocation(LocationData.getInstance(latitude, longitude,address,timeInGmt));
+//        updateNotification(timeText);
     }
 
     private void updateNotification(String text) {
