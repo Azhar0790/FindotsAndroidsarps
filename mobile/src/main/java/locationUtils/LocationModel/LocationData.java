@@ -5,7 +5,6 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 import locationUtils.Data;
-import locationUtils.Utils;
 
 
 @Table(name = Data.LocationData.TABLE)
@@ -14,16 +13,21 @@ public class LocationData extends Model {
     private double latitude;
     @Column(name = Data.LocationData.COLUMN_LONGITUDE)
     private double longitude;
+
+
+    @Column(name = Data.LocationData.COLUMN_ADDRESS)
+    private String locationAddress;
     @Column(name = Data.LocationData.COLUMN_TIMESTAMP)
-    private long timestamp;
+    private String timestamp;
     @Column(name = Data.LocationData.COLUMN_SYNCED)
     private boolean synced;
 
-    public static LocationData getInstance(double latitude, double longitude) {
+    public static LocationData getInstance(double latitude, double longitude,String locAddress,String timeGmt) {
         LocationData data = new LocationData();
         data.setLatitude(latitude);
         data.setLongitude(longitude);
-        data.setTimestamp(System.currentTimeMillis());
+        data.setLocationAddress(locAddress);
+        data.setTimestamp(timeGmt);
         return data;
     }
 
@@ -43,11 +47,11 @@ public class LocationData extends Model {
         this.longitude = longitude;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -59,11 +63,21 @@ public class LocationData extends Model {
         this.synced = synced;
     }
 
+    public String getLocationAddress() {
+        return locationAddress;
+    }
+
+    public void setLocationAddress(String locationAddress) {
+        this.locationAddress = locationAddress;
+    }
+
+
+
     @Override
     public String toString() {
         return "latitude is :" + latitude
                 + ", longitude is : " + longitude
-                + ", time is :" + Utils.formatTime(timestamp)
+                + ", time is :" + timestamp
                 + ", synced is :" + synced;
     }
 }
