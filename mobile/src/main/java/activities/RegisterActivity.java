@@ -1,12 +1,26 @@
 package activities;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,6 +32,9 @@ import utils.AddTextWatcher;
  * Created by parijathar on 6/13/2016.
  */
 public class RegisterActivity extends AppCompatActivity {
+
+    @Bind(R.id.TextView_signUpHeading)
+    TextView mTextView_signUpHeading;
 
     @Bind(R.id.EditText_name)
     EditText mEditText_name;
@@ -37,11 +54,11 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.EditText_redeemCode)
     EditText mEditText_redeemCode;
 
-    @Bind(R.id.Switch_onOff)
-    Switch mSwitch_onOff;
+    @Bind(R.id.CheckBox_onOff)
+    ImageView mCheckBox_onOff;
 
-    @Bind(R.id.TextView_termsCondition)
-    TextView mTextView_termsCondition;
+    @Bind(R.id.TextView_agree)
+    TextView mTextView_agree;
 
     @Bind(R.id.Button_createAccount)
     Button mButton_createAccount;
@@ -56,12 +73,33 @@ public class RegisterActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        setUIElementsProperty();
         setListeners();
 
         /**
          * android:thumb="@drawable/selector_switch"
          android:trackTint="@color/app_color_50"
          */
+    }
+
+
+    public void setUIElementsProperty() {
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
+        Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+
+        mTextView_signUpHeading.setTypeface(typefaceMyriadHebrew);
+        mEditText_name.setTypeface(typefaceLight);
+        mEditText_company.setTypeface(typefaceLight);
+        mEditText_emailID.setTypeface(typefaceLight);
+        mEditText_mobileNo.setTypeface(typefaceLight);
+        mEditText_password.setTypeface(typefaceLight);
+        mEditText_redeemCode.setTypeface(typefaceLight);
+        mTextView_agree.setTypeface(typefaceLight);
+        mButton_createAccount.setTypeface(typefaceLight);
+
+        //mTextView_agree.setText(getSpannableString());
+        //mTextView_agree.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     @OnClick(R.id.Button_createAccount)
@@ -117,4 +155,30 @@ public class RegisterActivity extends AppCompatActivity {
         mEditText_redeemCode.addTextChangedListener(new AddTextWatcher(mEditText_redeemCode));
     }
 
+
+    public SpannableString getSpannableString() {
+
+        String str = getString(R.string.agree);
+
+        SpannableString spannableString = new SpannableString(str);
+        //spannableString.setSpan(new RelativeSizeSpan(1.1f), 0, str.length(), 0);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 12, 0);
+        //spannableString.setSpan(new UnderlineSpan(), 13, str.length(), 0);
+        spannableString.setSpan(new ForegroundColorSpan(Color.RED), 13, str.length(), 0);
+
+        // clickable text
+        ClickableSpan clickableSpan = new ClickableSpan() {
+
+            @Override
+            public void onClick(View widget) {
+                // We display a Toast. You could do anything you want here.
+                Toast.makeText(RegisterActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
+
+            }
+        };
+
+        spannableString.setSpan(clickableSpan, 13, str.length(), 0);
+
+        return spannableString;
+    }
 }

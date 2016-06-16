@@ -3,17 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/screen"
+    android:background="@drawable/login_bg"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/TextView_signUpHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/signup_text_marginTopBottom"
         android:layout_marginTop="@dimen/signup_text_marginTopBottom"
-        android:text="@string/signup"
-        android:textColor="@color/black"
+        android:text="@string/signup_heading"
+        android:textColor="@color/black_70"
         android:textSize="@dimen/signup_textSize"
         android:textStyle="bold" />
 
@@ -22,6 +23,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/name"
         android:inputType="text" />
 
@@ -30,6 +32,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/company"
         android:inputType="text" />
 
@@ -38,6 +41,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/emailid"
         android:inputType="textEmailAddress" />
 
@@ -46,6 +50,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/mobileno"
         android:inputType="number" />
 
@@ -54,6 +59,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/password"
         android:inputType="textPassword" />
 
@@ -62,6 +68,7 @@
         style="@style/edittext"
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_edittext_height"
+        android:layout_marginTop="@dimen/register_edittexts_marginTop"
         android:hint="@string/redeemcode"
         android:inputType="text" />
 
@@ -72,22 +79,21 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/Switch_onOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/CheckBox_onOff"
+            android:layout_width="80dp"
+            android:layout_height="70dp"
             android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:trackTint="@color/app_color_50"/>
+            android:src="@drawable/selector_checkbox"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/TextView_agree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/textView_agree_marginLeft"
             android:text="@string/agree"
-            android:textColor="@color/grey"
+            android:textColor="@color/black_70"
             android:textSize="@dimen/termsCondition_textSize"
             android:textStyle="normal" />
 
@@ -115,6 +121,7 @@
         android:text="@string/create_account"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/login_button_textSize" />
+        android:textSize="@dimen/login_button_textSize"
+        style="?android:attr/borderlessButtonStyle"/>
 
 </LinearLayout>

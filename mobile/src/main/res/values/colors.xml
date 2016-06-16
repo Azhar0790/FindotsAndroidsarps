@@ -5,10 +5,15 @@
     <color name="colorAccent">#FF4081</color>
     <color name="divider_color">#EBEBEB</color>
     <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
-    <color name="app_color">#FF5745</color>
     <color name="grey">#868686</color>
+
+    <color name="app_color">#FF5745</color>
     <color name="app_color_50">#80FF5745</color>
     <color name="app_color_80">#ccFF5745</color>
+
+    <color name="black">#000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_25">#40000000</color>
+
 </resources>

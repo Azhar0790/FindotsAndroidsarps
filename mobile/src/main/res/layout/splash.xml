@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_screen">
+    android:background="@drawable/splash_bg">
 
     <ImageView
         android:id="@+id/ImageView_splash_logo"
@@ -11,6 +11,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/imageView_splash_logo_marginTop"
         android:src="@drawable/splash_logo"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </RelativeLayout>

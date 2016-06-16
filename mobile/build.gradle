@@ -53,7 +53,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.okhttp:logging-interceptor:2.6.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    compile 'com.google.android.gms:play-services-base:9.0.2'
-    compile 'com.google.android.gms:play-services-location:9.0.2'
+    compile 'com.google.android.gms:play-services-base:8.4.0'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
 
 }
