@@ -4,6 +4,31 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="drawerArrowStyle">@style/custom_drawer</item>
+    </style>
+
+    <style name="custom_drawer" parent="Widget.AppCompat.DrawerArrowToggle">
+        <!-- Customize Drawer Screen -->
+        <item name="spinBars">true</item>
+        <item name="color">@color/app_color</item>
+        <item name="barLength">18dp</item>
+        <item name="gapBetweenBars">3dp</item>
+        <item name="drawableSize">24dp</item>
+    </style>
+
+    <style name="edittext">
+        <item name="android:layout_marginLeft">@dimen/login_edittext_marginLeftAndRight</item>
+        <item name="android:layout_marginRight">@dimen/login_edittext_marginLeftAndRight</item>
+        <item name="android:textSize">@dimen/login_edittext_textSize</item>
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColorHint">@color/black_25</item>
+        <item name="android:paddingLeft">@dimen/login_edittext_paddingLeftRight</item>
+        <item name="android:paddingRight">@dimen/login_edittext_paddingLeftRight</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/selector_edittext</item>
     </style>
 
 </resources>
