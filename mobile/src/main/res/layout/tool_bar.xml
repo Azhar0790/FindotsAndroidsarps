@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:paddingTop="@dimen/tool_bar_paddingTop"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:elevation="2dp">
 
     <TextView
         android:id="@+id/TextView_heading"
@@ -12,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textView_heading_textSize" />
+        android:textColor="@color/app_color"
+        android:textSize="@dimen/textView_heading_textSize"
+        android:fontFamily="fonts/MyriadHebrew-Bold.otf"/>
 
 </android.support.v7.widget.Toolbar>

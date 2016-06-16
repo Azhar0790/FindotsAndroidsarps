@@ -76,16 +76,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/linearLayout_termsCondition_height"
         android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+       >
 
         <ImageView
-            android:id="@+id/CheckBox_onOff"
-            android:layout_width="80dp"
-            android:layout_height="70dp"
+            android:id="@+id/ImageView_onOff"
+            android:layout_width="@dimen/imageView_onOff_width"
+            android:layout_height="@dimen/imageView_onOff_height"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/selector_checkbox"
-            android:gravity="center" />
+            android:background="@drawable/ic_switch_on"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:layout_marginLeft="25dp"/>
 
         <TextView
             android:id="@+id/TextView_agree"

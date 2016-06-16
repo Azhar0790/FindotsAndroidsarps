@@ -12,7 +12,7 @@
     <style name="custom_drawer" parent="Widget.AppCompat.DrawerArrowToggle">
         <!-- Customize Drawer Screen -->
         <item name="spinBars">true</item>
-        <item name="color">@color/white</item>
+        <item name="color">@color/blue</item>
         <item name="barLength">18dp</item>
         <item name="gapBetweenBars">3dp</item>
         <item name="drawableSize">24dp</item>

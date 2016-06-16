@@ -2,6 +2,7 @@ package activities;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
@@ -31,7 +32,7 @@ import utils.AddTextWatcher;
 /**
  * Created by parijathar on 6/13/2016.
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
     @Bind(R.id.TextView_signUpHeading)
     TextView mTextView_signUpHeading;
@@ -54,8 +55,8 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.EditText_redeemCode)
     EditText mEditText_redeemCode;
 
-    @Bind(R.id.CheckBox_onOff)
-    ImageView mCheckBox_onOff;
+    @Bind(R.id.ImageView_onOff)
+    ImageView mImageView_onOff;
 
     @Bind(R.id.TextView_agree)
     TextView mTextView_agree;
@@ -97,9 +98,23 @@ public class RegisterActivity extends AppCompatActivity {
         mTextView_agree.setTypeface(typefaceLight);
         mButton_createAccount.setTypeface(typefaceLight);
 
+        mImageView_onOff.setTag(0);
+        changeSwitchButtonBackground();
+
         //mTextView_agree.setText(getSpannableString());
         //mTextView_agree.setMovementMethod(LinkMovementMethod.getInstance());
 
+    }
+
+    /**
+     *   change the background of switch(ImageView) button
+     */
+    public void changeSwitchButtonBackground() {
+        if (mImageView_onOff.getTag() == 1) {
+            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_on);
+        } else if (mImageView_onOff.getTag() == 0) {
+            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_off);
+        }
     }
 
     @OnClick(R.id.Button_createAccount)
@@ -153,6 +168,8 @@ public class RegisterActivity extends AppCompatActivity {
         mEditText_mobileNo.addTextChangedListener(new AddTextWatcher(mEditText_mobileNo));
         mEditText_password.addTextChangedListener(new AddTextWatcher(mEditText_password));
         mEditText_redeemCode.addTextChangedListener(new AddTextWatcher(mEditText_redeemCode));
+        mImageView_onOff.setOnClickListener(this);
+
     }
 
 
@@ -180,5 +197,20 @@ public class RegisterActivity extends AppCompatActivity {
         spannableString.setSpan(clickableSpan, 13, str.length(), 0);
 
         return spannableString;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ImageView_onOff:
+                if (mImageView_onOff.getTag() == 0) {
+                    mImageView_onOff.setTag(1);
+                } else if (mImageView_onOff.getTag() == 1) {
+                    mImageView_onOff.setTag(0);
+                }
+                changeSwitchButtonBackground();
+
+            default:break;
+        }
     }
 }

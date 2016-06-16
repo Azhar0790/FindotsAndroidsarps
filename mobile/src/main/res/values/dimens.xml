@@ -5,7 +5,7 @@
 
     <!-- Tool Bar -->
     <dimen name="tool_bar_paddingTop">0dp</dimen>
-    <dimen name="textView_heading_textSize">16sp</dimen>
+    <dimen name="textView_heading_textSize">20sp</dimen>
 
     <!-- Drawer Layout -->
     <dimen name="drawer_layout_elevation">4dp</dimen>
@@ -13,17 +13,18 @@
     <dimen name="recyclerView_menu_items_width">300dp</dimen>
 
     <!-- Header Layout -->
-    <dimen name="imageView_userImage_width_height">60dp</dimen>
+    <dimen name="imageView_userImage_width_height">45dp</dimen>
     <dimen name="imageView_userImage_marginLeft">15dp</dimen>
     <dimen name="textView_userName_textSize">16sp</dimen>
     <dimen name="textView_userName_marginLeft">25dp</dimen>
-    <dimen name="header_height">120dp</dimen>
-    <dimen name="header_marginBottom">10dp</dimen>
+    <dimen name="header_height">100dp</dimen>
+    <dimen name="header_marginBottom">15dp</dimen>
 
     <!-- Menu Item Row -->
     <dimen name="textView_menuItem_textSize">16sp</dimen>
     <dimen name="textView_menuItem_marginLeft">30dp</dimen>
     <dimen name="imageView_menuItem_marginLeft">25dp</dimen>
+    <dimen name="menu_item_height">60dp</dimen>
 
     <!-- Logout -->
     <dimen name="textView_logoutItem_marginTop">10dp</dimen>
@@ -62,6 +63,8 @@
     <dimen name="textView_agree_marginLeft">8dp</dimen>
     <dimen name="textView_termsCondition_marginLeft">4dp</dimen>
     <dimen name="register_edittexts_marginTop">10dp</dimen>
+    <dimen name="imageView_onOff_width">70dp</dimen>
+    <dimen name="imageView_onOff_height">70dp</dimen>
 
     <!-- Destinations -->
     <dimen name="recyclerView_destinations_marginLeftRight">10dp</dimen>

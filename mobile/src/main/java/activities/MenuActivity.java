@@ -1,6 +1,7 @@
 package activities;
 
 import android.Manifest;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentTransaction;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -44,13 +45,13 @@ protected FinDotsApplication app;
     /**
      *  Menu Items Titles
      */
-    String TITLES[] = { "Tracking Me",
-                        "Destinations",
-                        "Messages",
-                        "Notifications",
-                        "Settings",
-                        "Help",
-                        "Logout"};
+    int ICONS[] = { R.drawable.tracking_me,
+                        R.drawable.destinations,
+                        R.drawable.messages,
+                        R.drawable.notifications,
+                        R.drawable.settings,
+                        R.drawable.help,
+                        R.drawable.logout};
 
     /**
      *   Action bar / App bar
@@ -146,13 +147,16 @@ protected FinDotsApplication app;
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
+
         mTextView_heading.setText(getString(R.string.tracking_list));
+        mTextView_heading.setTypeface(typefaceMyriadHebrew);
     }
 
     public void setViewForDashboard() {
         mRecyclerView_menu_items.setHasFixedSize(true);
 
-        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), null, null, null);
+        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, null, null);
         MenuItemsAdapter.delegate = MenuActivity.this;
         mRecyclerView_menu_items.setAdapter(mAdapter);
 
@@ -181,35 +185,56 @@ protected FinDotsApplication app;
 
         switch (itemPosition) {
             case Constants.TRACKING_ME:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.tracking_list);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 break;
 
             case Constants.DESTINATIONS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.destinations);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
                 destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
                 destinationTransaction.commit();
+
+                findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);
                 break;
 
             case Constants.MESSAGES:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.messages);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 break;
 
             case Constants.NOTIFICATIONS:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.notifications);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 break;
 
             case Constants.SETTINGS:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.settings);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 break;
 
             case Constants.HELP:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
+                mTextView_heading.setText(R.string.help);
+                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 break;
 
             case Constants.LOGOUT:
-
+                Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
+                startActivity(intentLogout);
+                finish();
                 break;
 
             default:break;

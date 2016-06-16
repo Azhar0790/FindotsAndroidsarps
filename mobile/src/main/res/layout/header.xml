@@ -15,7 +15,7 @@
             android:layout_height="@dimen/imageView_userImage_width_height"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/imageView_userImage_marginLeft"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/menu_avatar" />
 
         <TextView
             android:id="@+id/TextView_userName"
@@ -32,6 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/app_color_50" />
+            android:background="@color/app_color_25" />
     </RelativeLayout>
 </RelativeLayout>

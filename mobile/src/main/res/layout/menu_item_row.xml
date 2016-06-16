@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/menu_item_height"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/imageView_menuItem_marginLeft"
-            android:src="@mipmap/ic_launcher" />
+            />
 
         <TextView
             android:id="@+id/TextView_menuItem"
@@ -25,7 +25,7 @@
             android:layout_marginLeft="@dimen/textView_menuItem_marginLeft"
             android:layout_toRightOf="@+id/ImageView_menuItem"
             android:text="Menu Item"
-            android:textColor="@color/grey"
+            android:textColor="@color/black_70"
             android:textSize="@dimen/textView_menuItem_textSize" />
 
     </RelativeLayout>

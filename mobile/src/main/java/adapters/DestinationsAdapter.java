@@ -1,6 +1,9 @@
 package adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +79,25 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        //holder.mButton_checkIncheckOut.setCompoundDrawables(getScaledDrawable(R.drawable.checkedout_tick), null, null, null);
+        //holder.mTextView_destinationAssignedBy.setCompoundDrawables(getScaledDrawable(R.drawable.destination_timer), null, null, null);
         holder.mTextView_destinationName.setText(arrayList.get(position));
+    }
+
+    public Drawable getScaledDrawable(int drawableID) {
+        Drawable drawable = this.context.getResources().getDrawable(drawableID, context.getTheme());
+        ScaleDrawable sd = null;
+
+        if (drawableID == R.drawable.checkedout_tick) {
+            drawable.setBounds(0, 0, 20, 20);
+            sd = new ScaleDrawable(drawable, 0, 25, 25);
+            sd.setBounds(0, 0 , 5, 5);
+        } else {
+            drawable.setBounds(0, 0, (int)(drawable.getIntrinsicWidth()*0.5),
+                    (int)(drawable.getIntrinsicHeight()*0.5));
+            sd = new ScaleDrawable(drawable, 0, 10, 10);
+            sd.setBounds(0, 0 , 20, 20);
+        }
+        return sd.getDrawable();
     }
 }

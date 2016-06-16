@@ -1,12 +1,14 @@
 package adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
@@ -40,6 +42,8 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     String username;
     String email;
 
+    Typeface typefaceLight = null;
+
     /**
      *  Constructor
      */
@@ -50,6 +54,8 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         this.ICONS = ICONS;
         this.username = username;
         this.email = email;
+
+        typefaceLight = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
     }
 
     @Override
@@ -73,14 +79,17 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (holder.holderID == TYPE_HEADER) {
-            Glide.with(mContext)
+            /*Glide.with(mContext)
                     .load(R.drawable.userimage)
                     .transform(new CircleTransform(mContext))
 
-                    .into(holder.mImageView_userImage);
+                    .into(holder.mImageView_userImage);*/
+            holder.mTextView_userName.setTypeface(typefaceLight);
 
         } else if (holder.holderID == TYPE_ITEM) {
+            holder.mTextView_menuItem.setTypeface(typefaceLight);
             holder.mTextView_menuItem.setText(TITLES[position - 1]);
+            holder.mImageView_menuItem.setBackgroundResource(ICONS[position-1]);
         }
     }
 
@@ -122,6 +131,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             delegate.onMenuItemSelected(adapterPosition);
+            Toast.makeText(mContext, "position = "+adapterPosition, Toast.LENGTH_SHORT).show();
         }
     }
 
