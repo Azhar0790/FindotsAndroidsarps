@@ -22,14 +22,13 @@
     <style name="edittext">
         <item name="android:layout_marginLeft">@dimen/login_edittext_marginLeftAndRight</item>
         <item name="android:layout_marginRight">@dimen/login_edittext_marginLeftAndRight</item>
-        <item name="android:layout_marginTop">@dimen/login_edittext_marginTop</item>
         <item name="android:textSize">@dimen/login_edittext_textSize</item>
-        <item name="android:textColor">@color/grey</item>
-        <item name="android:textColorHint">@color/grey</item>
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColorHint">@color/black_25</item>
         <item name="android:paddingLeft">@dimen/login_edittext_paddingLeftRight</item>
         <item name="android:paddingRight">@dimen/login_edittext_paddingLeftRight</item>
         <item name="android:gravity">center</item>
-        <item name="android:backgroundTint">@color/app_color</item>
+        <item name="android:background">@drawable/selector_edittext</item>
     </style>
 
 </resources>

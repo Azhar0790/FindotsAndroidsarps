@@ -1,6 +1,7 @@
 package activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -30,6 +31,9 @@ public class LoginActivity extends AppCompatActivity  {
     @Bind(R.id.TextView_forgotPassword)
     TextView mTextView_forgotPassword;
 
+    @Bind(R.id.TextView_donthaveaccount)
+    TextView mTextView_donthaveaccount;
+
     @Bind(R.id.TextView_signup)
     TextView mTextView_signup;
 
@@ -42,6 +46,7 @@ public class LoginActivity extends AppCompatActivity  {
 
         ButterKnife.bind(this);
 
+        setUIElementsProperty();
         setListeners();
 
 
@@ -76,7 +81,15 @@ public class LoginActivity extends AppCompatActivity  {
      *   setting UI Widgets Properties
      */
     public void setUIElementsProperty() {
+        Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        Typeface typefaceBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
 
+        mEditText_userName.setTypeface(typefaceLight);
+        mEditText_password.setTypeface(typefaceLight);
+        mButton_login.setTypeface(typefaceLight);
+        mTextView_forgotPassword.setTypeface(typefaceLight);
+        mTextView_donthaveaccount.setTypeface(typefaceLight);
+        mTextView_signup.setTypeface(typefaceBold);
     }
 
     @OnClick(R.id.Button_login)
