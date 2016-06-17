@@ -29,9 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="activities.LoginActivity" />
-        <activity android:name="activities.MenuActivity" />
-        <activity android:name="activities.RegisterActivity"/>
+        <activity android:name="activities.LoginActivity" android:windowSoftInputMode="adjustPan" />
+        <activity android:name="activities.MenuActivity" android:windowSoftInputMode="adjustPan"/>
+        <activity android:name="activities.RegisterActivity" android:windowSoftInputMode="adjustPan"/>
 
         <provider
             android:name="database.DatabaseProvider"

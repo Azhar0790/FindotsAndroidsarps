@@ -116,4 +116,6 @@ public class FinDotsApplication extends MultiDexApplication {
         configurationBuilder.addModelClasses(LocationData.class);
         ActiveAndroid.initialize(configurationBuilder.create());
     }
+
+
 }

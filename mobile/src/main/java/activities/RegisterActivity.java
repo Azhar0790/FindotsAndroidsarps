@@ -27,12 +27,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import findots.bridgetree.com.findots.R;
+import restcalls.Register.IRegisterRestCall;
+import restcalls.Register.RegisterModel;
+import restcalls.Register.RegisterRestCall;
 import utils.AddTextWatcher;
+import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/13/2016.
  */
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, IRegisterRestCall{
 
     @Bind(R.id.TextView_signUpHeading)
     TextView mTextView_signUpHeading;
@@ -71,16 +75,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-
         ButterKnife.bind(this);
-
         setUIElementsProperty();
         setListeners();
-
-        /**
-         * android:thumb="@drawable/selector_switch"
-         android:trackTint="@color/app_color_50"
-         */
     }
 
 
@@ -98,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mTextView_agree.setTypeface(typefaceLight);
         mButton_createAccount.setTypeface(typefaceLight);
 
-        mImageView_onOff.setTag(0);
+        mImageView_onOff.setTag(false);
         changeSwitchButtonBackground();
 
         //mTextView_agree.setText(getSpannableString());
@@ -110,24 +107,44 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      *   change the background of switch(ImageView) button
      */
     public void changeSwitchButtonBackground() {
-        if (mImageView_onOff.getTag() == 1) {
+        if (mImageView_onOff.getTag() == true) {
             mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_on);
-        } else if (mImageView_onOff.getTag() == 0) {
+        } else if (mImageView_onOff.getTag() == false) {
             mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_off);
         }
     }
 
     @OnClick(R.id.Button_createAccount)
     public void validateAndCreateAccount() {
-
         if (validateEnteredValues()) {
             /**
-             *   Call WebService to create an account
+             *   check whether terms and conditions accepted
              */
+            if (mImageView_onOff.getTag() == true) {
+                /**
+                 *   Call WebService to create an account
+                 */
+                RegisterRestCall registerRestCall = new RegisterRestCall(RegisterActivity.this);
+                registerRestCall.delegate = RegisterActivity.this;
+                registerRestCall.callRegisterUserService(emailID, password, mobileNo,
+                        name, redeemCode, company, "", "", "", "", "", "");
 
+            } else if (mImageView_onOff.getTag() == false) {
+                GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
+            }
 
         }
 
+    }
+
+    @Override
+    public void onRegisterUserFailure() {
+        Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRegisterUserSucess(RegisterModel registerModel) {
+        Toast.makeText(RegisterActivity.this, "Successfully Registered.", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -174,14 +191,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     public SpannableString getSpannableString() {
-
         String str = getString(R.string.agree);
-
         SpannableString spannableString = new SpannableString(str);
-        //spannableString.setSpan(new RelativeSizeSpan(1.1f), 0, str.length(), 0);
+        spannableString.setSpan(new RelativeSizeSpan(1.1f), 0, str.length(), 0);
         spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 12, 0);
-        //spannableString.setSpan(new UnderlineSpan(), 13, str.length(), 0);
-        spannableString.setSpan(new ForegroundColorSpan(Color.RED), 13, str.length(), 0);
+        spannableString.setSpan(new UnderlineSpan(), 13, str.length(), 0);
+        spannableString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_color)), 13, str.length(), 0);
 
         // clickable text
         ClickableSpan clickableSpan = new ClickableSpan() {
@@ -195,7 +210,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         };
 
         spannableString.setSpan(clickableSpan, 13, str.length(), 0);
-
         return spannableString;
     }
 
@@ -203,10 +217,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ImageView_onOff:
-                if (mImageView_onOff.getTag() == 0) {
-                    mImageView_onOff.setTag(1);
-                } else if (mImageView_onOff.getTag() == 1) {
-                    mImageView_onOff.setTag(0);
+                if (mImageView_onOff.getTag() == false) {
+                    mImageView_onOff.setTag(true);
+                } else if (mImageView_onOff.getTag() == true) {
+                    mImageView_onOff.setTag(false);
                 }
                 changeSwitchButtonBackground();
 

@@ -1,14 +1,20 @@
 package utils;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
+import android.app.AlertDialog;
+import android.view.Window;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import findots.bridgetree.com.findots.R;
 
 /**
  * Created by jpaulose on 6/15/2016.
@@ -55,4 +61,38 @@ public class GeneralUtils {
         return address;
     }
 
+    /**
+     * Initializes the Progress bar
+     */
+    static Dialog mDialog = null;
+
+    public static void initialize_progressbar(Context context) {
+        mDialog = new Dialog(context);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_progress);
+        mDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mDialog.setCancelable(false);
+        mDialog.show();
+    }
+
+    /**
+     * Dismisses the Progress bar
+     */
+    public static void stop_progressbar() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+    }
+
+    public static void createAlertDialog(Context context, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.app_name))
+                .setMessage(message)
+                .setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
 }
