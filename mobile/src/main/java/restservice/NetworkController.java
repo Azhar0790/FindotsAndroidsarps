@@ -12,6 +12,13 @@ import retrofit.http.POST;
 /**
  * Created by parijathar on 6/6/2016.
  */
+import locationUtils.LocationModel.BackgroundLocData;
+import locationUtils.LocationModel.LocationResponseData;
+import retrofit.Call;
+import retrofit.http.Body;
+import retrofit.http.POST;
+
+
 public interface NetworkController {
 
     @POST(RestURLs.LOGIN)
@@ -22,5 +29,8 @@ public interface NetworkController {
 
     @POST(RestURLs.FORGOT_PASSWORD)
     Call<ForgotPasswordModel> forgotPassword(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_LCATION_TRACKING)
+    Call<LocationResponseData> getLogin(@Body BackgroundLocData bgData);
 
 }

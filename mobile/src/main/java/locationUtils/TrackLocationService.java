@@ -30,7 +30,7 @@ import utils.GeneralUtils;
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final long SYNCHRONIZATION_INTERVAL = 10 * 10 * 300;
+    private static final long SYNCHRONIZATION_INTERVAL = 60 * 1000;
     private static boolean isServiceRunning;
     private static final String TAG = TrackLocationService.class.getCanonicalName();
     private int notificationId = 9999;

@@ -77,7 +77,7 @@ public class DataHelper {
 
     public void markLocationSynced(LocationData location) {
         location.setSynced(true);
-        location.save();
+        location.delete();
     }
 
     public void deleteAllLocations() {

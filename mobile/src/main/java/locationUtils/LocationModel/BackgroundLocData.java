@@ -11,10 +11,11 @@ public class BackgroundLocData {
     String deviceInfo;
     int deviceTypeID;
     int userID;
+    String ipAddress="";
+
+    ArrayList<LocationSyncData> locations=new ArrayList<LocationSyncData>();
 
 
-
-    ArrayList<LocationData> locations=new ArrayList<LocationData>();
 
     public String getDeviceInfo() {
         return deviceInfo;
@@ -54,6 +55,21 @@ public class BackgroundLocData {
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public ArrayList<LocationSyncData> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(ArrayList<LocationSyncData> locations) {
+        this.locations = locations;
     }
 
 }

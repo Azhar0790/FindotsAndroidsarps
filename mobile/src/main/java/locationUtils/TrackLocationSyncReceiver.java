@@ -8,10 +8,19 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
+import locationUtils.LocationModel.BackgroundLocData;
 import locationUtils.LocationModel.LocationData;
+import locationUtils.LocationModel.LocationResponseData;
+import locationUtils.LocationModel.LocationSyncData;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 public class TrackLocationSyncReceiver extends BroadcastReceiver {
@@ -22,11 +31,68 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         dataHelper = DataHelper.getInstance(context);
         locations = dataHelper.getLocationsToSync();
-        for (LocationData d : locations) {
-            Log.d("jomy","Lat : "+ d.getLatitude()+"  : Longit : "+d.getLongitude());
-            Log.d("jomy","Lat : "+ d.getTimestamp()+"  : Longit : "+d.getLocationAddress());
+        if(locations.size()>0) {
+            BackgroundLocData bgData = new BackgroundLocData();
+            bgData.setDeviceID("1234");
+            bgData.setDeviceInfo("Android");
+            bgData.setAppVersion("2");
+            bgData.setUserID(2);
+            bgData.setDeviceTypeID(2);
+            ArrayList<LocationSyncData> locSyncList = new ArrayList<LocationSyncData>();
+
+            for (LocationData locData : locations) {
+                Log.d("jomy", "glocData.getLatitude() : " +locData.getLatitude());
+                LocationSyncData locationSyncData = new LocationSyncData();
+                locationSyncData.setLatitude(locData.getLatitude());
+                locationSyncData.setLongitude(locData.getLongitude());
+                locationSyncData.setAddress(locData.getLocationAddress());
+                locationSyncData.setReportedDate(locData.getTimestamp());
+                locSyncList.add(locationSyncData);
+            }
+
+
+            bgData.setLocations(locSyncList);
+
+            /**
+             * Hit the Login API to get the Userdetails
+             */
+
+            Log.d("jomy", "getUserID() : " + bgData.getUserID());
+
+
+            Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().getLogin(bgData);
+
+
+            login.enqueue(new Callback<LocationResponseData>() {
+                              @Override
+                              public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+
+
+                                  if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                                      dataHelper.markLocationsSynced(locations);
+                                      Log.d("jomy", "inside success : " + response.body().getMessage());
+
+                                  } else {
+                                      Log.e("data", "inside failure");
+
+                                  }
+                              }
+
+                              @Override
+                              public void onFailure(Throwable t) {
+                                  Log.d("jomy", "onFailure  : " + t.getMessage());
+                              }
+                          }
+
+            );
         }
-//        new AsyncTask<Void, Void, TrackLocationResponse>() {
+        else
+        {
+            Log.d("jomy", " No Data to Sync");
+        }
+
+    //        new AsyncTask<Void, Void, TrackLocationResponse>() {
 //            private List<LocationData> locations;
 //            private DataHelper dataHelper;
 //
@@ -61,9 +127,9 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
 //                }
 //            }
 //        }.execute();
-        updateNotification("helloo", context);
+    updateNotification("helloo",context);
 
-    }
+}
 
     private void updateNotification(String text, Context context) {
         NotificationCompat.Builder mBuilder =

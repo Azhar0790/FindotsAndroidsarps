@@ -50,6 +50,8 @@ public class FinDotsApplication extends MultiDexApplication {
     }
 
     public static RestClient getRestClient() {
+        if(restClient==null)
+            restClient = new RestClient();
         return restClient;
     }
 

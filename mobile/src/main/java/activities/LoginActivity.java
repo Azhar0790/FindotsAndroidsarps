@@ -12,6 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import findots.bridgetree.com.findots.R;
+import locationUtils.Utils;
 import utils.AddTextWatcher;
 
 /**
@@ -48,7 +49,9 @@ public class LoginActivity extends AppCompatActivity  {
 
         setUIElementsProperty();
         setListeners();
-
+       if(!(Utils.isLocationServiceEnabled(LoginActivity.this))) {
+           Utils.createLocationServiceError(LoginActivity.this);
+       }
 
     }
 
@@ -111,6 +114,8 @@ public class LoginActivity extends AppCompatActivity  {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
+
+
 
 }
 
