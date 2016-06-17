@@ -131,7 +131,6 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             delegate.onMenuItemSelected(adapterPosition);
-            Toast.makeText(mContext, "position = "+adapterPosition, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -62,11 +62,11 @@ public class LoginRestCall {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", username);
         postValues.put("password", password);
-        postValues.put("deviceID", deviceID);
-        postValues.put("appVersion", appVersion);
+        postValues.put("deviceID", "");
+        postValues.put("appVersion", "1.0");
         postValues.put("deviceTypeID", 2);
-        postValues.put("deviceInfo", deviceInfo);
-        postValues.put("userID", userID);
+        postValues.put("deviceInfo", "samsung");
+        postValues.put("userID", 0);
 
         return postValues;
     }

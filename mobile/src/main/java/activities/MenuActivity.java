@@ -1,7 +1,9 @@
 package activities;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -149,7 +151,7 @@ protected FinDotsApplication app;
 
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
 
-        mTextView_heading.setText(getString(R.string.tracking_list));
+        mTextView_heading.setText(getString(R.string.destinations));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
     }
 
@@ -232,6 +234,10 @@ protected FinDotsApplication app;
                 break;
 
             case Constants.LOGOUT:
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+                sp.edit().remove(LoginActivity.USERNAME).apply();
+                sp.edit().remove(LoginActivity.PASSWORD).apply();
+
                 Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
                 startActivity(intentLogout);
                 finish();

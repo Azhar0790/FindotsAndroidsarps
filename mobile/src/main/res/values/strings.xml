@@ -27,6 +27,7 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="donthaveaccount">Don\'t have account?</string>
     <string name="signup"><u>Sign Up</u></string>
+    <string name="validate_email">Please enter valid EmailID</string>
     <string name="prompt_required">This field is required</string>
     <string name="prompt_password">This password is too short</string>
 
