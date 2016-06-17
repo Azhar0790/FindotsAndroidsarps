@@ -49,7 +49,7 @@ public class RestClient {
         });
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RestURLs.MAIN_URL)
+                .baseUrl(RestURLs.BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
