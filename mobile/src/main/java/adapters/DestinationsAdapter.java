@@ -82,10 +82,10 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         holder.mButton_checkIncheckOut.setCompoundDrawables(
-                scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 60, 60),
+                scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                 null, null, null);
         holder.mTextView_destinationAssignedBy.setCompoundDrawables(
-                scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 48, 48),
+                scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
                 null, null, null);
         holder.mTextView_destinationName.setText(arrayList.get(position));
     }

@@ -11,7 +11,7 @@ import org.parceler.Parcel;
 public class LoginModel {
     private String message;
 
-    private String errorCode;
+    private int errorCode;
 
     @SerializedName("Data")
     private LoginData[] mLoginData;
@@ -26,12 +26,12 @@ public class LoginModel {
         this.message = message;
     }
 
-    public String getErrorCode ()
+    public int getErrorCode ()
     {
         return errorCode;
     }
 
-    public void setErrorCode (String errorCode)
+    public void setErrorCode (int errorCode)
     {
         this.errorCode = errorCode;
     }
