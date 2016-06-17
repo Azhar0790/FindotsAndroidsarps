@@ -7,7 +7,7 @@ public class LocationResponseData {
 
     private String message;
 
-    private String errorCode;
+    private int errorCode;
 
     public String getMessage ()
     {
@@ -19,12 +19,12 @@ public class LocationResponseData {
         this.message = message;
     }
 
-    public String getErrorCode ()
+    public int getErrorCode ()
     {
         return errorCode;
     }
 
-    public void setErrorCode (String errorCode)
+    public void setErrorCode (int errorCode)
     {
         this.errorCode = errorCode;
     }

@@ -30,58 +30,67 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         dataHelper = DataHelper.getInstance(context);
-        BackgroundLocData bgData = new BackgroundLocData();
-        bgData.setDeviceID("1234");
-        bgData.setDeviceInfo("Android");
-        bgData.setAppVersion("2");
-        bgData.setUserID(2);
-        bgData.setDeviceTypeID(1234);
-        ArrayList<LocationSyncData> locSyncList=new ArrayList<LocationSyncData>();
         locations = dataHelper.getLocationsToSync();
-        for (LocationData locData : locations) {
-            LocationSyncData locationSyncData=new LocationSyncData();
-            locationSyncData.setLatitude(locData.getLatitude());
-            locationSyncData.setLongitude(locData.getLongitude());
-            locationSyncData.setAddress(locData.getLocationAddress());
-            locationSyncData.setReportedDate(locData.getTimestamp());
-            locSyncList.add(locationSyncData);
-        }
+        if(locations.size()>0) {
+            BackgroundLocData bgData = new BackgroundLocData();
+            bgData.setDeviceID("1234");
+            bgData.setDeviceInfo("Android");
+            bgData.setAppVersion("2");
+            bgData.setUserID(2);
+            bgData.setDeviceTypeID(2);
+            ArrayList<LocationSyncData> locSyncList = new ArrayList<LocationSyncData>();
 
-
-        bgData.setLocations(locSyncList);
-
-        /**
-         * Hit the Login API to get the Userdetails
-         */
-
-                Log.d("jomy", "getUserID() : " + bgData.getUserID() );
-
-
-
-        Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().getLogin(bgData);
-
-
-        login.enqueue(new Callback<LocationResponseData>() {
-            @Override
-            public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
-
-
-                if (response.isSuccess()) {
-
-                    Log.d("jomy", "inside success : " + response.body().getMessage());
-
-                } else {
-                    Log.e("data", "inside failure");
-
-                }
+            for (LocationData locData : locations) {
+                Log.d("jomy", "glocData.getLatitude() : " +locData.getLatitude());
+                LocationSyncData locationSyncData = new LocationSyncData();
+                locationSyncData.setLatitude(locData.getLatitude());
+                locationSyncData.setLongitude(locData.getLongitude());
+                locationSyncData.setAddress(locData.getLocationAddress());
+                locationSyncData.setReportedDate(locData.getTimestamp());
+                locSyncList.add(locationSyncData);
             }
-        @Override
-        public void onFailure (Throwable t){
-            Log.e("jomy", "onFailure  : "+t.getMessage());
-        }
-    }
 
-    );
+
+            bgData.setLocations(locSyncList);
+
+            /**
+             * Hit the Login API to get the Userdetails
+             */
+
+            Log.d("jomy", "getUserID() : " + bgData.getUserID());
+
+
+            Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().getLogin(bgData);
+
+
+            login.enqueue(new Callback<LocationResponseData>() {
+                              @Override
+                              public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+
+
+                                  if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                                      dataHelper.markLocationsSynced(locations);
+                                      Log.d("jomy", "inside success : " + response.body().getMessage());
+
+                                  } else {
+                                      Log.e("data", "inside failure");
+
+                                  }
+                              }
+
+                              @Override
+                              public void onFailure(Throwable t) {
+                                  Log.d("jomy", "onFailure  : " + t.getMessage());
+                              }
+                          }
+
+            );
+        }
+        else
+        {
+            Log.d("jomy", " No Data to Sync");
+        }
 
     //        new AsyncTask<Void, Void, TrackLocationResponse>() {
 //            private List<LocationData> locations;
