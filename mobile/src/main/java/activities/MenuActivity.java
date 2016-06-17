@@ -1,21 +1,23 @@
 package activities;
 
 import android.Manifest;
-import android.graphics.Typeface;
-import android.support.v4.app.FragmentTransaction;
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,45 +39,45 @@ import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationService;
 
 public class MenuActivity extends RuntimePermissionActivity implements IMenuItems, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
-private GoogleApiClient googleApiClient ;
-private static final int REQUEST_RESOLVE_ERROR = 9999;
-protected FinDotsApplication app;
+        GoogleApiClient.OnConnectionFailedListener {
+    private GoogleApiClient googleApiClient;
+    private static final int REQUEST_RESOLVE_ERROR = 9999;
+    protected FinDotsApplication app;
 
     /**
-     *  Menu Items Titles
+     * Menu Items Titles
      */
-    int ICONS[] = { R.drawable.tracking_me,
-                        R.drawable.destinations,
-                        R.drawable.messages,
-                        R.drawable.notifications,
-                        R.drawable.settings,
-                        R.drawable.help,
-                        R.drawable.logout};
+    int ICONS[] = {R.drawable.tracking_me,
+            R.drawable.destinations,
+            R.drawable.messages,
+            R.drawable.notifications,
+            R.drawable.settings,
+            R.drawable.help,
+            R.drawable.logout};
 
     /**
-     *   Action bar / App bar
+     * Action bar / App bar
      */
     private Toolbar mToolbar = null;
 
     /**
-     *  Adapter to create Menu List Items
+     * Adapter to create Menu List Items
      */
     RecyclerView.Adapter mAdapter = null;
 
     /**
-     *  LayoutManager as LinearLayoutManager
+     * LayoutManager as LinearLayoutManager
      */
     RecyclerView.LayoutManager mLayoutManager = null;
 
     /**
-     *  Declaring DrawerLayout
+     * Declaring DrawerLayout
      */
     @Bind(R.id.DrawerLayout_slider)
     DrawerLayout mDrawerLayout_slider = null;
 
     /**
-     *  Action bar Drawer Toggle button
+     * Action bar Drawer Toggle button
      */
     ActionBarDrawerToggle mToggle = null;
 
@@ -120,7 +122,7 @@ protected FinDotsApplication app;
             public void onClick(View v) {
                 MenuActivity.this.requestAppPermissions(
                         new String[]{Manifest.permission.READ_CONTACTS,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         R.string.runtime_permissions_txt,
                         REQUEST_PERMISSIONS);
             }
@@ -164,9 +166,8 @@ protected FinDotsApplication app;
         mRecyclerView_menu_items.setLayoutManager(mLayoutManager);
     }
 
-    public void initalizeLocationService()
-    {
-        if(!(isMyServiceRunning(TrackLocationService.class)))
+    public void initalizeLocationService() {
+        if (!(isMyServiceRunning(TrackLocationService.class)))
             startTracking();
     }
 
@@ -226,18 +227,28 @@ protected FinDotsApplication app;
 
             case Constants.HELP:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.help);
-                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
+
+                Intent mailIntent = new Intent();
+                mailIntent.setAction(Intent.ACTION_SENDTO);
+                mailIntent.setData(Uri.parse("mailto:"));
+//                mailIntent.setType("message/rfc822");
+                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"finddotsapp@gmail.com"});
+                mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Request");
+                try {
+                    startActivity(Intent.createChooser(mailIntent, "Send Help Email"));
+                } catch (ActivityNotFoundException e) {
+                    //TODO: Handle case where no email app is available
+                }
 
                 break;
-
             case Constants.LOGOUT:
                 Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
                 startActivity(intentLogout);
                 finish();
                 break;
 
-            default:break;
+            default:
+                break;
         }
 
     }
@@ -246,6 +257,7 @@ protected FinDotsApplication app;
     public void onPermissionsGranted(int requestCode) {
 
     }
+
     private void showErrorDialog(int errorCode) {
         //TODO add errors handling
         // Create a fragment for the error dialog
@@ -260,6 +272,7 @@ protected FinDotsApplication app;
     private void stopTracking() {
         stopService(new Intent(this, TrackLocationService.class));
     }
+
     private void startTracking() {
         connectGoogleApiClient();
     }
