@@ -5,5 +5,5 @@ package restcalls.ForgotPassword;
  */
 public interface IForgotPasswordRestCall {
     public void onForgotPasswordSuccess(ForgotPasswordModel forgotPasswordModel);
-    public void onForgotPasswordFailure();
+    public void onForgotPasswordFailure(String errorMessage);
 }

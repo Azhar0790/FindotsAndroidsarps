@@ -2,6 +2,7 @@ package restservice;
 
 import java.util.Map;
 
+import restcalls.Destinations.DestinationsModel;
 import restcalls.ForgotPassword.ForgotPasswordModel;
 import restcalls.Login.LoginModel;
 import restcalls.Register.RegisterModel;
@@ -29,6 +30,9 @@ public interface NetworkController {
 
     @POST(RestURLs.FORGOT_PASSWORD)
     Call<ForgotPasswordModel> forgotPassword(@Body Map<String, Object> request);
+
+    @POST(RestURLs.GET_DESTINATIONS)
+    Call<DestinationsModel> getDestinations(@Body Map<String, Object> request);
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<LocationResponseData> getLogin(@Body BackgroundLocData bgData);

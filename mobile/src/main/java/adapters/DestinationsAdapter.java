@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
+import restcalls.Destinations.DestinationData;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -26,11 +27,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     public static IDestinations delegate = null;
 
     Context context = null;
-    ArrayList<String> arrayList = null;
+    DestinationData[] destinationDatas = null;
 
-    public DestinationsAdapter(Context context, ArrayList<String> arrayList) {
+    public DestinationsAdapter(Context context, DestinationData[] destinationDatas) {
         this.context = context;
-        this.arrayList = arrayList;
+        this.destinationDatas = destinationDatas;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -62,7 +63,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public int getItemCount() {
-        return arrayList.size();
+        return destinationDatas.length;
     }
 
     @Override
@@ -87,7 +88,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mTextView_destinationAssignedBy.setCompoundDrawables(
                 scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
                 null, null, null);
-        holder.mTextView_destinationName.setText(arrayList.get(position));
+        holder.mTextView_destinationName.setText(destinationDatas[position].getDestinationName());
     }
 
 

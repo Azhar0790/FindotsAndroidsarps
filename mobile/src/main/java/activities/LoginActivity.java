@@ -1,11 +1,16 @@
 package activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +21,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import findots.bridgetree.com.findots.R;
 import locationUtils.Utils;
+import restcalls.ForgotPassword.ForgotPasswordModel;
+import restcalls.ForgotPassword.ForgotPasswordRestCall;
+import restcalls.ForgotPassword.IForgotPasswordRestCall;
 import restcalls.Login.ILoginRestCall;
 import restcalls.Login.LoginModel;
 import restcalls.Login.LoginRestCall;
@@ -25,7 +33,7 @@ import utils.GeneralUtils;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
+public class LoginActivity extends AppCompatActivity  implements ILoginRestCall, IForgotPasswordRestCall{
 
     @Bind(R.id.EditText_userName)
     EditText mEditText_userName;
@@ -45,6 +53,8 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
     @Bind(R.id.TextView_signup)
     TextView mTextView_signup;
 
+    EditText mEditText_FrgtPswdUsername = null;
+
     public static String USERNAME = "username";
     public static String PASSWORD = "password";
 
@@ -63,6 +73,8 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
            Utils.createLocationServiceError(LoginActivity.this);
        }
 
+        mEditText_userName.setText("parijathar@bridgetree.com");
+        mEditText_password.setText("pari@123");
     }
 
     /**
@@ -86,7 +98,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
             mEditText_userName.setError(getString(R.string.prompt_required));
         } else if (password == null || password.length() == 0) {
             mEditText_password.setError(getString(R.string.prompt_password));
-        } else if (!emailValidation(userName)) {
+        } else if (!GeneralUtils.isvalid_email(userName)) {
             mEditText_userName.setError(getString(R.string.validate_email));
         } else {
             /**
@@ -114,15 +126,10 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
     }
 
     @Override
-    public void onLoginFailure() {
-        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
+    public void onLoginFailure(String errorMessage) {
+        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
     }
 
-    public boolean emailValidation(String email) {
-        if (email.contains("@"))
-            return true;
-        return false;
-    }
 
     /**
      *   setting UI Widgets Properties
@@ -146,14 +153,76 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall{
     }
 
     @OnClick(R.id.TextView_forgotPassword)
-    public void startForgotPasswordActivity() {
+    public void showForgotPasswordDialog() {
 
+        Dialog dialog = new Dialog(LoginActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setContentView(R.layout.dialog_forgot_password);
+        dialog.setCancelable(false);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+
+        dialog.show();
+
+        setDialogWidgetsFunctionality(dialog);
+    }
+
+    public void setDialogWidgetsFunctionality(final Dialog dialog) {
+        mEditText_FrgtPswdUsername = (EditText) dialog.findViewById(R.id.EditText_FrgtPswdUsername);
+        mEditText_FrgtPswdUsername.addTextChangedListener(new AddTextWatcher(mEditText_FrgtPswdUsername));
+        Button mButton_cancel = (Button) dialog.findViewById(R.id.Button_cancel);
+        Button mButton_send = (Button) dialog.findViewById(R.id.Button_send);
+
+        mButton_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mButton_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = mEditText_FrgtPswdUsername.getText().toString();
+                if (username == null || username.length() == 0) {
+                    mEditText_FrgtPswdUsername.setError(getString(R.string.prompt_required));
+                } else {
+                    dialog.dismiss();
+                    startForgotPasswordProcess(username);
+                }
+            }
+        });
+    }
+
+    /**
+     *  Call Forgot Password API
+     */
+    public void startForgotPasswordProcess(String username) {
+        ForgotPasswordRestCall forgotPasswordRestCall = new ForgotPasswordRestCall(LoginActivity.this);
+        forgotPasswordRestCall.delegate = LoginActivity.this;
+        forgotPasswordRestCall.callForgotPasswordService(username, "", "", "", "");
+    }
+
+    @Override
+    public void onForgotPasswordFailure(String errorMessage) {
+        Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onForgotPasswordSuccess(ForgotPasswordModel forgotPasswordModel) {
+        Toast.makeText(LoginActivity.this, forgotPasswordModel.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.TextView_signup)
     public void startSignUpActivity() {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
+        finish();
     }
 
 

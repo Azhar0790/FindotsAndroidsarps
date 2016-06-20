@@ -134,8 +134,10 @@ protected FinDotsApplication app;
          *   Fragment Transaction for Destinations
          */
 
+        mToggle.setDrawerIndicatorEnabled(true);
         FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
         destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
+        destinationTransaction.addToBackStack(null);
         destinationTransaction.commit();
 
     }

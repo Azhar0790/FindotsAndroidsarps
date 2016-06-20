@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import findots.bridgetree.com.findots.FinDotsApplication;
+import findots.bridgetree.com.findots.R;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -42,13 +43,16 @@ public class LoginRestCall {
                 if (response.isSuccess()) {
                     LoginModel loginModel = response.body();
                     delegate.onLoginSuccess(loginModel);
+                } else {
+                    LoginModel loginModel = response.body();
+                    delegate.onLoginFailure(loginModel.getMessage());
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                delegate.onLoginFailure();
+                delegate.onLoginFailure(context.getString(R.string.data_error));
             }
         });
 

@@ -13,7 +13,7 @@ public class LoginModel {
 
     private int errorCode;
 
-    @SerializedName("Data")
+    @SerializedName("data")
     private LoginData[] mLoginData;
 
     public String getMessage ()

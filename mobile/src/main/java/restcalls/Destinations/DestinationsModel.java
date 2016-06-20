@@ -1,20 +1,20 @@
-package restcalls.Register;
+package restcalls.Destinations;
 
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
 /**
- * Created by parijathar on 6/17/2016.
+ * Created by parijathar on 6/20/2016.
  */
 @Parcel
-public class RegisterModel {
+public class DestinationsModel {
     private String message;
 
     private String errorCode;
 
     @SerializedName("data")
-    private RegisterData[] mRegisterData;
+    private DestinationData[] mDestinationData;
 
     public String getMessage ()
     {
@@ -36,19 +36,19 @@ public class RegisterModel {
         this.errorCode = errorCode;
     }
 
-    public RegisterData[] getRegisterData ()
+    public DestinationData[] getDestinationData ()
     {
-        return mRegisterData;
+        return mDestinationData;
     }
 
-    public void setRegisterData (RegisterData[] mRegisterData)
+    public void setData (DestinationData[] mDestinationData)
     {
-        this.mRegisterData = mRegisterData;
+        this.mDestinationData = mDestinationData;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [message = "+message+", errorCode = "+errorCode+", mRegisterData = "+mRegisterData+"]";
+        return "ClassPojo [message = "+message+", errorCode = "+errorCode+", mDestinationData = "+mDestinationData+"]";
     }
 }

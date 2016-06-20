@@ -1,5 +1,9 @@
 package activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -138,13 +142,33 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onRegisterUserFailure() {
-        Toast.makeText(RegisterActivity.this, "Registration failed.", Toast.LENGTH_LONG).show();
+    public void onRegisterUserFailure(String errorMessage) {
+        Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onRegisterUserSucess(RegisterModel registerModel) {
-        Toast.makeText(RegisterActivity.this, "Successfully Registered.", Toast.LENGTH_LONG).show();
+    public void onRegisterUserSuccess(RegisterModel registerModel) {
+        redirectToLogin();
+    }
+
+    public void redirectToLogin() {
+        new AlertDialog.Builder(RegisterActivity.this)
+                .setTitle(getString(R.string.app_name))
+                .setMessage(getString(R.string.sucessful_registration))
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        onBackPressed();
+                    }
+                }).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     /**

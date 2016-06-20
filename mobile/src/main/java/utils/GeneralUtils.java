@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import findots.bridgetree.com.findots.R;
 
@@ -94,5 +96,27 @@ public class GeneralUtils {
                         dialog.dismiss();
                     }
                 }).show();
+    }
+
+    /**
+     * Email ID validation
+     */
+    public static boolean isvalid_email(String email) {
+
+        String regEx_email = "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
+
+        if (email.length() == 0) {
+            return false;
+        }
+
+        Matcher matcherObj_email = Pattern.compile(regEx_email).matcher(
+                email);
+
+        return matcherObj_email.matches();
     }
 }

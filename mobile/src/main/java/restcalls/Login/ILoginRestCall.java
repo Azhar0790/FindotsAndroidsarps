@@ -6,6 +6,6 @@ package restcalls.Login;
 public interface ILoginRestCall {
 
     public void onLoginSuccess(LoginModel loginModel);
-    public void onLoginFailure();
+    public void onLoginFailure(String errorMessage);
 
 }

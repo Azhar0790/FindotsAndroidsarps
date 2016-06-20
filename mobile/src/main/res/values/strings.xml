@@ -19,6 +19,9 @@
     <string name="help">Help</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="data_error">Data Error.</string>
+    <string name="sucessful_registration">Successfully Registered. Please Login with your credentials.</string>
 
     <!-- Login -->
     <string name="username">Username</string>

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -16,18 +17,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
+import restcalls.Destinations.DestinationsModel;
+import restcalls.Destinations.GetDestinationsRestCall;
+import restcalls.Destinations.IGetDestinations;
 
 /**
  * Created by parijathar on 6/14/2016.
  */
-public class DestinationFragment extends Fragment implements IDestinations {
+public class DestinationFragment extends Fragment implements IDestinations, IGetDestinations {
 
     @Bind(R.id.RecyclerView_destinations)
     RecyclerView mRecyclerView_destinations;
 
     LinearLayoutManager layoutManager = null;
-
-    ArrayList<String> arrayList = new ArrayList<>();
 
     public static DestinationFragment newInstance() {
         DestinationFragment destinationFragment = new DestinationFragment();
@@ -41,17 +43,12 @@ public class DestinationFragment extends Fragment implements IDestinations {
 
         ButterKnife.bind(this, rootView);
 
-        arrayList.add("Bridgetree Research Services");
-        arrayList.add("Yamaha Showroom");
-        arrayList.add("Suguna Hospital");
-
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayList);
-        destinationsAdapter.delegate = DestinationFragment.this;
-        mRecyclerView_destinations.setAdapter(destinationsAdapter);
-        destinationsAdapter.notifyDataSetChanged();
-
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView_destinations.setLayoutManager(layoutManager);
+
+        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+        destinationsRestCall.delegate = DestinationFragment.this;
+        destinationsRestCall.callGetDestinations("", "", "", 2);
 
         return rootView;
     }
@@ -59,5 +56,18 @@ public class DestinationFragment extends Fragment implements IDestinations {
     @Override
     public void onDestinationSelected(int itemPosition) {
 
+    }
+
+    @Override
+    public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), destinationsModel.getDestinationData());
+        destinationsAdapter.delegate = DestinationFragment.this;
+        mRecyclerView_destinations.setAdapter(destinationsAdapter);
+        destinationsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetDestinationFailure(String errorMessage) {
+        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 }
