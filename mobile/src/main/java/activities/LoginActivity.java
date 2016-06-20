@@ -2,11 +2,10 @@ package activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +27,7 @@ import restcalls.Login.ILoginRestCall;
 import restcalls.Login.LoginModel;
 import restcalls.Login.LoginRestCall;
 import utils.AddTextWatcher;
+import utils.AppStringConstants;
 import utils.GeneralUtils;
 
 /**
@@ -117,9 +117,12 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
         if (loginModel.getErrorCode() == 2) {
             GeneralUtils.createAlertDialog(LoginActivity.this, loginModel.getMessage());
         } else {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            sp.edit().putString(USERNAME, userName).apply();
-            sp.edit().putString(PASSWORD, password).apply();
+
+            GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, userName);
+            GeneralUtils.setSharedPreferenceString(this,AppStringConstants.PASSWORD, password);
+
+
+            Log.d("jomy","sP Val "+GeneralUtils.getSharedPreferenceString(this,AppStringConstants.USERNAME));
 
             startMenuActivity();
         }

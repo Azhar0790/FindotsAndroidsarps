@@ -1,11 +1,17 @@
 package utils;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.app.AlertDialog;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.Window;
 
 import java.text.SimpleDateFormat;
@@ -119,4 +125,56 @@ public class GeneralUtils {
 
         return matcherObj_email.matches();
     }
+    public static String getUniqueDeviceId(Context context) {
+        String myAndroidDeviceId = "";
+        TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephony.getDeviceId() != null) {
+            myAndroidDeviceId = mTelephony.getDeviceId();
+        } else {
+            myAndroidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+        return myAndroidDeviceId;
+    }
+
+    public static String getDeviceInfo() {
+        String myAndroidDeviceinfo = "";
+
+        myAndroidDeviceinfo = android.os.Build.BRAND;
+        myAndroidDeviceinfo = myAndroidDeviceinfo + " " + android.os.Build.MODEL;
+        myAndroidDeviceinfo = myAndroidDeviceinfo + " " + android.os.Build.VERSION.RELEASE;
+
+        return myAndroidDeviceinfo;
+    }
+
+    public static int getAppVersion(Context context) {
+        int versionCode = -1;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            String versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+    public static String getSharedPreferenceString(Context context,String prefKey) {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        String preferenceVal = pref.getString(prefKey,"");
+        return preferenceVal;
+    }
+    public static int getSharedPreferenceInt(Context context,String prefKey) {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        int preferenceVal = pref.getInt(prefKey,-1);
+        return preferenceVal;
+    }
+    public static void setSharedPreferenceString(Context context,String prefKey,String prefVal) {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        pref.edit().putString(prefKey, prefVal).apply();
+
+    }
+
+
 }

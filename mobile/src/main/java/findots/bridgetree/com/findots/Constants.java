@@ -14,5 +14,6 @@ public class Constants {
     public static final int SETTINGS = 5;
     public static final int HELP = 6;
     public static final int LOGOUT = 7;
+    public static final int DEVICETYPEID = 2;
 
 }

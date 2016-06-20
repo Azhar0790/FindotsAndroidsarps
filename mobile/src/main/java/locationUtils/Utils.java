@@ -7,7 +7,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.telephony.TelephonyManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,16 +45,7 @@ public class Utils {
         return time;
     }
 
-    public static String getUniqueDeviceId(Context context) {
-        String myAndroidDeviceId = "";
-        TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (mTelephony.getDeviceId() != null) {
-            myAndroidDeviceId = mTelephony.getDeviceId();
-        } else {
-            myAndroidDeviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-        return myAndroidDeviceId;
-    }
+
 
     public static boolean isLocationServiceEnabled(Context context){
         int locationMode = 0;

@@ -16,8 +16,8 @@ import com.google.android.gms.location.LocationRequest;
 import locationUtils.LocationModel.LocationData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationPreferencesManager;
-import locationUtils.Utils;
 import restservice.RestClient;
+import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 5/31/2016.
@@ -101,7 +101,7 @@ public class FinDotsApplication extends MultiDexApplication {
 
     private void checkAndSetDeviceId() {
         if (TextUtils.isEmpty(TrackLocationPreferencesManager.getDeviceId(this))) {
-            String deviceId = Utils.getUniqueDeviceId(this);
+            String deviceId = GeneralUtils.getUniqueDeviceId(this);
             TrackLocationPreferencesManager.setDeviceId(deviceId, this);
         }
     }

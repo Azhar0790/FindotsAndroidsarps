@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import retrofit.Call;
@@ -66,10 +67,10 @@ public class LoginRestCall {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", username);
         postValues.put("password", password);
-        postValues.put("deviceID", "");
-        postValues.put("appVersion", "1.0");
-        postValues.put("deviceTypeID", 2);
-        postValues.put("deviceInfo", "samsung");
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
+        postValues.put("appVersion", GeneralUtils.getAppVersion(context));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("userID", 0);
 
         return postValues;
