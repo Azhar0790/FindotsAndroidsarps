@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import findots.bridgetree.com.findots.R;
+import utils.AppStringConstants;
+import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/6/2016.
@@ -33,8 +35,17 @@ public class SplashActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SPLASH_THREAD:
-                    Intent intentLogin = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intentLogin);
+                    Intent intentNextActivity;
+
+                    if((GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USERID))>-1)
+                    {
+                        intentNextActivity = new Intent(SplashActivity.this,MenuActivity.class );
+                    }
+                    else
+                    {
+                        intentNextActivity = new Intent(SplashActivity.this, LoginActivity.class);
+                    }
+                    startActivity(intentNextActivity);
                     finish();
                     break;
 

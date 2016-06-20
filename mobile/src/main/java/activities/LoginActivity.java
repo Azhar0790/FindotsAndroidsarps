@@ -121,9 +121,12 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, userName);
             GeneralUtils.setSharedPreferenceString(this,AppStringConstants.PASSWORD, password);
 
+            if(loginModel.getLoginData().length>0) {
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
 
-            Log.d("jomy","sP Val "+GeneralUtils.getSharedPreferenceString(this,AppStringConstants.USERNAME));
-
+                Log.d("jomy", "sP Val : " + GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+            }
             startMenuActivity();
         }
     }

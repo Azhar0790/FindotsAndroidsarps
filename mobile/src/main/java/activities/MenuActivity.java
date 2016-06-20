@@ -137,7 +137,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         mToggle.setDrawerIndicatorEnabled(true);
         FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
         destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
-        destinationTransaction.addToBackStack(null);
         destinationTransaction.commit();
 
     }

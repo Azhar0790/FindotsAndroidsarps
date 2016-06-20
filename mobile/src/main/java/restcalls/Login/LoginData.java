@@ -9,11 +9,11 @@ import org.parceler.Parcel;
 public class LoginData {
     private String base64Imagestring;
 
-    private String countryID;
+    private int countryID;
 
-    private String userTypeID;
+    private int userTypeID;
 
-    private String organizationID;
+    private int organizationID;
 
     private String fbLoginID;
 
@@ -27,9 +27,9 @@ public class LoginData {
 
     private String userType;
 
-    private String userID;
+    private int userID;
 
-    private String corporateUserID;
+    private int corporateUserID;
 
     private String pinCode;
 
@@ -55,32 +55,32 @@ public class LoginData {
         this.base64Imagestring = base64Imagestring;
     }
 
-    public String getCountryID ()
+    public int getCountryID ()
     {
         return countryID;
     }
 
-    public void setCountryID (String countryID)
+    public void setCountryID (int countryID)
     {
         this.countryID = countryID;
     }
 
-    public String getUserTypeID ()
+    public int getUserTypeID ()
     {
         return userTypeID;
     }
 
-    public void setUserTypeID (String userTypeID)
+    public void setUserTypeID (int userTypeID)
     {
         this.userTypeID = userTypeID;
     }
 
-    public String getOrganizationID ()
+    public int getOrganizationID ()
     {
         return organizationID;
     }
 
-    public void setOrganizationID (String organizationID)
+    public void setOrganizationID (int organizationID)
     {
         this.organizationID = organizationID;
     }
@@ -145,22 +145,22 @@ public class LoginData {
         this.userType = userType;
     }
 
-    public String getUserID ()
+    public int getUserID ()
     {
         return userID;
     }
 
-    public void setUserID (String userID)
+    public void setUserID (int userID)
     {
         this.userID = userID;
     }
 
-    public String getCorporateUserID ()
+    public int getCorporateUserID ()
     {
         return corporateUserID;
     }
 
-    public void setCorporateUserID (String corporateUserID)
+    public void setCorporateUserID (int corporateUserID)
     {
         this.corporateUserID = corporateUserID;
     }

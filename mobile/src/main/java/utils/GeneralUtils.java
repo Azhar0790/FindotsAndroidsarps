@@ -175,6 +175,13 @@ public class GeneralUtils {
         pref.edit().putString(prefKey, prefVal).apply();
 
     }
+    public static void setSharedPreferenceInt(Context context,String prefKey,int prefVal) {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        pref.edit().putInt(prefKey, prefVal).apply();
+
+    }
+
 
 
 }
