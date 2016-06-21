@@ -129,7 +129,8 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
 //                }
 //            }
 //        }.execute();
-    updateNotification("helloo",context);
+
+//    updateNotification("helloo",context);
 
 }
 

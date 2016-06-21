@@ -58,10 +58,14 @@
     </string>
 
 
+    <!-- Strings related to Menu Screen -->
+    <string name="report_loc_success">Your Location Informations are Updated</string>
+    <string name="report_loc_fail">Unable to Update Your Location Information</string>
+
     <string-array name="menu_items">
         <item>Tracking Me</item>
         <item>Destinations</item>
-        <item>Messages</item>
+        <item>Report My Location</item>
         <item>Notifications</item>
         <item>Settings</item>
         <item>Help</item>

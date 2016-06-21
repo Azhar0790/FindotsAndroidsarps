@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -20,12 +21,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import java.util.ArrayList;
 
 import adapters.MenuItemsAdapter;
 import butterknife.Bind;
@@ -35,14 +39,24 @@ import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import fragments.DestinationFragment;
 import interfaces.IMenuItems;
+import locationUtils.LocationModel.BackgroundLocData;
+import locationUtils.LocationModel.LocationResponseData;
+import locationUtils.LocationModel.LocationSyncData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationService;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+import utils.AppStringConstants;
+import utils.GeneralUtils;
 
 public class MenuActivity extends RuntimePermissionActivity implements IMenuItems, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient googleApiClient;
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     protected FinDotsApplication app;
+    boolean locationReport=false;
 
     /**
      * Menu Items Titles
@@ -205,10 +219,11 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);
                 break;
 
-            case Constants.MESSAGES:
+            case Constants.TRACKLOCATION:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.messages);
-                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
+                locationReport=true;
+                GeneralUtils.initialize_progressbar(this);
+                connectGoogleApiClient();
 
                 break;
 
@@ -340,8 +355,71 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             googleApiClient.connect();
         } else {
             Log.d("jomy", "Client is connected");
-            startTrackLocationService();
+            if(locationReport)
+            {
+                ReportMyLocation(LocationServices.FusedLocationApi
+                        .getLastLocation( googleApiClient));
+                locationReport=false;
+            }
+            else {
+                startTrackLocationService();
+            }
         }
+    }
+
+    public void ReportMyLocation(Location currentLoc)
+    {
+        BackgroundLocData bgData = new BackgroundLocData();
+        bgData.setDeviceID(GeneralUtils.getUniqueDeviceId(this));
+        bgData.setDeviceInfo(GeneralUtils.getDeviceInfo());
+        bgData.setAppVersion(GeneralUtils.getAppVersion(this));
+        bgData.setUserID(GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        bgData.setDeviceTypeID(Constants.DEVICETYPEID);
+        ArrayList<LocationSyncData> locSyncList = new ArrayList<LocationSyncData>();
+        LocationSyncData locationSyncData = new LocationSyncData();
+        locationSyncData.setLatitude(currentLoc.getLatitude());
+        locationSyncData.setLongitude(currentLoc.getLongitude());
+        locationSyncData.setAddress(GeneralUtils.LatLongToAddress(currentLoc.getLatitude(),currentLoc.getLongitude(),this));
+        locationSyncData.setReportedDate(GeneralUtils.DateTimeInUTC());
+        locSyncList.add(locationSyncData);
+
+
+        bgData.setLocations(locSyncList);
+
+        /**
+         * Hit the Login API to get the Userdetails
+         */
+
+        Log.d("jomy", "getUserID() : " + bgData.getUserID());
+
+        Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().getLogin(bgData);
+
+
+        login.enqueue(new Callback<LocationResponseData>() {
+
+                          @Override
+                          public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+                              GeneralUtils.stop_progressbar();
+
+                              if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                                  Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_success),Toast.LENGTH_SHORT).show();
+
+                              } else {
+                                  Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_fail),Toast.LENGTH_SHORT).show();
+
+
+                              }
+                          }
+
+                          @Override
+                          public void onFailure(Throwable t) {
+                              GeneralUtils.stop_progressbar();
+                              Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_fail),Toast.LENGTH_SHORT).show();
+
+                          }
+                      }
+
+        );
     }
 
 }
