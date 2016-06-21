@@ -30,6 +30,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import adapters.MenuItemsAdapter;
 import butterknife.Bind;
@@ -44,6 +46,7 @@ import locationUtils.LocationModel.LocationResponseData;
 import locationUtils.LocationModel.LocationSyncData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationService;
+import restmodels.ResponseModel;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -56,7 +59,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     private GoogleApiClient googleApiClient;
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     protected FinDotsApplication app;
-    boolean locationReport=false;
+    boolean locationReport = false;
 
     /**
      * Menu Items Titles
@@ -221,7 +224,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.TRACKLOCATION:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                locationReport=true;
+                locationReport = true;
                 GeneralUtils.initialize_progressbar(this);
                 connectGoogleApiClient();
 
@@ -258,9 +261,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
                 break;
             case Constants.LOGOUT:
-                Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
-                startActivity(intentLogout);
-                finish();
+                logOut();
                 break;
 
             default:
@@ -355,20 +356,17 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             googleApiClient.connect();
         } else {
             Log.d("jomy", "Client is connected");
-            if(locationReport)
-            {
+            if (locationReport) {
                 ReportMyLocation(LocationServices.FusedLocationApi
-                        .getLastLocation( googleApiClient));
-                locationReport=false;
-            }
-            else {
+                        .getLastLocation(googleApiClient));
+                locationReport = false;
+            } else {
                 startTrackLocationService();
             }
         }
     }
 
-    public void ReportMyLocation(Location currentLoc)
-    {
+    public void ReportMyLocation(Location currentLoc) {
         BackgroundLocData bgData = new BackgroundLocData();
         bgData.setDeviceID(GeneralUtils.getUniqueDeviceId(this));
         bgData.setDeviceInfo(GeneralUtils.getDeviceInfo());
@@ -379,7 +377,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         LocationSyncData locationSyncData = new LocationSyncData();
         locationSyncData.setLatitude(currentLoc.getLatitude());
         locationSyncData.setLongitude(currentLoc.getLongitude());
-        locationSyncData.setAddress(GeneralUtils.LatLongToAddress(currentLoc.getLatitude(),currentLoc.getLongitude(),this));
+        locationSyncData.setAddress(GeneralUtils.LatLongToAddress(currentLoc.getLatitude(), currentLoc.getLongitude(), this));
         locationSyncData.setReportedDate(GeneralUtils.DateTimeInUTC());
         locSyncList.add(locationSyncData);
 
@@ -397,15 +395,16 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         login.enqueue(new Callback<LocationResponseData>() {
 
+
                           @Override
                           public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
                               GeneralUtils.stop_progressbar();
-
+                              Log.d("jomy", "sucessLoc... " );
                               if (response.isSuccess() && response.body().getErrorCode() == 0) {
-                                  Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_success),Toast.LENGTH_SHORT).show();
+                                  Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_success), Toast.LENGTH_SHORT).show();
 
                               } else {
-                                  Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_fail),Toast.LENGTH_SHORT).show();
+                                  Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
 
 
                               }
@@ -414,12 +413,53 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                           @Override
                           public void onFailure(Throwable t) {
                               GeneralUtils.stop_progressbar();
-                              Toast.makeText(MenuActivity.this,getResources().getString(R.string.report_loc_fail),Toast.LENGTH_SHORT).show();
+                              Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
 
                           }
                       }
-
         );
     }
 
+    public void logOut() {
+        GeneralUtils.initialize_progressbar(this);
+        Map<String, Object> postValues = new HashMap<>();
+
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("ipAddress", "");
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+
+        Call<ResponseModel> call = FinDotsApplication.getRestClient().getApiService().logOut(postValues);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                logOutNavigation();
+
+                if (response.isSuccess() & response.body().getData().size() > 0) {
+                    Toast.makeText(MenuActivity.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                logOutNavigation();
+
+            }
+        });
+
+    }
+
+    public void logOutNavigation() {
+        GeneralUtils.stop_progressbar();
+        stopTracking();
+        GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USERID);
+        Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
+        startActivity(intentLogout);
+        finish();
+    }
 }
