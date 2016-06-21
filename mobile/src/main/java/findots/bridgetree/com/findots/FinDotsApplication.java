@@ -37,7 +37,7 @@ public class FinDotsApplication extends MultiDexApplication {
         checkAndSetUserName();
 
         if (!retrieveLocationRequestData()) {
-            setLocationRequestData(LocationRequestData.FREQUENCY_LOW);
+            setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         }
         initializeDB();
     }

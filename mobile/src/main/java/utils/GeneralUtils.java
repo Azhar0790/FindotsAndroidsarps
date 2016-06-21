@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.preference.PreferenceManager;
@@ -28,6 +27,15 @@ import findots.bridgetree.com.findots.R;
  * Created by jpaulose on 6/15/2016.
  */
 public class GeneralUtils {
+
+    public static String DateTimeInUTC()
+    {
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        //Time in GMT
+        return dateFormatGmt.format(new Date());
+    }
 
     public static String DateTimeInGMT()
     {
@@ -146,13 +154,14 @@ public class GeneralUtils {
         return myAndroidDeviceinfo;
     }
 
-    public static int getAppVersion(Context context) {
-        int versionCode = -1;
+    public static String getAppVersion(Context context) {
+        String  versionCode="" ;
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             String versionName = packageInfo.versionName;
-            versionCode = packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
+
+            versionCode = Integer.toString(packageInfo.versionCode);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return versionCode;

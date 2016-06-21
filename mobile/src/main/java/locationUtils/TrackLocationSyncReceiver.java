@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import locationUtils.LocationModel.BackgroundLocData;
@@ -21,6 +22,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import utils.AppStringConstants;
+import utils.GeneralUtils;
 
 
 public class TrackLocationSyncReceiver extends BroadcastReceiver {
@@ -33,15 +36,14 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
         locations = dataHelper.getLocationsToSync();
         if(locations.size()>0) {
             BackgroundLocData bgData = new BackgroundLocData();
-            bgData.setDeviceID("1234");
-            bgData.setDeviceInfo("Android");
-            bgData.setAppVersion("2");
-            bgData.setUserID(2);
-            bgData.setDeviceTypeID(2);
+            bgData.setDeviceID(GeneralUtils.getUniqueDeviceId(context));
+            bgData.setDeviceInfo(GeneralUtils.getDeviceInfo());
+            bgData.setAppVersion(GeneralUtils.getAppVersion(context));
+            bgData.setUserID(GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID));
+            bgData.setDeviceTypeID(Constants.DEVICETYPEID);
             ArrayList<LocationSyncData> locSyncList = new ArrayList<LocationSyncData>();
 
             for (LocationData locData : locations) {
-                Log.d("jomy", "glocData.getLatitude() : " +locData.getLatitude());
                 LocationSyncData locationSyncData = new LocationSyncData();
                 locationSyncData.setLatitude(locData.getLatitude());
                 locationSyncData.setLongitude(locData.getLongitude());

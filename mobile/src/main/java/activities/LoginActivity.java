@@ -231,7 +231,5 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
         finish();
     }
 
-
-
 }
 
