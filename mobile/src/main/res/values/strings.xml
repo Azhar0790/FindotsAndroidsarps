@@ -63,11 +63,13 @@
         completions."
     </string>
 
+
     <!-- Strings related to Menu Screen -->
     <string name="report_loc_success">Your Location Informations are Updated</string>
     <string name="report_loc_fail">Unable to Update Your Location Information</string>
 
     <string-array name="menu_items">
+        <item>Tracking Me</item>
         <item>Destinations</item>
         <item>Report My Location</item>
         <item>Notifications</item>
@@ -75,7 +77,21 @@
         <item>Help</item>
         <item>Logout</item>
     </string-array>
+<<<<<<< .mine
 
     <string name="title_activity_maps">Map</string>
+=======
+
+
+>>>>>>> .theirs
+    <!-- Strings related to Account Settings -->
+    <string name="account_heading">Account Settings</string>
+    <string name="save_account">Save</string>
+    <string name="changepwd">Change Password</string>
+<<<<<<< .mine
+
+=======
+
+>>>>>>> .theirs
 
 </resources>

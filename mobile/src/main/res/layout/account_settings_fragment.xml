@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_accountHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/signup_text_marginTopBottom"
+            android:layout_marginTop="@dimen/signup_text_marginTopBottom"
+            android:text="@string/account_heading"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/signup_textSize"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_name"
+            style="@style/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edittext_height"
+            android:layout_marginTop="@dimen/register_edittexts_marginTop"
+            android:hint="@string/name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editText_company"
+            style="@style/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edittext_height"
+            android:layout_marginTop="@dimen/register_edittexts_marginTop"
+            android:hint="@string/company"
+            android:enabled="false"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/editText_emailID"
+            style="@style/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edittext_height"
+            android:layout_marginTop="@dimen/register_edittexts_marginTop"
+            android:hint="@string/emailid"
+            android:enabled="false"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/editText_mobileNo"
+            style="@style/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edittext_height"
+            android:layout_marginTop="@dimen/register_edittexts_marginTop"
+            android:hint="@string/mobileno"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/editText_password"
+            style="@style/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edittext_height"
+            android:layout_marginTop="@dimen/register_edittexts_marginTop"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+
+
+            <TextView
+                android:id="@+id/textView_agree"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/linearLayout_termsCondition_height"
+                android:layout_gravity="center_vertical"
+                android:text="@string/changepwd"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
+                android:textColor="@color/app_color"
+                android:textSize="@dimen/textView_forgotPassword_textSize"
+                android:textStyle="normal"/>
+
+
+
+        <Button
+            android:id="@+id/button_saveAccountSettings"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_button_height"
+            android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
+            android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
+            android:layout_marginTop="@dimen/button_createAccount_marginTop"
+            android:background="@drawable/selector_login"
+            android:text="@string/save_account"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_button_textSize" />
+    </LinearLayout>
+</ScrollView>
