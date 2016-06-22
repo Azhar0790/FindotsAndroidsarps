@@ -59,9 +59,19 @@
         completions."
     </string>
 
+    <!-- Strings related to Menu Screen -->
+    <string name="report_loc_success">Your Location Informations are Updated</string>
+    <string name="report_loc_fail">Unable to Update Your Location Information</string>
+
     <string-array name="menu_items">
         <item>Destinations</item>
+<<<<<<< .mine
         <item>Report Location</item>
+
+=======
+        <item>Report My Location</item>
+        <item>Notifications</item>
+>>>>>>> .theirs
         <item>Settings</item>
         <item>Help</item>
         <item>Logout</item>

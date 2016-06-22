@@ -16,5 +16,6 @@ public class RestURLs {
 
     public static final String TRACKING_LIST  = "";
     public static final String METHOD_LCATION_TRACKING  = "InsertLocations";
+    public static final String LOGOUT  = "Logout";
 
 }

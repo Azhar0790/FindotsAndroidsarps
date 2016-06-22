@@ -191,6 +191,12 @@ public class GeneralUtils {
 
     }
 
+    public static void removeSharedPreference(Context context,String prefkey)
+    {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        pref.edit().remove(prefkey).commit();
+    }
+
 
 
 }

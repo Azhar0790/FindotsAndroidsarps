@@ -9,7 +9,7 @@ public class Constants {
 
     public static final int TRACKING_ME = 1;
     public static final int DESTINATIONS = 2;
-    public static final int MESSAGES = 3;
+    public static final int TRACKLOCATION = 3;
     public static final int NOTIFICATIONS = 4;
     public static final int SETTINGS = 5;
     public static final int HELP = 6;
