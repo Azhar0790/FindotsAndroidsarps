@@ -63,6 +63,7 @@
                 android:gravity="center"
                 android:text="Checked out at 2.30pm"
                 android:textAllCaps="false"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 

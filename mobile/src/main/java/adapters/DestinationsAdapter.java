@@ -71,7 +71,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.destinations_inflater, null);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.destinations_inflater, parent, false);
         ViewHolder viewHolder = new ViewHolder(context, v);
         return viewHolder;
     }
