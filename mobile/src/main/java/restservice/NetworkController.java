@@ -2,10 +2,13 @@ package restservice;
 
 import java.util.Map;
 
+import locationUtils.LocationModel.BackgroundLocData;
+import locationUtils.LocationModel.LocationResponseData;
 import restcalls.Destinations.DestinationsModel;
 import restcalls.ForgotPassword.ForgotPasswordModel;
 import restcalls.Login.LoginModel;
 import restcalls.Register.RegisterModel;
+import restmodels.ResponseModel;
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.POST;
@@ -13,11 +16,6 @@ import retrofit.http.POST;
 /**
  * Created by parijathar on 6/6/2016.
  */
-import locationUtils.LocationModel.BackgroundLocData;
-import locationUtils.LocationModel.LocationResponseData;
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.POST;
 
 
 public interface NetworkController {
@@ -36,5 +34,8 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<LocationResponseData> getLogin(@Body BackgroundLocData bgData);
+
+    @POST(RestURLs.LOGOUT)
+    Call<ResponseModel> logOut(@Body Map<String, Object> request);
 
 }

@@ -69,7 +69,7 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                               @Override
                               public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
 
-
+                                  Log.d("jomy", "sucessLocBG " );
                                   if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
                                       dataHelper.markLocationsSynced(locations);
