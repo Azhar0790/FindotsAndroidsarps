@@ -1,0 +1,23 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=3C:21:FC:3C:93:5E:2D:C9:81:F6:76:79:F1:19:89:30:E8:9C:4B:6F%3Bfindots.bridgetree.com.findots
+
+    You can also add your credentials to an existing key, using this line:
+    3C:21:FC:3C:93:5E:2D:C9:81:F6:76:79:F1:19:89:30:E8:9C:4B:6F;findots.bridgetree.com.findots
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <!--
+    It means Android Studio template engine will preserve this line when a new Google Maps Activity is created, so you don't loose your key.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve"
+        translatable="false">AIzaSyDpT618KCJNaGcWck66hfKTwSVhuGggENM</string>
+</resources>
