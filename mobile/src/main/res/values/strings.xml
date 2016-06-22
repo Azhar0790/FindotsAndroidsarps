@@ -22,6 +22,8 @@
     <string name="send">Send</string>
     <string name="data_error">Data Error.</string>
     <string name="sucessful_registration">Successfully Registered. Please Login with your credentials.</string>
+    <string name="bd"><b>Bridgetree Research Services Pvt Ltd.</b>\nSecond Floor, Panchajanya Towers,
+        \n1022/33, Dr Rajkumar Road, \n4th Block, Rajaji Nagar,\nBangalore, Karnataka 560010.</string>
 
     <!-- Login -->
     <string name="username">Username</string>
@@ -57,14 +59,12 @@
         completions."
     </string>
 
-
     <string-array name="menu_items">
-        <item>Tracking Me</item>
         <item>Destinations</item>
-        <item>Messages</item>
-        <item>Notifications</item>
+        <item>Report Location</item>
         <item>Settings</item>
         <item>Help</item>
         <item>Logout</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>

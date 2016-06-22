@@ -1,5 +1,6 @@
 package fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
+import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,7 +55,8 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     @Override
     public void onDestinationSelected(int itemPosition) {
-
+        Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
+        startActivity(intentDetailDestination);
     }
 
     @Override
