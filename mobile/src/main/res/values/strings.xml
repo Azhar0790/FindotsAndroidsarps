@@ -71,4 +71,11 @@
         <item>Help</item>
         <item>Logout</item>
     </string-array>
+
+
+    <!-- Strings related to Account Settings -->
+    <string name="account_heading">Account Settings</string>
+    <string name="save_account">Save</string>
+    <string name="changepwd">Change Password</string>
+
 </resources>

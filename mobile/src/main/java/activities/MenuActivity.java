@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
+import fragments.Account_Settings;
 import fragments.DestinationFragment;
 import interfaces.IMenuItems;
 import locationUtils.LocationModel.BackgroundLocData;
@@ -239,8 +240,15 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.SETTINGS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.settings);
+                mTextView_heading.setText(R.string.destinations);
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
+
+                FragmentTransaction accountTransaction = getSupportFragmentManager().beginTransaction();
+                accountTransaction.replace(R.id.FrameLayout_content, Account_Settings.newInstance());
+                accountTransaction.commit();
+
+                findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);
+
 
                 break;
 
@@ -370,7 +378,8 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         BackgroundLocData bgData = new BackgroundLocData();
         bgData.setDeviceID(GeneralUtils.getUniqueDeviceId(this));
         bgData.setDeviceInfo(GeneralUtils.getDeviceInfo());
-        bgData.setAppVersion(GeneralUtils.getAppVersion(this));
+//        bgData.setAppVersion(GeneralUtils.getAppVersion(this));
+        bgData.setAppVersion("5.0");
         bgData.setUserID(GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
         bgData.setDeviceTypeID(Constants.DEVICETYPEID);
         ArrayList<LocationSyncData> locSyncList = new ArrayList<LocationSyncData>();
