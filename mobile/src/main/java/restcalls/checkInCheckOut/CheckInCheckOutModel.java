@@ -1,20 +1,20 @@
-package restcalls.register;
+package restcalls.checkInCheckOut;
 
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
 /**
- * Created by parijathar on 6/17/2016.
+ * Created by parijathar on 6/22/2016.
  */
 @Parcel
-public class RegisterModel {
+public class CheckInCheckOutModel {
     private String message;
 
     private String errorCode;
 
     @SerializedName("data")
-    private RegisterData[] mRegisterData;
+    private CheckInCheckOutData[] mCheckInData;
 
     public String getMessage ()
     {
@@ -36,19 +36,19 @@ public class RegisterModel {
         this.errorCode = errorCode;
     }
 
-    public RegisterData[] getRegisterData ()
+    public CheckInCheckOutData[] getCheckInData ()
     {
-        return mRegisterData;
+        return mCheckInData;
     }
 
-    public void setRegisterData (RegisterData[] mRegisterData)
+    public void setCheckInData (CheckInCheckOutData[] mCheckInData)
     {
-        this.mRegisterData = mRegisterData;
+        this.mCheckInData = mCheckInData;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [message = "+message+", errorCode = "+errorCode+", mRegisterData = "+mRegisterData+"]";
+        return "ClassPojo [message = "+message+", errorCode = "+errorCode+", mCheckInData = "+mCheckInData+"]";
     }
 }

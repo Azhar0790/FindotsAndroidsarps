@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,13 @@ import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
-import restcalls.Destinations.DestinationsModel;
-import restcalls.Destinations.GetDestinationsRestCall;
-import restcalls.Destinations.IGetDestinations;
+import restcalls.destinations.DestinationsModel;
+import restcalls.destinations.GetDestinationsRestCall;
+import restcalls.destinations.IGetDestinations;
+import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -61,10 +64,15 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), destinationsModel.getDestinationData());
-        destinationsAdapter.delegate = DestinationFragment.this;
-        mRecyclerView_destinations.setAdapter(destinationsAdapter);
-        destinationsAdapter.notifyDataSetChanged();
+        if (destinationsModel.getErrorCode() == 2) {
+            GeneralUtils.createAlertDialog(getActivity(), destinationsModel.getMessage());
+        } else if (destinationsModel.getDestinationData() != null) {
+            Log.i(Constants.TAG, "onGetDestinationSuccess: size" + destinationsModel.getDestinationData().length);
+            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), destinationsModel.getDestinationData());
+            destinationsAdapter.delegate = DestinationFragment.this;
+            mRecyclerView_destinations.setAdapter(destinationsAdapter);
+            destinationsAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

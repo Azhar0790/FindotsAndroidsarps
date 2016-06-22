@@ -1,4 +1,4 @@
-package restcalls.Destinations;
+package restcalls.destinations;
 
 import org.parceler.Parcel;
 
@@ -7,42 +7,106 @@ import org.parceler.Parcel;
  */
 @Parcel
 public class DestinationData {
-    private String destinationID;
+    private int destinationID;
 
-    private String longitude;
+    private String checkedOutReportedDate;
 
-    private String latitude;
+    private String address;
+
+    private String assigndestinationTime;
+
+    private String name;
+
+    private boolean checkedIn;
+
+    private String checkedInReportedDate;
+
+    private double destinationLongitude;
 
     private String destinationName;
 
-    public String getDestinationID ()
+    private double destinationLatitude;
+
+    private boolean checkedOut;
+
+    public int getDestinationID ()
     {
         return destinationID;
     }
 
-    public void setDestinationID (String destinationID)
+    public void setDestinationID (int destinationID)
     {
         this.destinationID = destinationID;
     }
 
-    public String getLongitude ()
+    public String getCheckedOutReportedDate ()
     {
-        return longitude;
+        return checkedOutReportedDate;
     }
 
-    public void setLongitude (String longitude)
+    public void setCheckedOutReportedDate (String checkedOutReportedDate)
     {
-        this.longitude = longitude;
+        this.checkedOutReportedDate = checkedOutReportedDate;
     }
 
-    public String getLatitude ()
+    public String getAddress ()
     {
-        return latitude;
+        return address;
     }
 
-    public void setLatitude (String latitude)
+    public void setAddress (String address)
     {
-        this.latitude = latitude;
+        this.address = address;
+    }
+
+    public String getAssigndestinationTime ()
+    {
+        return assigndestinationTime;
+    }
+
+    public void setAssigndestinationTime (String assigndestinationTime)
+    {
+        this.assigndestinationTime = assigndestinationTime;
+    }
+
+    public String getName ()
+    {
+        return name;
+    }
+
+    public void setName (String name)
+    {
+        this.name = name;
+    }
+
+    public boolean getCheckedIn ()
+    {
+        return checkedIn;
+    }
+
+    public void setCheckedIn (boolean checkedIn)
+    {
+        this.checkedIn = checkedIn;
+    }
+
+    public String getCheckedInReportedDate ()
+    {
+        return checkedInReportedDate;
+    }
+
+    public void setCheckedInReportedDate (String checkedInReportedDate)
+    {
+        this.checkedInReportedDate = checkedInReportedDate;
+    }
+
+    public double getDestinationLongitude ()
+    {
+        return destinationLongitude;
+    }
+
+    public void setDestinationLongitude (double destinationLongitude)
+    {
+        this.destinationLongitude = destinationLongitude;
     }
 
     public String getDestinationName ()
@@ -55,9 +119,29 @@ public class DestinationData {
         this.destinationName = destinationName;
     }
 
+    public double getDestinationLatitude ()
+    {
+        return destinationLatitude;
+    }
+
+    public void setDestinationLatitude (double destinationLatitude)
+    {
+        this.destinationLatitude = destinationLatitude;
+    }
+
+    public boolean getCheckedOut ()
+    {
+        return checkedOut;
+    }
+
+    public void setCheckedOut (boolean checkedOut)
+    {
+        this.checkedOut = checkedOut;
+    }
+
     @Override
     public String toString()
     {
-        return "ClassPojo [destinationID = "+destinationID+", longitude = "+longitude+", latitude = "+latitude+", destinationName = "+destinationName+"]";
+        return "ClassPojo [destinationID = "+destinationID+", checkedOutReportedDate = "+checkedOutReportedDate+", address = "+address+", assigndestinationTime = "+assigndestinationTime+", name = "+name+", checkedIn = "+checkedIn+", checkedInReportedDate = "+checkedInReportedDate+", destinationLongitude = "+destinationLongitude+", destinationName = "+destinationName+", destinationLatitude = "+destinationLatitude+", checkedOut = "+checkedOut+"]";
     }
 }

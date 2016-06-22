@@ -1,10 +1,9 @@
 package adapters;
 
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +12,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
-import restcalls.Destinations.DestinationData;
+import restcalls.destinations.DestinationData;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -28,6 +25,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     Context context = null;
     DestinationData[] destinationDatas = null;
+    final String assignedBy = "Assigned by ";
 
     public DestinationsAdapter(Context context, DestinationData[] destinationDatas) {
         this.context = context;
@@ -73,8 +71,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.destinations_inflater, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.destinations_inflater, null);
         ViewHolder viewHolder = new ViewHolder(context, v);
         return viewHolder;
     }
@@ -82,13 +79,32 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.mButton_checkIncheckOut.setCompoundDrawables(
-                scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
-                null, null, null);
         holder.mTextView_destinationAssignedBy.setCompoundDrawables(
                 scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
                 null, null, null);
+
+        holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName());
         holder.mTextView_destinationName.setText(destinationDatas[position].getDestinationName());
+
+        boolean isCheckIn = destinationDatas[position].getCheckedIn();
+        boolean isCheckOut = destinationDatas[position].getCheckedOut();
+
+        if (!isCheckIn) {
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkin));
+            holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.green));
+        } else if (!isCheckOut) {
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkout);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
+            holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
+        } else {
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at)+" 5.15pm");
+            holder.mButton_checkIncheckOut.setCompoundDrawables(
+                    scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
+                    null, null, null);
+            holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
+        }
     }
 
 

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,13 +61,15 @@ public class DetailDestinationActivity extends AppCompatActivity implements OnMa
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
 
+        mTextView_address.setMovementMethod(new ScrollingMovementMethod());
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        LatLng latLng = new LatLng(34, 67);
+        LatLng latLng = new LatLng(34, 0);
         this.googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker in Sydney"));
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }

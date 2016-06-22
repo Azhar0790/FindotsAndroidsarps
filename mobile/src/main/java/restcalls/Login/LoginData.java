@@ -1,4 +1,4 @@
-package restcalls.Login;
+package restcalls.login;
 
 import org.parceler.Parcel;
 

@@ -1,4 +1,4 @@
-package restcalls.ForgotPassword;
+package restcalls.forgotPassword;
 
 /**
  * Created by parijathar on 6/17/2016.

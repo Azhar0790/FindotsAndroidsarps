@@ -1,4 +1,4 @@
-package restcalls.ForgotPassword;
+package restcalls.forgotPassword;
 
 import android.content.Context;
 

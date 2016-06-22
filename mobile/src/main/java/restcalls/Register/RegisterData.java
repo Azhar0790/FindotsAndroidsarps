@@ -1,4 +1,4 @@
-package restcalls.Register;
+package restcalls.register;
 
 import org.parceler.Parcel;
 

@@ -1,4 +1,4 @@
-package restcalls.Destinations;
+package restcalls.destinations;
 
 /**
  * Created by parijathar on 6/20/2016.

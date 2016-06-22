@@ -1,4 +1,4 @@
-package restcalls.Login;
+package restcalls.login;
 
 import com.google.gson.annotations.SerializedName;
 

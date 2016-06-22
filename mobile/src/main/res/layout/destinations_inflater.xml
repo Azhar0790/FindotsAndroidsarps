@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
     <LinearLayout
         android:id="@+id/LinearLayout_destination"
@@ -58,7 +59,6 @@
                 android:layout_height="54dp"
                 android:layout_gravity="center"
                 android:background="@null"
-                android:drawableLeft="@drawable/checkedout_tick"
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:text="Checked out at 2.30pm"

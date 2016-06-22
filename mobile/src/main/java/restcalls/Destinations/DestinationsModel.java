@@ -1,4 +1,4 @@
-package restcalls.Destinations;
+package restcalls.destinations;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +11,7 @@ import org.parceler.Parcel;
 public class DestinationsModel {
     private String message;
 
-    private String errorCode;
+    private int errorCode;
 
     @SerializedName("data")
     private DestinationData[] mDestinationData;
@@ -26,12 +26,12 @@ public class DestinationsModel {
         this.message = message;
     }
 
-    public String getErrorCode ()
+    public int getErrorCode ()
     {
         return errorCode;
     }
 
-    public void setErrorCode (String errorCode)
+    public void setErrorCode (int errorCode)
     {
         this.errorCode = errorCode;
     }

@@ -1,4 +1,4 @@
-package restcalls.Register;
+package restcalls.register;
 
 /**
  * Created by parijathar on 6/17/2016.

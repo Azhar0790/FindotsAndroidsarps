@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">FinDots</string>
 
-
     <string name="logout">Logout</string>
     <string name="openDrawer">open drawer</string>
     <string name="closeDrawer">close drawer</string>
@@ -48,6 +47,11 @@
     <string name="create_account">Create Account</string>
     <string name="please_agree">Please agree the terms and conditions.</string>
 
+    <!-- Destinations -->
+    <string name="checkin">Check In</string>
+    <string name="checkout">Check Out</string>
+    <string name="checkedout_at">Checked Out at</string>
+
     <!-- Strings related to login -->
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -65,16 +69,13 @@
 
     <string-array name="menu_items">
         <item>Destinations</item>
-<<<<<<< .mine
-        <item>Report Location</item>
-
-=======
         <item>Report My Location</item>
         <item>Notifications</item>
->>>>>>> .theirs
         <item>Settings</item>
         <item>Help</item>
         <item>Logout</item>
     </string-array>
+
     <string name="title_activity_maps">Map</string>
+
 </resources>

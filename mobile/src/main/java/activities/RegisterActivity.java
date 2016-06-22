@@ -1,29 +1,21 @@
 package activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +23,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import findots.bridgetree.com.findots.R;
-import restcalls.Register.IRegisterRestCall;
-import restcalls.Register.RegisterModel;
-import restcalls.Register.RegisterRestCall;
+import restcalls.register.IRegisterRestCall;
+import restcalls.register.RegisterModel;
+import restcalls.register.RegisterRestCall;
 import utils.AddTextWatcher;
 import utils.GeneralUtils;
 
