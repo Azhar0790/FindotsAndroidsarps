@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Window;
 
 import java.text.SimpleDateFormat;
@@ -51,6 +52,7 @@ public class GeneralUtils {
         List<Address> addresses;
         geocoder = new Geocoder(context, Locale.getDefault());
         String address="";
+        Log.d("jomy", "addr111 : ");
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
@@ -74,6 +76,8 @@ public class GeneralUtils {
                 address =address+" "+postalCode;
         }
         catch (Exception e){}
+
+        Log.d("jomy", "addr2 : "+address);
         return address;
     }
 
