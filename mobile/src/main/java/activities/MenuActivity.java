@@ -386,7 +386,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         LocationSyncData locationSyncData = new LocationSyncData();
         locationSyncData.setLatitude(currentLoc.getLatitude());
         locationSyncData.setLongitude(currentLoc.getLongitude());
-        locationSyncData.setAddress(GeneralUtils.LatLongToAddress(currentLoc.getLatitude(), currentLoc.getLongitude(), this));
         locationSyncData.setReportedDate(GeneralUtils.DateTimeInUTC());
         locSyncList.add(locationSyncData);
 

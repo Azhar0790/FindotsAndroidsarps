@@ -47,7 +47,6 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                 LocationSyncData locationSyncData = new LocationSyncData();
                 locationSyncData.setLatitude(locData.getLatitude());
                 locationSyncData.setLongitude(locData.getLongitude());
-                locationSyncData.setAddress(locData.getLocationAddress());
                 locationSyncData.setReportedDate(locData.getTimestamp());
                 locSyncList.add(locationSyncData);
             }

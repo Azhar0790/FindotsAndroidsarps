@@ -49,5 +49,8 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_ACCOUNTINFO)
     Call<GetAccountInfoModel> getAccountInfo(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_SAVEACCOUNTINFO)
+    Call<ResponseModel> saveAccountInfo(@Body Map<String, Object> request);
+
 
 }

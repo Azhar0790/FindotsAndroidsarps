@@ -11,15 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import findots.bridgetree.com.findots.Constants;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import restcalls.accountSettings.GetAccountInfoModel;
 import restcalls.accountSettings.GetAccountInfoRestCall;
 import restcalls.accountSettings.IGetAccountInfoCallBack;
+import restmodels.ResponseModel;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+import utils.AppStringConstants;
+import utils.GeneralUtils;
 
 /**
  * Created by jpaulose on 6/22/2016.
@@ -27,6 +41,10 @@ import restcalls.accountSettings.IGetAccountInfoCallBack;
 public class Account_Settings extends Fragment implements IGetAccountInfoCallBack {
 
     GetAccountInfoModel accountInfoModel;
+
+    @Bind(R.id.account_setting_parentlay)
+    LinearLayout mParentLay;
+
     @Bind(R.id.editText_name)
     EditText mEditText_name;
 
@@ -60,7 +78,7 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
 
         ButterKnife.bind(this, rootView);
         setUIElementsProperty();
-
+        mParentLay.setVisibility(View.GONE);
         GetAccountInfoRestCall accountInfoRestCall = new GetAccountInfoRestCall(getActivity());
         accountInfoRestCall.delegate = Account_Settings.this;
         accountInfoRestCall.callGetAccountInfoService();
@@ -94,8 +112,62 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         mEditText_company.setText("" +accountInfoModel.getData().get(0).getCompany());
         mEditText_emailID.setText("" +accountInfoModel.getData().get(0).getEmail());
         mEditText_mobileNo.setText("" +accountInfoModel.getData().get(0).getMobileNumber());
+        mParentLay.setVisibility(View.VISIBLE);
     }
 
+    @OnClick(R.id.button_saveAccountSettings)
+    public void saveAccountSettingInfo()
+    {
+
+
+        if(validateEnteredValues()) {
+            GeneralUtils.initialize_progressbar(getActivity());
+            Call<ResponseModel> login = FinDotsApplication.getRestClient().getApiService().saveAccountInfo(setAccountInfoRequest());
+
+            login.enqueue(new Callback<ResponseModel>() {
+
+
+                              @Override
+                              public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                                  GeneralUtils.stop_progressbar();
+
+                                  if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                                      Toast.makeText(getActivity(), response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+
+                                  } else
+                                      Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+
+                              }
+
+                              @Override
+                              public void onFailure(Throwable t) {
+                                  GeneralUtils.stop_progressbar();
+                                  Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+
+                              }
+                          }
+            );
+        }
+    }
+
+
+    private Map<String, Object> setAccountInfoRequest() {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("Name", GeneralUtils.getAppVersion(getActivity()));
+        postValues.put("mobileNumber", GeneralUtils.getAppVersion(getActivity()));
+        postValues.put("city", "");
+        postValues.put("base64string", "");
+        postValues.put("pinCode", "");
+        postValues.put("address", "");
+        postValues.put("appVersion", GeneralUtils.getAppVersion(getActivity()));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
+    }
     /**
      * validating the entered values for Saving Account Setting
      */
@@ -118,6 +190,10 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         this.accountInfoModel = accountInfoModel;
         if(accountInfoModel.getData().size()>0)
             setAccountInfoText();
+        else
+        {
+            Toast.makeText(getActivity(), accountInfoModel.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

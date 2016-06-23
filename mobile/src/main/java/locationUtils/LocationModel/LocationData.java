@@ -15,18 +15,15 @@ public class LocationData extends Model {
     private double longitude;
 
 
-    @Column(name = Data.LocationData.COLUMN_ADDRESS)
-    private String locationAddress;
     @Column(name = Data.LocationData.COLUMN_TIMESTAMP)
     private String timestamp;
     @Column(name = Data.LocationData.COLUMN_SYNCED)
     private boolean synced;
 
-    public static LocationData getInstance(double latitude, double longitude,String locAddress,String timeGmt) {
+    public static LocationData getInstance(double latitude, double longitude,String timeGmt) {
         LocationData data = new LocationData();
         data.setLatitude(latitude);
         data.setLongitude(longitude);
-        data.setLocationAddress(locAddress);
         data.setTimestamp(timeGmt);
         return data;
     }
@@ -62,15 +59,6 @@ public class LocationData extends Model {
     public void setSynced(boolean synced) {
         this.synced = synced;
     }
-
-    public String getLocationAddress() {
-        return locationAddress;
-    }
-
-    public void setLocationAddress(String locationAddress) {
-        this.locationAddress = locationAddress;
-    }
-
 
 
     @Override

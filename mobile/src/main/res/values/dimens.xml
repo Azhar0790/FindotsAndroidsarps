@@ -80,5 +80,6 @@
     <!-- Account Settings -->
     <dimen name="firsttext_topMargin">50dp</dimen>
     <dimen name="button_saveAccount_marginTop">30dp</dimen>
+    <dimen name="accntSetting_edtTextSize">20dp</dimen>
 
 </resources>

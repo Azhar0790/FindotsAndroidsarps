@@ -6,10 +6,11 @@
     android:background="@color/divider_color">
 
     <LinearLayout
+        android:id="@+id/account_setting_parentlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
 
@@ -20,7 +21,8 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/firsttext_topMargin"
             android:hint="@string/name"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="@dimen/accntSetting_edtTextSize"/>
 
         <EditText
             android:id="@+id/editText_company"
@@ -30,7 +32,9 @@
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/company"
             android:enabled="false"
-            android:inputType="text" />
+            android:textColor="@color/grey"
+            android:inputType="text"
+            android:textSize="@dimen/accntSetting_edtTextSize"/>
 
         <EditText
             android:id="@+id/editText_emailID"
@@ -40,7 +44,9 @@
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/emailid"
             android:enabled="false"
-            android:inputType="textEmailAddress" />
+            android:textColor="@color/grey"
+            android:inputType="textEmailAddress"
+            android:textSize="@dimen/accntSetting_edtTextSize"/>
 
         <EditText
             android:id="@+id/editText_mobileNo"
@@ -49,7 +55,8 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/mobileno"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textSize="@dimen/accntSetting_edtTextSize"/>
 
 
 
@@ -68,7 +75,8 @@
             android:text="@string/save_account"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/login_button_textSize" />
+            android:textSize="@dimen/login_button_textSize"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/textView_changePwd"

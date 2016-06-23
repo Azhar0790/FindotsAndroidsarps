@@ -85,5 +85,6 @@
     <string name="account_heading">Account Settings</string>
     <string name="save_account">Save</string>
     <string name="changepwd"><u>Change Password</u></string>
-
+    <string name="account_updateInfo">Your Account settings Updated</string>
+    <string name="account_updateInfoError">Unable to Update Account settings</string>
 </resources>
