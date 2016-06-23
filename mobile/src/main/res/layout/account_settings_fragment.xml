@@ -22,7 +22,9 @@
             android:layout_marginTop="@dimen/firsttext_topMargin"
             android:hint="@string/name"
             android:inputType="text"
-            android:textSize="@dimen/accntSetting_edtTextSize"/>
+            android:textSize="@dimen/accntSetting_edtTextSize"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
         <EditText
             android:id="@+id/editText_company"
@@ -34,7 +36,9 @@
             android:enabled="false"
             android:textColor="@color/grey"
             android:inputType="text"
-            android:textSize="@dimen/accntSetting_edtTextSize"/>
+            android:textSize="@dimen/accntSetting_edtTextSize"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
         <EditText
             android:id="@+id/editText_emailID"
@@ -46,7 +50,9 @@
             android:enabled="false"
             android:textColor="@color/grey"
             android:inputType="textEmailAddress"
-            android:textSize="@dimen/accntSetting_edtTextSize"/>
+            android:textSize="@dimen/accntSetting_edtTextSize"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
         <EditText
             android:id="@+id/editText_mobileNo"
@@ -56,7 +62,9 @@
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/mobileno"
             android:inputType="number"
-            android:textSize="@dimen/accntSetting_edtTextSize"/>
+            android:textSize="@dimen/accntSetting_edtTextSize"
+            android:ellipsize="end"
+            android:maxLines="1"/>
 
 
 
@@ -75,8 +83,7 @@
             android:text="@string/save_account"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/login_button_textSize"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/login_button_textSize"/>
 
         <TextView
             android:id="@+id/textView_changePwd"
