@@ -240,7 +240,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.SETTINGS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.destinations);
+                mTextView_heading.setText(R.string.account_heading);
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 FragmentTransaction accountTransaction = getSupportFragmentManager().beginTransaction();

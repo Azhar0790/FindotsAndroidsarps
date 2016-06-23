@@ -84,6 +84,6 @@
     <!-- Strings related to Account Settings -->
     <string name="account_heading">Account Settings</string>
     <string name="save_account">Save</string>
-    <string name="changepwd">Change Password</string>
+    <string name="changepwd"><u>Change Password</u></string>
 
 </resources>

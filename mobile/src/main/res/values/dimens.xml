@@ -77,4 +77,8 @@
     <dimen name="textView_assignedBy_height">40dp</dimen>
     <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
 
+    <!-- Account Settings -->
+    <dimen name="firsttext_topMargin">50dp</dimen>
+    <dimen name="button_saveAccount_marginTop">30dp</dimen>
+
 </resources>
