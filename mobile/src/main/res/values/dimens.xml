@@ -6,6 +6,7 @@
     <!-- Tool Bar -->
     <dimen name="tool_bar_paddingTop">0dp</dimen>
     <dimen name="textView_heading_textSize">20sp</dimen>
+    <dimen name="imageView_back_marginLeft">10dp</dimen>
 
     <!-- Drawer Layout -->
     <dimen name="drawer_layout_elevation">4dp</dimen>

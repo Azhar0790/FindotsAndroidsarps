@@ -20,8 +20,6 @@ public class DestinationData {
 
     private String name;
 
-    private boolean checkedIn;
-
     private String checkedInReportedDate;
 
     private double destinationLongitude;
@@ -30,7 +28,35 @@ public class DestinationData {
 
     private double destinationLatitude;
 
+    private int checkInRadius;
+
+    private boolean checkedIn;
+
     private boolean checkedOut;
+
+    public boolean isCheckedIn() {
+        return checkedIn;
+    }
+
+    public void setCheckedIn(boolean checkedIn) {
+        this.checkedIn = checkedIn;
+    }
+
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    public void setCheckedOut(boolean checkedOut) {
+        this.checkedOut = checkedOut;
+    }
+
+    public int getCheckInRadius() {
+        return checkInRadius;
+    }
+
+    public void setCheckInRadius(int checkInRadius) {
+        this.checkInRadius = checkInRadius;
+    }
 
     public int getAssignDestinationID() {
         return assignDestinationID;
@@ -80,14 +106,6 @@ public class DestinationData {
         this.name = name;
     }
 
-    public boolean getCheckedIn() {
-        return checkedIn;
-    }
-
-    public void setCheckedIn(boolean checkedIn) {
-        this.checkedIn = checkedIn;
-    }
-
     public String getCheckedInReportedDate() {
         return checkedInReportedDate;
     }
@@ -120,16 +138,8 @@ public class DestinationData {
         this.destinationLatitude = destinationLatitude;
     }
 
-    public boolean getCheckedOut() {
-        return checkedOut;
-    }
-
-    public void setCheckedOut(boolean checkedOut) {
-        this.checkedOut = checkedOut;
-    }
-
     @Override
     public String toString() {
-        return "ClassPojo [destinationID = " + destinationID + ", checkedOutReportedDate = " + checkedOutReportedDate + ", address = " + address + ", assigndestinationTime = " + assigndestinationTime + ", name = " + name + ", checkedIn = " + checkedIn + ", checkedInReportedDate = " + checkedInReportedDate + ", destinationLongitude = " + destinationLongitude + ", destinationName = " + destinationName + ", destinationLatitude = " + destinationLatitude + ", checkedOut = " + checkedOut + "]";
+        return "ClassPojo [destinationID = " + destinationID + ", checkedOutReportedDate = " + checkedOutReportedDate + ", address = " + address + ", assigndestinationTime = " + assigndestinationTime + ", name = " + name + ", checkedIn = " + ", checkedInReportedDate = " + checkedInReportedDate + ", destinationLongitude = " + destinationLongitude + ", destinationName = " + destinationName + ", destinationLatitude = " + destinationLatitude + ", checkedOut = "  + "]";
     }
 }

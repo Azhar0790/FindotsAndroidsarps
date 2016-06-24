@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.preference.PreferenceManager;
@@ -13,6 +15,10 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -201,6 +207,41 @@ public class GeneralUtils {
         pref.edit().remove(prefkey).commit();
     }
 
+    /**
+     *  get Checked Out Time
+     * @param date
+     */
+    final static String ANTE_MERIDIAN = "am";
+    final static String POST_MERIDIAN = "pm";
 
+    public static String getCheckedOutTime(String date) {
+        String checkedOutTime = null;
 
+        if (date.length() != 0) {
+            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
+            DateTime startTime = fmt.parseDateTime(date);
+
+            int hour = startTime.getHourOfDay();
+            int minute = startTime.getMinuteOfHour();
+            String meridian = (hour > 12)? POST_MERIDIAN : ANTE_MERIDIAN;
+
+            checkedOutTime = hour+"."+minute+meridian;
+        } else {
+            checkedOutTime = "";
+        }
+
+        return checkedOutTime;
+    }
+
+    public static Drawable scaleDrawable(Drawable drawable, int width, int height) {
+
+        int wi = drawable.getIntrinsicWidth();
+        int hi = drawable.getIntrinsicHeight();
+        int dimDiff = Math.abs(wi - width) - Math.abs(hi - height);
+        float scale = (dimDiff > 0) ? width / (float)wi : height /
+                (float)hi;
+        Rect bounds = new Rect(0, 0, (int)(scale * wi), (int)(scale * hi));
+        drawable.setBounds(bounds);
+        return drawable;
+    }
 }
