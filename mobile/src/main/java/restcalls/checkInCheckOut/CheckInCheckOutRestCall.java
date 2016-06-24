@@ -1,6 +1,8 @@
 package restcalls.checkInCheckOut;
 
 import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -71,6 +73,17 @@ public class CheckInCheckOutRestCall {
 
     private Map<String, Object> getDestinationsRequest(int assignedDestinationID) {
 
+        /**
+         *   fetch current lat and lng
+         */
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
+        /**
+         *   fetching current time in UTC format
+         */
         DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
         DateTime dateTime = new DateTime();
         String reportedTime = dateTime.toString(fmt1);
@@ -84,6 +97,8 @@ public class CheckInCheckOutRestCall {
         Map<String, Object> checkInValues = new HashMap<>();
         checkInValues.put("assignDestinationID", assignedDestinationID);
         checkInValues.put("reportedTime", reportedTime);
+        checkInValues.put("checkedInOutLatitude", currentLatitude);
+        checkInValues.put("checkedInOutLongitude", currentLongitude);
 
         list.add(checkInValues);
 

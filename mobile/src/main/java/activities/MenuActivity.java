@@ -310,7 +310,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("jomy", "onConnected");
+//        Log.d("jomy", "onConnected");
         startTrackLocationService();
     }
 

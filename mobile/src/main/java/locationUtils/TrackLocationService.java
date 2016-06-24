@@ -85,8 +85,8 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this,"lati :"+location.getLongitude(),Toast.LENGTH_SHORT).show();
-        Log.d("jomy", "New Change Lati : "+ location.getLatitude()+" Longi : "+location.getLongitude());
+//        Toast.makeText(this,"lati :"+location.getLongitude(),Toast.LENGTH_SHORT).show();
+//        Log.d("jomy", "New Change Lati : "+ location.getLatitude()+" Longi : "+location.getLongitude());
         if (app.getStartLocation() == null) {
             app.setStartLocation(location);
         }

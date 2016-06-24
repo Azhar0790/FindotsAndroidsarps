@@ -1,14 +1,17 @@
 package activities;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,30 +27,40 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.DecimalFormat;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import findots.bridgetree.com.findots.R;
+import fragments.DestinationFragment;
+import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
+import restcalls.checkInCheckOut.ICheckInCheckOut;
+import restcalls.destinations.DestinationData;
+import restcalls.destinations.DestinationsModel;
+import restcalls.destinations.GetDestinationsRestCall;
+import restcalls.destinations.IGetDestinations;
 import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/21/2016.
  */
 public class DetailDestinationActivity extends AppCompatActivity implements
-        OnMapReadyCallback,
-        LocationListener,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks{
+        OnMapReadyCallback, ICheckInCheckOut, IGetDestinations {
 
     @Bind(R.id.TextView_map_km)
     TextView mTextView_map_km;
@@ -69,15 +82,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     Toolbar mToolbar = null;
 
-    GoogleApiClient googleApiClient = null;
     GoogleMap mGoogleMap = null;
     Circle mCircle = null;
     LatLng latLng = null;
-    LocationRequest mLocationRequest = null;
-    Location currentLocation = null;
-
-    private static final long INTERVAL = 1000 * 10;
-    private static final long FASTEST_INTERVAL = 1000 * 5;
 
     Bundle bundle = null;
 
@@ -93,10 +100,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_destination);
 
-        if (!isGooglePlayServicesAvailable()) {
-            finish();
-        }
-
         ButterKnife.bind(this);
 
         actionBarSettings();
@@ -110,8 +113,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
 
-        createLocationRequest();
-        setGoogleAPiClient();
     }
 
 
@@ -167,6 +168,20 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     null, null, null);
             mButton_checkIncheckOut.setTextColor(Color.WHITE);
         }
+
+        mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDeviceEnteredWithinDestinationRadius(true);
+            }
+        });
+
+        mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isDeviceEnteredWithinDestinationRadius(true);
+            }
+        });
     }
 
 
@@ -183,35 +198,46 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
 
         mGoogleMap.addMarker(markerOptions);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.10);
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), (width - 300) , (height - 300) , padding));
         googleMapSettings();
+    }
+
+
+    public LatLngBounds getCenterCoordinates() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(destinationLatitude, destinationLongitude));
+        builder.include(new LatLng(currentLatitude, currentLongitude));
+
+        LatLngBounds bounds = builder.build();
+        return bounds;
     }
 
     public void googleMapSettings() {
         mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
         mCircle = mGoogleMap.addCircle(drawCircleOnMap());
+        isDeviceEnteredWithinDestinationRadius(false);
     }
 
     public CircleOptions drawCircleOnMap() {
         return new CircleOptions()
         .center(latLng)
         .radius(500)
-        .strokeColor(getResources().getColor(R.color.app_color))
-        .fillColor(getResources().getColor(R.color.app_color_25))
+        .strokeColor(Color.TRANSPARENT)
+        .fillColor(getResources().getColor(R.color.app_color_10))
         .strokeWidth(STROKE_WIDTH);
-    }
-
-    public void setGoogleAPiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
     }
 
     public void actionBarSettings() {
@@ -239,60 +265,84 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        googleApiClient.connect();
-    }
+    public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut) {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        googleApiClient.disconnect();
-    }
+        float[] distance = new float[2];
 
-    public boolean isGooglePlayServicesAvailable() {
-        int status = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(DetailDestinationActivity.this);
-        if (ConnectionResult.SUCCESS == status) {
-            return true;
+        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
+
+        if (distance[0] > mCircle.getRadius()) {
+            /**
+             *   Outside the Radius
+             */
+            String kiloMeters = new DecimalFormat("0").format(distance[0]/1000);
+            mTextView_map_km.setText(kiloMeters+" kms");
+
+            if (requestForCheckInCheckOut) {
+                GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
+                        "You haven't reach the destination.");
+            }
         } else {
-            Toast.makeText(DetailDestinationActivity.this, "GooglePlayServices not available.", Toast.LENGTH_SHORT).show();
-            return false;
+            /**
+             *   Inside the Radius
+             */
+            String kiloMeters = new DecimalFormat("0").format(distance[0]/1000);
+            mTextView_map_km.setText(kiloMeters+" kms");
+
+            if (requestForCheckInCheckOut) {
+                CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
+                restCall.delegate = DetailDestinationActivity.this;
+                restCall.callCheckInService(checkedIn, assignDestinationID);
+            }
         }
     }
 
-    public void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
 
-    public void startLocationUpdates() {
-        PendingResult<Status> pendingResult = LocationServices
-                .FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+    @Override
+    public void onCheckInFailure(String status) {
+        GeneralUtils.createAlertDialog(DetailDestinationActivity.this, status);
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        startLocationUpdates();
+    public void onCheckInSuccess() {
+        /**
+         *   the data should be refreshed after the checkin or checkout
+         */
+        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(DetailDestinationActivity.this);
+        destinationsRestCall.delegate = DetailDestinationActivity.this;
+        destinationsRestCall.callGetDestinations();
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(DetailDestinationActivity.this, "ConnectionFailed", Toast.LENGTH_SHORT).show();
+    public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
+
+        DestinationData data = null;
+        for (DestinationData destinationData: destinationsModel.getDestinationData()) {
+            if (assignDestinationID == destinationData.getAssignDestinationID()) {
+                data = destinationData;
+                break;
+            }
+        }
+
+        address = data.getAddress();
+        checkedIn = data.isCheckedIn();
+        checkedOut = data.isCheckedOut();
+        destinationName = data.getDestinationName();
+        assignDestinationID = data.getAssignDestinationID();
+        destinationLatitude = data.getDestinationLatitude();
+        destinationLongitude = data.getDestinationLongitude();
+        checkedOutReportedDate = data.getCheckedOutReportedDate();
+        checkInRadius = data.getCheckInRadius();
+
+        setData();
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(DetailDestinationActivity.this, "ConnectionSuspended", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        currentLocation = location;
-        double lat = currentLocation.getLatitude();
-        double lng = currentLocation.getLongitude();
-        Toast.makeText(DetailDestinationActivity.this, lat+" "+lng, Toast.LENGTH_SHORT).show();
+    public void onGetDestinationFailure(String errorMessage) {
+        GeneralUtils.createAlertDialog(DetailDestinationActivity.this, errorMessage);
     }
 }

@@ -12,6 +12,7 @@
 
     <color name="app_color">#FF5745</color>
     <color name="app_color_25">#40FF5745</color>
+    <color name="app_color_10">#1AFF5745</color>
     <color name="app_color_80">#ccFF5745</color>
 
     <color name="black">#000000</color>

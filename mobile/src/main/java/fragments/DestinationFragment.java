@@ -1,6 +1,9 @@
 package fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -12,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.text.DecimalFormat;
 
 import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
@@ -108,12 +113,13 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     @Override
     public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn) {
-        int assignedDestinationID = destinationDatas[destinationPosition].getAssignDestinationID();
-
         listViewState = layoutManager.onSaveInstanceState();
-        CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
-        restCall.delegate = DestinationFragment.this;
-        restCall.callCheckInService(isCheckedIn, assignedDestinationID);
+
+        isDeviceEnteredWithinDestinationRadius(destinationDatas[destinationPosition].getDestinationLatitude(),
+                destinationDatas[destinationPosition].getDestinationLongitude(),
+                destinationDatas[destinationPosition].getCheckInRadius(),
+                destinationDatas[destinationPosition].isCheckedIn(),
+                destinationDatas[destinationPosition].getAssignDestinationID());
     }
 
     @Override
@@ -131,5 +137,33 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     @Override
     public void onCheckInFailure(String status) {
         Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
+    }
+
+    public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
+                                                       double destinationLongitude, double checkInRadius,
+                                                       boolean checkedIn, int assignDestinationID) {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double currentLatitude = location.getLatitude();
+        double currentLongitude = location.getLongitude();
+
+        float[] distance = new float[2];
+
+        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
+
+        if (distance[0] > checkInRadius) {
+            /**
+             *   Outside the Radius
+             */
+            GeneralUtils.createAlertDialog(getActivity(),
+                    "You haven't reach the destination.");
+        } else {
+            /**
+             *   Inside the Radius
+             */
+            CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
+            restCall.delegate = DestinationFragment.this;
+            restCall.callCheckInService(checkedIn, assignDestinationID);
+        }
     }
 }

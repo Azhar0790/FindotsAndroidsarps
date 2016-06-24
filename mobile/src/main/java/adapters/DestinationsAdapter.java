@@ -161,7 +161,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedOut());
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedIn());
             }
         });
     }
