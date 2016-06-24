@@ -8,7 +8,6 @@ public class LocationSyncData {
 
         double latitude;
         double longitude;
-        String address;
         String reportedDate;
 
     public double getLatitude() {
@@ -28,13 +27,7 @@ public class LocationSyncData {
         this.longitude = longitude;
     }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public String getReportedDate() {
         return reportedDate;

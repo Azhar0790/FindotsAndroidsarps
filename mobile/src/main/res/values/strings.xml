@@ -87,6 +87,12 @@
     <!-- Strings related to Account Settings -->
     <string name="account_heading">Account Settings</string>
     <string name="save_account">Save</string>
-    <string name="changepwd">Change Password</string>
+    <string name="changepwd"><u>Change Password</u></string>
+    <string name="account_updateInfo">Your Account settings Updated</string>
+    <string name="account_updateInfoError">Unable to Update Account settings</string>
 
+    <!-- Strings related to Change Password -->
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_newPassword">Confirm New  Password</string>
 </resources>

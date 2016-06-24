@@ -173,7 +173,6 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         Location startLocation = app.getStartLocation();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        String address= GeneralUtils.LatLongToAddress(latitude,longitude,getApplicationContext());
         String timeInGmt=GeneralUtils.DateTimeInUTC();
 //        float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
 //                (float) startLocation.getLongitude(),
@@ -182,7 +181,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
 //        String timeText = Utils.formatTime(System.currentTimeMillis());
 
-        dataHelper.saveLocation(LocationData.getInstance(latitude, longitude,address,timeInGmt));
+        dataHelper.saveLocation(LocationData.getInstance(latitude, longitude,timeInGmt));
 //        updateNotification(timeText);
     }
 

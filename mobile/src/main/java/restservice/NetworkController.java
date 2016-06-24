@@ -4,6 +4,7 @@ import java.util.Map;
 
 import locationUtils.LocationModel.BackgroundLocData;
 import locationUtils.LocationModel.LocationResponseData;
+import restcalls.accountSettings.GetAccountInfoModel;
 import restcalls.checkInCheckOut.CheckInCheckOutModel;
 import restcalls.destinations.DestinationsModel;
 import restcalls.forgotPassword.ForgotPasswordModel;
@@ -44,6 +45,12 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_CHECK_OUT)
     Call<CheckInCheckOutModel> checkOut(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_ACCOUNTINFO)
+    Call<GetAccountInfoModel> getAccountInfo(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_SAVEACCOUNTINFO)
+    Call<ResponseModel> saveAccountInfo(@Body Map<String, Object> request);
 
 
 }

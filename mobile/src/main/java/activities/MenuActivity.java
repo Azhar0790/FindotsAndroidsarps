@@ -240,7 +240,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.SETTINGS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.destinations);
+                mTextView_heading.setText(R.string.account_heading);
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 FragmentTransaction accountTransaction = getSupportFragmentManager().beginTransaction();
@@ -386,7 +386,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         LocationSyncData locationSyncData = new LocationSyncData();
         locationSyncData.setLatitude(currentLoc.getLatitude());
         locationSyncData.setLongitude(currentLoc.getLongitude());
-        locationSyncData.setAddress(GeneralUtils.LatLongToAddress(currentLoc.getLatitude(), currentLoc.getLongitude(), this));
         locationSyncData.setReportedDate(GeneralUtils.DateTimeInUTC());
         locSyncList.add(locationSyncData);
 
