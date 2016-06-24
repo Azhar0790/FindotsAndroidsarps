@@ -87,7 +87,7 @@
     <!-- Strings related to Account Settings -->
     <string name="account_heading">Account Settings</string>
     <string name="save_account">Save</string>
-    <string name="changepwd"><u>Change Password</u></string>
+    <string name="changepwd">Change Password</string>
     <string name="account_updateInfo">Your Account settings Updated</string>
     <string name="account_updateInfoError">Unable to Update Account settings</string>
 
@@ -95,4 +95,7 @@
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_newPassword">Confirm New  Password</string>
+    <string name="password_cannotBeSame">current and old password cannot be same</string>
+    <string name="password_same">confirm and new passwords should be same</string>
+    <string name="password_updateInfoError">Unable to Update Password</string>
 </resources>
