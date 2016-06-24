@@ -1,5 +1,6 @@
 package fragments;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
+import activities.ChangePassword;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -115,10 +117,16 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         mParentLay.setVisibility(View.VISIBLE);
     }
 
+    @OnClick(R.id.textView_changePwd)
+    public void saveAccountSettisngInfo()
+    {
+        Intent intentChangePassword = new Intent(getActivity(), ChangePassword.class);
+        startActivity(intentChangePassword);
+    }
+
     @OnClick(R.id.button_saveAccountSettings)
     public void saveAccountSettingInfo()
     {
-
 
         if(validateEnteredValues()) {
             GeneralUtils.initialize_progressbar(getActivity());
@@ -154,8 +162,8 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
 
     private Map<String, Object> setAccountInfoRequest() {
         Map<String, Object> postValues = new HashMap<>();
-        postValues.put("Name", GeneralUtils.getAppVersion(getActivity()));
-        postValues.put("mobileNumber", GeneralUtils.getAppVersion(getActivity()));
+        postValues.put("Name", mEditText_name.getText().toString());
+        postValues.put("mobileNumber",mEditText_mobileNo.getText().toString());
         postValues.put("city", "");
         postValues.put("base64string", "");
         postValues.put("pinCode", "");

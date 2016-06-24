@@ -52,5 +52,7 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_SAVEACCOUNTINFO)
     Call<ResponseModel> saveAccountInfo(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_CHANGEPASSWORD)
+    Call<ResponseModel> changePassword(@Body Map<String, Object> request);
 
 }

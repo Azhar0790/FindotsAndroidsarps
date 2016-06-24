@@ -32,7 +32,7 @@ import utils.GeneralUtils;
 /**
  * Created by parijathar on 6/13/2016.
  */
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, IRegisterRestCall{
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, IRegisterRestCall {
 
     @Bind(R.id.TextView_signUpHeading)
     TextView mTextView_signUpHeading;
@@ -100,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     *   change the background of switch(ImageView) button
+     * change the background of switch(ImageView) button
      */
     public void changeSwitchButtonBackground() {
         if (mImageView_onOff.getTag() == true) {
@@ -164,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     *   validating the entered values for creating account
+     * validating the entered values for creating account
      */
     public boolean validateEnteredValues() {
         name = mEditText_name.getText().toString();
@@ -175,24 +175,34 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         redeemCode = mEditText_redeemCode.getText().toString();
 
         if (name == null || name.length() == 0) {
-            mEditText_name.setError(getString(R.string.prompt_required));  return false;
+            mEditText_name.setError(getString(R.string.prompt_required));
+            return false;
         } else if (company == null || company.length() == 0) {
-            mEditText_company.setError(getString(R.string.prompt_required));  return false;
+            mEditText_company.setError(getString(R.string.prompt_required));
+            return false;
         } else if (emailID == null || emailID.length() == 0) {
-            mEditText_emailID.setError(getString(R.string.prompt_required));  return false;
+            mEditText_emailID.setError(getString(R.string.prompt_required));
+            return false;
         } else if (mobileNo == null || mobileNo.length() == 0) {
-            mEditText_mobileNo.setError(getString(R.string.prompt_required));  return false;
+            mEditText_mobileNo.setError(getString(R.string.prompt_required));
+            return false;
         } else if (password == null || password.length() == 0) {
-            mEditText_password.setError(getString(R.string.prompt_password));  return false;
+            mEditText_password.setError(getString(R.string.prompt_password));
+            return false;
         } else if (redeemCode == null || redeemCode.length() == 0) {
-            mEditText_redeemCode.setError(getString(R.string.prompt_required));  return false;
+            mEditText_redeemCode.setError(getString(R.string.prompt_required));
+            return false;
+        } else if (!GeneralUtils.isvalid_email(emailID))
+        {
+            mEditText_emailID.setError(getString(R.string.validate_email));
+            return false;
         }
 
         return true;
     }
 
     /**
-     *   set Listeners to the UI Widgets
+     * set Listeners to the UI Widgets
      */
     public void setListeners() {
         mEditText_name.addTextChangedListener(new AddTextWatcher(mEditText_name));
@@ -240,7 +250,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
                 changeSwitchButtonBackground();
 
-            default:break;
+            default:
+                break;
         }
     }
 }
