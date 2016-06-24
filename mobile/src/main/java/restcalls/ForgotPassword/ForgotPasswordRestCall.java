@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import retrofit.Call;
@@ -25,14 +26,10 @@ public class ForgotPasswordRestCall {
         this.context = context;
     }
 
-    public void callForgotPasswordService(String email, String appVersion,
-                                          String deviceTypeID, String deviceInfo,
-                                          String userID) {
+    public void callForgotPasswordService(String email) {
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getForgotPasswordRequest(
-                email, appVersion, deviceTypeID,
-                deviceInfo, userID);
+        Map<String, Object> postValues = getForgotPasswordRequest(email);
 
         Call<ForgotPasswordModel> call = FinDotsApplication.getRestClient().getApiService().forgotPassword(postValues);
         call.enqueue(new Callback<ForgotPasswordModel>() {
@@ -56,15 +53,12 @@ public class ForgotPasswordRestCall {
         });
     }
 
-    private Map<String, Object> getForgotPasswordRequest(String email, String appVersion,
-                                                        String deviceTypeID, String deviceInfo,
-                                                        String userID) {
+    private Map<String, Object> getForgotPasswordRequest(String email) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", email);
-        postValues.put("appVersion", "1.0");
-        postValues.put("deviceTypeID", 2);
-        postValues.put("deviceInfo", "nexus");
-        postValues.put("userID", 14);
+        postValues.put("appVersion", GeneralUtils.getAppVersion(context));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         return postValues;
     }
 }

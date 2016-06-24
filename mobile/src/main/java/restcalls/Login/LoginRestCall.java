@@ -12,6 +12,7 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import utils.AppStringConstants;
 import utils.GeneralUtils;
 
 /**
@@ -27,14 +28,11 @@ public class LoginRestCall {
     }
 
 
-    public void callLoginService(String username, String password, String deviceID, String appVersion,
-                                 String deviceTypeID, String deviceInfo,
-                                 String userID, String ipAddress) {
+    public void callLoginService(String username, String password) {
 
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getLoginRequest(username, password, deviceID, appVersion,
-                deviceTypeID, deviceInfo, userID, ipAddress);
+        Map<String, Object> postValues = getLoginRequest(username, password);
 
         Call<LoginModel> call = FinDotsApplication.getRestClient().getApiService().login(postValues);
         call.enqueue(new Callback<LoginModel>() {
@@ -60,10 +58,10 @@ public class LoginRestCall {
     }
 
 
-    private Map<String, Object> getLoginRequest(String username, String password,
-                                               String deviceID, String appVersion,
-                                               String deviceTypeID, String deviceInfo,
-                                               String userID, String ipAddress) {
+    private Map<String, Object> getLoginRequest(String username, String password) {
+
+        int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
+
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", username);
         postValues.put("password", password);
@@ -71,7 +69,7 @@ public class LoginRestCall {
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", 0);
+        postValues.put("userID", userID);
 
         return postValues;
     }

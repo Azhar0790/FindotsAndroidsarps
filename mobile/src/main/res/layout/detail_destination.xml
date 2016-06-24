@@ -49,7 +49,7 @@
             android:maxLines="8"
             android:text="@string/bd"
             android:textColor="@color/black_70"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 

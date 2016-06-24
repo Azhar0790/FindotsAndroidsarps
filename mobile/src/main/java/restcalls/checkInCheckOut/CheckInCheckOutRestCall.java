@@ -2,6 +2,10 @@ package restcalls.checkInCheckOut;
 
 import android.content.Context;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +13,12 @@ import java.util.Map;
 
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
+import findots.bridgetree.com.findots.R;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import utils.AppStringConstants;
 import utils.GeneralUtils;
 
 /**
@@ -27,14 +33,14 @@ public class CheckInCheckOutRestCall {
         this.context = context;
     }
 
-    public void callCheckInService(boolean isCheckIn, long userID) {
+    public void callCheckInService(final boolean isCheckIn, int assignedDestinationID) {
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getDestinationsRequest(userID);
+        Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID);
 
         Call<CheckInCheckOutModel> call = null;
 
-        if (isCheckIn) {
+        if (!isCheckIn) {
             call = FinDotsApplication.getRestClient().getApiService().checkIn(postValues);
         } else {
             call = FinDotsApplication.getRestClient().getApiService().checkOut(postValues);
@@ -47,19 +53,27 @@ public class CheckInCheckOutRestCall {
                 if (response.isSuccess()) {
                     delegate.onCheckInSuccess();
                 } else {
-                    delegate.onCheckInFailure();
+                    if (!isCheckIn) {
+                        delegate.onCheckInFailure(context.getString(R.string.checkin_failed));
+                    } else {
+                        delegate.onCheckInFailure(context.getString(R.string.checkout_failed));
+                    }
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                delegate.onCheckInFailure();
+                delegate.onCheckInFailure(context.getString(R.string.failed));
             }
         });
     }
 
-    private Map<String, Object> getDestinationsRequest(long userID) {
+    private Map<String, Object> getDestinationsRequest(int assignedDestinationID) {
+
+        DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
+        DateTime dateTime = new DateTime();
+        String reportedTime = dateTime.toString(fmt1);
 
         List<Map<String, Object>> list = new ArrayList<>();
 
@@ -68,17 +82,19 @@ public class CheckInCheckOutRestCall {
          *   and create request
          */
         Map<String, Object> checkInValues = new HashMap<>();
-        checkInValues.put("assignDestinationID", 0);
-        checkInValues.put("reportedTime", "");
+        checkInValues.put("assignDestinationID", assignedDestinationID);
+        checkInValues.put("reportedTime", reportedTime);
 
         list.add(checkInValues);
+
+        int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
 
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("checkedInsandOuts", list);
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", 2);
+        postValues.put("userID", userID);
         return postValues;
     }
 

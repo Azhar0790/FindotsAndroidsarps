@@ -75,6 +75,9 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
         mEditText_userName.setText("parijathar@bridgetree.com");
         mEditText_password.setText("pari@123");
+
+        mEditText_userName.setText("vanithaergam405@gmail.com");
+        mEditText_password.setText("vani@1234");
     }
 
     /**
@@ -106,7 +109,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
              */
             LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
             loginRestCall.delegate = LoginActivity.this;
-            loginRestCall.callLoginService(userName, password, "", "", "", "", "", "");
+            loginRestCall.callLoginService(userName, password);
         }
 
     }
@@ -211,7 +214,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     public void startForgotPasswordProcess(String username) {
         ForgotPasswordRestCall forgotPasswordRestCall = new ForgotPasswordRestCall(LoginActivity.this);
         forgotPasswordRestCall.delegate = LoginActivity.this;
-        forgotPasswordRestCall.callForgotPasswordService(username, "", "", "", "");
+        forgotPasswordRestCall.callForgotPasswordService(username);
     }
 
     @Override

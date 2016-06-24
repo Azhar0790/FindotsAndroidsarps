@@ -2,6 +2,7 @@ package fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,20 +20,25 @@ import butterknife.ButterKnife;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
+import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
+import restcalls.checkInCheckOut.ICheckInCheckOut;
+import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
 import restcalls.destinations.GetDestinationsRestCall;
 import restcalls.destinations.IGetDestinations;
+import retrofit.Call;
 import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/14/2016.
  */
-public class DestinationFragment extends Fragment implements IDestinations, IGetDestinations {
+public class DestinationFragment extends Fragment implements IDestinations, IGetDestinations, ICheckInCheckOut {
 
     @Bind(R.id.RecyclerView_destinations)
     RecyclerView mRecyclerView_destinations;
 
     LinearLayoutManager layoutManager = null;
+    Parcelable listViewState = null;
 
     public static DestinationFragment newInstance() {
         DestinationFragment destinationFragment = new DestinationFragment();
@@ -51,32 +57,58 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationFragment.this;
-        destinationsRestCall.callGetDestinations("", "", "", 2);
+        destinationsRestCall.callGetDestinations();
 
         return rootView;
     }
 
     @Override
     public void onDestinationSelected(int itemPosition) {
+        listViewState = layoutManager.onSaveInstanceState();
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
         startActivity(intentDetailDestination);
     }
 
+    DestinationData[] destinationDatas = null;
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         if (destinationsModel.getErrorCode() == 2) {
             GeneralUtils.createAlertDialog(getActivity(), destinationsModel.getMessage());
         } else if (destinationsModel.getDestinationData() != null) {
-            Log.i(Constants.TAG, "onGetDestinationSuccess: size" + destinationsModel.getDestinationData().length);
+            destinationDatas = destinationsModel.getDestinationData();
+
             DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), destinationsModel.getDestinationData());
             destinationsAdapter.delegate = DestinationFragment.this;
             mRecyclerView_destinations.setAdapter(destinationsAdapter);
             destinationsAdapter.notifyDataSetChanged();
+            layoutManager.onRestoreInstanceState(listViewState);
         }
+    }
+
+    @Override
+    public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn) {
+        int assignedDestinationID = destinationDatas[destinationPosition].getAssignDestinationID();
+
+        listViewState = layoutManager.onSaveInstanceState();
+        CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
+        restCall.delegate = DestinationFragment.this;
+        restCall.callCheckInService(isCheckedIn, assignedDestinationID);
     }
 
     @Override
     public void onGetDestinationFailure(String errorMessage) {
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCheckInSuccess() {
+        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+        destinationsRestCall.delegate = DestinationFragment.this;
+        destinationsRestCall.callGetDestinations();
+    }
+
+    @Override
+    public void onCheckInFailure(String status) {
+        Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
     }
 }

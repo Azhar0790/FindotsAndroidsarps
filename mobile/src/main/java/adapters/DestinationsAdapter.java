@@ -4,14 +4,24 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
 import restcalls.destinations.DestinationData;
@@ -26,25 +36,27 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     Context context = null;
     DestinationData[] destinationDatas = null;
     final String assignedBy = "Assigned by ";
+    String getTime = null;
 
     public DestinationsAdapter(Context context, DestinationData[] destinationDatas) {
         this.context = context;
         this.destinationDatas = destinationDatas;
+
+        DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
+        DateTime dateTime = new DateTime();
+        getTime = dateTime.toString(fmt1);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        Context context = null;
 
         TextView mTextView_destinationAssignedBy = null;
         TextView mTextView_destinationName = null;
         LinearLayout mLinearLayout_checkIncheckOut = null;
         Button mButton_checkIncheckOut = null;
 
-        public ViewHolder(Context context, View view) {
+        public ViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
-            this.context = context;
 
             mTextView_destinationAssignedBy = (TextView) view.findViewById(R.id.TextView_destinationAssignedBy);
             mTextView_destinationName = (TextView) view.findViewById(R.id.TextView_destinationName);
@@ -64,50 +76,120 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         return destinationDatas.length;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.destinations_inflater, parent, false);
-        ViewHolder viewHolder = new ViewHolder(context, v);
+        ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+        /**
+         *   to display assigned Destination Time, get the time difference
+         */
+        String assignDestinationTime = destinationDatas[position].getAssigndestinationTime();
+        if (assignDestinationTime.length() != 0) {
+            String timeDifference = dateTimeDifference(assignDestinationTime);
+            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName() +" "+timeDifference);
+        } else {
+            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName());
+        }
+
+        /**
+         *   set drawable left icon and setting the size
+         */
         holder.mTextView_destinationAssignedBy.setCompoundDrawables(
                 scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
                 null, null, null);
 
-        holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName());
+        /**
+         *   set Destination Name
+         */
         holder.mTextView_destinationName.setText(destinationDatas[position].getDestinationName());
 
+        /**
+         *   based on CheckIn / CheckOut status
+         *   display the background and button name
+         *   set checked_out time if any.
+         */
         boolean isCheckIn = destinationDatas[position].getCheckedIn();
         boolean isCheckOut = destinationDatas[position].getCheckedOut();
 
         if (!isCheckIn) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
+            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setEnabled(true);
             holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkin));
             holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.green));
         } else if (!isCheckOut) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkout);
+            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setEnabled(true);
             holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
             holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
         } else {
+            String checkedOutTime = destinationDatas[position].getCheckedOutReportedDate();
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
-            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at)+" 5.15pm");
+            holder.mLinearLayout_checkIncheckOut.setEnabled(false);
+            holder.mButton_checkIncheckOut.setEnabled(false);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at)+" "+getCheckedOutTime(checkedOutTime));
             holder.mButton_checkIncheckOut.setCompoundDrawables(
                     scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
             holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
         }
+
+        /**
+         *   on clicking below LinearLayout or Button , call CheckInCheckOut API
+         */
+        holder.mLinearLayout_checkIncheckOut.setTag(position);
+        holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int destinationPosition = (int) v.getTag();
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].getCheckedIn());
+            }
+        });
+
+        holder.mButton_checkIncheckOut.setTag(position);
+        holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int destinationPosition = (int) v.getTag();
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].getCheckedIn());
+            }
+        });
     }
 
+    /**
+     *  get Checked Out Time
+     * @param date
+     */
+    final static String ANTE_MERIDIAN = "am";
+    final static String POST_MERIDIAN = "pm";
+
+    public String getCheckedOutTime(String date) {
+        String checkedOutTime = null;
+
+        if (date.length() != 0) {
+            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
+            DateTime startTime = fmt.parseDateTime(date);
+
+            int hour = startTime.getHourOfDay();
+            int minute = startTime.getMinuteOfHour();
+            String meridian = (hour > 12)? POST_MERIDIAN : ANTE_MERIDIAN;
+
+            checkedOutTime = hour+"."+minute+meridian;
+        } else {
+            checkedOutTime = "";
+        }
+
+        return checkedOutTime;
+    }
 
     public Drawable scaleDrawable(Drawable drawable, int width, int height) {
 
@@ -121,5 +203,75 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         return drawable;
     }
 
+    /**
+     *   get Time difference
+     * @param date
+     * @return
+     */
+    public String dateTimeDifference(String date) {
 
+        String timeDifference = null;
+
+        Log.i(Constants.TAG, "dateTimeDifference: getTime = "+getTime);
+
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
+        DateTime endTime = fmt.parseDateTime(getTime);
+        DateTime startTime = fmt.parseDateTime(date);
+
+        Period period = new Period(startTime, endTime);
+
+        int years = period.getYears();
+        int months = period.getMonths();
+        int weeks = period.getWeeks();
+        int days = period.getDays();
+        int hours = period.getHours();
+        int minutes = period.getMinutes();
+        int seconds = period.getSeconds();
+
+        if (years != 0) {
+            if (years == 1) {
+                timeDifference = years + " year ago";
+            } else {
+                timeDifference = years + " years ago";
+            }
+        } else if (months != 0) {
+            if (months == 1) {
+                timeDifference = months + " month ago";
+            } else {
+                timeDifference = months + " months ago";
+            }
+        } else if (weeks != 0) {
+            if (weeks == 1) {
+                timeDifference = weeks + " week ago";
+            } else {
+                timeDifference = weeks + " weeks ago";
+            }
+        } else if(days != 0) {
+            if (days == 1) {
+                timeDifference = days + " day ago";
+            } else {
+                timeDifference = days + " days ago";
+            }
+        } else if (hours != 0) {
+            if (hours == 1) {
+                timeDifference = hours + " hr ago";
+            } else {
+                timeDifference = hours + " hrs ago";
+            }
+        } else if (minutes != 0) {
+            if (minutes == 1) {
+                timeDifference = minutes + " min ago";
+            } else {
+                timeDifference = minutes + " mins ago";
+            }
+        } else if (seconds != 0 ){
+            if (seconds == 1) {
+                timeDifference = "few secs ago";
+            } else {
+                timeDifference = "few secs ago";
+            }
+        }
+
+        return timeDifference;
+    }
 }

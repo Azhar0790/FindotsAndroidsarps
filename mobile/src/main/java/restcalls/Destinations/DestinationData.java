@@ -7,6 +7,9 @@ import org.parceler.Parcel;
  */
 @Parcel
 public class DestinationData {
+
+    private int assignDestinationID;
+
     private int destinationID;
 
     private String checkedOutReportedDate;
@@ -29,119 +32,104 @@ public class DestinationData {
 
     private boolean checkedOut;
 
-    public int getDestinationID ()
-    {
+    public int getAssignDestinationID() {
+        return assignDestinationID;
+    }
+
+    public void setAssignDestinationID(int assignDestinationID) {
+        this.assignDestinationID = assignDestinationID;
+    }
+
+    public int getDestinationID() {
         return destinationID;
     }
 
-    public void setDestinationID (int destinationID)
-    {
+    public void setDestinationID(int destinationID) {
         this.destinationID = destinationID;
     }
 
-    public String getCheckedOutReportedDate ()
-    {
+    public String getCheckedOutReportedDate() {
         return checkedOutReportedDate;
     }
 
-    public void setCheckedOutReportedDate (String checkedOutReportedDate)
-    {
+    public void setCheckedOutReportedDate(String checkedOutReportedDate) {
         this.checkedOutReportedDate = checkedOutReportedDate;
     }
 
-    public String getAddress ()
-    {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress (String address)
-    {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public String getAssigndestinationTime ()
-    {
+    public String getAssigndestinationTime() {
         return assigndestinationTime;
     }
 
-    public void setAssigndestinationTime (String assigndestinationTime)
-    {
+    public void setAssigndestinationTime(String assigndestinationTime) {
         this.assigndestinationTime = assigndestinationTime;
     }
 
-    public String getName ()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName (String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public boolean getCheckedIn ()
-    {
+    public boolean getCheckedIn() {
         return checkedIn;
     }
 
-    public void setCheckedIn (boolean checkedIn)
-    {
+    public void setCheckedIn(boolean checkedIn) {
         this.checkedIn = checkedIn;
     }
 
-    public String getCheckedInReportedDate ()
-    {
+    public String getCheckedInReportedDate() {
         return checkedInReportedDate;
     }
 
-    public void setCheckedInReportedDate (String checkedInReportedDate)
-    {
+    public void setCheckedInReportedDate(String checkedInReportedDate) {
         this.checkedInReportedDate = checkedInReportedDate;
     }
 
-    public double getDestinationLongitude ()
-    {
+    public double getDestinationLongitude() {
         return destinationLongitude;
     }
 
-    public void setDestinationLongitude (double destinationLongitude)
-    {
+    public void setDestinationLongitude(double destinationLongitude) {
         this.destinationLongitude = destinationLongitude;
     }
 
-    public String getDestinationName ()
-    {
+    public String getDestinationName() {
         return destinationName;
     }
 
-    public void setDestinationName (String destinationName)
-    {
+    public void setDestinationName(String destinationName) {
         this.destinationName = destinationName;
     }
 
-    public double getDestinationLatitude ()
-    {
+    public double getDestinationLatitude() {
         return destinationLatitude;
     }
 
-    public void setDestinationLatitude (double destinationLatitude)
-    {
+    public void setDestinationLatitude(double destinationLatitude) {
         this.destinationLatitude = destinationLatitude;
     }
 
-    public boolean getCheckedOut ()
-    {
+    public boolean getCheckedOut() {
         return checkedOut;
     }
 
-    public void setCheckedOut (boolean checkedOut)
-    {
+    public void setCheckedOut(boolean checkedOut) {
         this.checkedOut = checkedOut;
     }
 
     @Override
-    public String toString()
-    {
-        return "ClassPojo [destinationID = "+destinationID+", checkedOutReportedDate = "+checkedOutReportedDate+", address = "+address+", assigndestinationTime = "+assigndestinationTime+", name = "+name+", checkedIn = "+checkedIn+", checkedInReportedDate = "+checkedInReportedDate+", destinationLongitude = "+destinationLongitude+", destinationName = "+destinationName+", destinationLatitude = "+destinationLatitude+", checkedOut = "+checkedOut+"]";
+    public String toString() {
+        return "ClassPojo [destinationID = " + destinationID + ", checkedOutReportedDate = " + checkedOutReportedDate + ", address = " + address + ", assigndestinationTime = " + assigndestinationTime + ", name = " + name + ", checkedIn = " + checkedIn + ", checkedInReportedDate = " + checkedInReportedDate + ", destinationLongitude = " + destinationLongitude + ", destinationName = " + destinationName + ", destinationLatitude = " + destinationLatitude + ", checkedOut = " + checkedOut + "]";
     }
 }

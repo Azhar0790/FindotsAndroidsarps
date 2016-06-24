@@ -6,5 +6,5 @@ package restcalls.checkInCheckOut;
 public interface ICheckInCheckOut {
 
     public void onCheckInSuccess();
-    public void onCheckInFailure();
+    public void onCheckInFailure(String status);
 }

@@ -57,4 +57,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:9.0.2'
     compile 'com.google.android.gms:play-services-base:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'joda-time:joda-time:2.9.2'
 }

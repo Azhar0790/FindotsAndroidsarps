@@ -12,6 +12,7 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+import utils.AppStringConstants;
 import utils.GeneralUtils;
 
 /**
@@ -26,13 +27,11 @@ public class GetDestinationsRestCall {
         this.context = context;
     }
 
-    public void callGetDestinations(String appVersion,
-                                    String deviceTypeID, String deviceInfo,
-                                    long userID) {
+    public void callGetDestinations() {
 
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getDestinationsRequest(appVersion, deviceTypeID, deviceInfo, userID);
+        Map<String, Object> postValues = getDestinationsRequest();
 
         Call<DestinationsModel> call = FinDotsApplication.getRestClient().getApiService().getDestinations(postValues);
         call.enqueue(new Callback<DestinationsModel>() {
@@ -58,14 +57,15 @@ public class GetDestinationsRestCall {
 
     }
 
-    private Map<String, Object> getDestinationsRequest(String appVersion,
-                                                         String deviceTypeID, String deviceInfo,
-                                                         long userID) {
+    private Map<String, Object> getDestinationsRequest() {
+
+        int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
+
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", 3);
+        postValues.put("userID", userID);
         return postValues;
     }
 }

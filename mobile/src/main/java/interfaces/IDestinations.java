@@ -6,5 +6,6 @@ package interfaces;
 public interface IDestinations {
 
     public void onDestinationSelected(int itemPosition);
+    public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn);
 
 }
