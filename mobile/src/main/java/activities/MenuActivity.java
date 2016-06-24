@@ -67,7 +67,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
      */
     int ICONS[] = {R.drawable.tracking_me,
             R.drawable.destinations,
-            R.drawable.messages,
+            R.drawable.menu_report_loc,
             R.drawable.notifications,
             R.drawable.settings,
             R.drawable.help,
