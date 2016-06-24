@@ -64,8 +64,29 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     @Override
     public void onDestinationSelected(int itemPosition) {
+
+        String address = destinationDatas[itemPosition].getAddress();
+        boolean checkedIn = destinationDatas[itemPosition].isCheckedIn();
+        boolean checkedOut = destinationDatas[itemPosition].isCheckedOut();
+        int checkInRadius = destinationDatas[itemPosition].getCheckInRadius();
+        String destinationName = destinationDatas[itemPosition].getDestinationName();
+        int assignDestinationID = destinationDatas[itemPosition].getAssignDestinationID();
+        double destinationLatitude = destinationDatas[itemPosition].getDestinationLatitude();
+        double destinationLongitude = destinationDatas[itemPosition].getDestinationLongitude();
+        String checkedOutReportedDate = destinationDatas[itemPosition].getCheckedOutReportedDate();
+
         listViewState = layoutManager.onSaveInstanceState();
+
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
+        intentDetailDestination.putExtra("address", address);
+        intentDetailDestination.putExtra("checkedIn", checkedIn);
+        intentDetailDestination.putExtra("checkedOut", checkedOut);
+        intentDetailDestination.putExtra("destinationName", destinationName);
+        intentDetailDestination.putExtra("assignDestinationID", assignDestinationID);
+        intentDetailDestination.putExtra("destinationLatitude", destinationLatitude);
+        intentDetailDestination.putExtra("destinationLongitude", destinationLongitude);
+        intentDetailDestination.putExtra("checkedOutReportedDate", checkedOutReportedDate);
+        intentDetailDestination.putExtra("checkInRadius", checkInRadius);
         startActivity(intentDetailDestination);
     }
 

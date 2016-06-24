@@ -25,6 +25,7 @@ import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
 import restcalls.destinations.DestinationData;
+import utils.GeneralUtils;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -103,7 +104,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
          *   set drawable left icon and setting the size
          */
         holder.mTextView_destinationAssignedBy.setCompoundDrawables(
-                scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
+                GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
                 null, null, null);
 
         /**
@@ -116,8 +117,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
          *   display the background and button name
          *   set checked_out time if any.
          */
-        boolean isCheckIn = destinationDatas[position].getCheckedIn();
-        boolean isCheckOut = destinationDatas[position].getCheckedOut();
+        boolean isCheckIn = destinationDatas[position].isCheckedIn();
+        boolean isCheckOut = destinationDatas[position].isCheckedOut();
 
         if (!isCheckIn) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
@@ -136,9 +137,9 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
             holder.mLinearLayout_checkIncheckOut.setEnabled(false);
             holder.mButton_checkIncheckOut.setEnabled(false);
-            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at)+" "+getCheckedOutTime(checkedOutTime));
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at)+" "+ GeneralUtils.getCheckedOutTime(checkedOutTime));
             holder.mButton_checkIncheckOut.setCompoundDrawables(
-                    scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
+                    GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
             holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
         }
@@ -151,7 +152,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].getCheckedIn());
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedIn());
             }
         });
 
@@ -160,48 +161,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].getCheckedIn());
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedOut());
             }
         });
     }
 
-    /**
-     *  get Checked Out Time
-     * @param date
-     */
-    final static String ANTE_MERIDIAN = "am";
-    final static String POST_MERIDIAN = "pm";
-
-    public String getCheckedOutTime(String date) {
-        String checkedOutTime = null;
-
-        if (date.length() != 0) {
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
-            DateTime startTime = fmt.parseDateTime(date);
-
-            int hour = startTime.getHourOfDay();
-            int minute = startTime.getMinuteOfHour();
-            String meridian = (hour > 12)? POST_MERIDIAN : ANTE_MERIDIAN;
-
-            checkedOutTime = hour+"."+minute+meridian;
-        } else {
-            checkedOutTime = "";
-        }
-
-        return checkedOutTime;
-    }
-
-    public Drawable scaleDrawable(Drawable drawable, int width, int height) {
-
-        int wi = drawable.getIntrinsicWidth();
-        int hi = drawable.getIntrinsicHeight();
-        int dimDiff = Math.abs(wi - width) - Math.abs(hi - height);
-        float scale = (dimDiff > 0) ? width / (float)wi : height /
-                (float)hi;
-        Rect bounds = new Rect(0, 0, (int)(scale * wi), (int)(scale * hi));
-        drawable.setBounds(bounds);
-        return drawable;
-    }
 
     /**
      *   get Time difference
