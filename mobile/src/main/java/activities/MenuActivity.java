@@ -233,8 +233,10 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.NOTIFICATIONS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.notifications);
-                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
+//                mTextView_heading.setText(R.string.notifications);
+//                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
+                Intent intentModifyLoc = new Intent(this, DestinationModify_MapActivity.class);
+                startActivity(intentModifyLoc);
 
                 break;
 
