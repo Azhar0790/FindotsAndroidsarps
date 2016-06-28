@@ -7,13 +7,13 @@ public class Constants {
 
     public static final String TAG = "FinDots";
 
-    public static final int TRACKING_ME = 1;
-    public static final int DESTINATIONS = 2;
-    public static final int TRACKLOCATION = 3;
-    public static final int NOTIFICATIONS = 4;
-    public static final int SETTINGS = 5;
-    public static final int HELP = 6;
-    public static final int LOGOUT = 7;
+
+    public static final int USERINFO = 0;
+    public static final int DESTINATIONS = 1;
+    public static final int TRACKLOCATION = 2;
+    public static final int ACCOUNT_SETTINGS = 3;
+    public static final int HELP = 4;
+    public static final int LOGOUT = 5;
     public static final int DEVICETYPEID = 2;
 
     public static final int SUCCESS_RESULT = 0;

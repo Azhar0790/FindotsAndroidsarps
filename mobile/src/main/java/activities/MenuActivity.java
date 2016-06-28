@@ -65,10 +65,9 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     /**
      * Menu Items Titles
      */
-    int ICONS[] = {R.drawable.tracking_me,
+    int ICONS[] = {
             R.drawable.destinations,
             R.drawable.menu_report_loc,
-            R.drawable.notifications,
             R.drawable.settings,
             R.drawable.help,
             R.drawable.logout};
@@ -204,12 +203,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     public void onMenuItemSelected(int itemPosition) {
 
         switch (itemPosition) {
-            case Constants.TRACKING_ME:
-                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.tracking_list);
-                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
-
-                break;
 
             case Constants.DESTINATIONS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
@@ -231,16 +224,9 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
                 break;
 
-            case Constants.NOTIFICATIONS:
-                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-//                mTextView_heading.setText(R.string.notifications);
-//                findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
-                Intent intentModifyLoc = new Intent(this, DestinationModify_MapActivity.class);
-                startActivity(intentModifyLoc);
 
-                break;
-
-            case Constants.SETTINGS:
+            case Constants.USERINFO:
+            case Constants.ACCOUNT_SETTINGS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 mTextView_heading.setText(R.string.account_heading);
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);

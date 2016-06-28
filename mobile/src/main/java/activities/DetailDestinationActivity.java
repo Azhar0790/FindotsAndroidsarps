@@ -105,7 +105,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         supportMapFragment.getMapAsync(this);
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
-        if (isEditable) {
+        if (isEditable && !(checkedIn || checkedOut)) {
             SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify_destination));
             mDestModifyText.setSpan(new UnderlineSpan(), 0, mDestModifyText.length(), 0);
             mDestModify.setText(mDestModifyText);
