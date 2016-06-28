@@ -1,39 +1,30 @@
 package activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,9 +36,7 @@ import java.text.DecimalFormat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTouch;
 import findots.bridgetree.com.findots.R;
-import fragments.DestinationFragment;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import restcalls.checkInCheckOut.ICheckInCheckOut;
 import restcalls.destinations.DestinationData;
@@ -80,6 +69,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Bind(R.id.TextView_heading)
     TextView mTextView_heading;
 
+    @Bind(R.id.destModify)
+    TextView mDestModify;
+
     Toolbar mToolbar = null;
 
     GoogleMap mGoogleMap = null;
@@ -88,12 +80,13 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     Bundle bundle = null;
 
-    int assignDestinationID = 0;
+    int assignDestinationID = 0,destinationID=0;
     double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-    boolean checkedIn = false, checkedOut = false;
+    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
     public static final int STROKE_WIDTH = 6;
+    private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,12 +105,18 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         supportMapFragment.getMapAsync(this);
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
+        if (isEditable) {
+            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify_destination));
+            mDestModifyText.setSpan(new UnderlineSpan(), 0, mDestModifyText.length(), 0);
+            mDestModify.setText(mDestModifyText);
+            mDestModify.setVisibility(View.VISIBLE);
+        }
 
     }
 
 
     /**
-     *   get Bundle data
+     * get Bundle data
      */
     public void getBundleData() {
         bundle = getIntent().getExtras();
@@ -126,14 +125,18 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         checkedOut = bundle.getBoolean("checkedOut");
         destinationName = bundle.getString("destinationName");
         assignDestinationID = bundle.getInt("assignDestinationID");
+        destinationID= bundle.getInt("destinationID");
         destinationLatitude = bundle.getDouble("destinationLatitude");
         destinationLongitude = bundle.getDouble("destinationLongitude");
         checkedOutReportedDate = bundle.getString("checkedOutReportedDate");
         checkInRadius = bundle.getDouble("checkInRadius");
+        isEditable = bundle.getBoolean("editable");
+        isRequiresApproval = bundle.getBoolean("requireApproval");
     }
 
     /**
-     *  set the DATa
+     * set the DATa
+     *
      * @param
      */
     public void setData() {
@@ -162,7 +165,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
             mLinearLayout_checkIncheckOut.setEnabled(false);
             mButton_checkIncheckOut.setEnabled(false);
-            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at)+" "+ GeneralUtils.getCheckedOutTime(checkedOutReportedDate));
+            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at) + " " + GeneralUtils.getCheckedOutTime(checkedOutReportedDate));
             mButton_checkIncheckOut.setCompoundDrawables(
                     GeneralUtils.scaleDrawable(getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
@@ -203,7 +206,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         int height = getResources().getDisplayMetrics().heightPixels;
         int padding = (int) (width * 0.10);
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), (width - 300) , (height - 300) , padding));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), (width - 300), (height - 300), padding));
         googleMapSettings();
     }
 
@@ -211,12 +214,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public LatLngBounds getCenterCoordinates() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+
+        double currentLatitude, currentLongitude;
+        try {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        } catch (Exception e) {
+            currentLatitude = 0.0;
+            currentLongitude = 0.0;
+        }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(destinationLatitude, destinationLongitude));
-        builder.include(new LatLng(currentLatitude, currentLongitude));
+        builder.include(new
+
+                LatLng(currentLatitude, currentLongitude)
+
+        );
 
         LatLngBounds bounds = builder.build();
         return bounds;
@@ -233,11 +247,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     public CircleOptions drawCircleOnMap() {
         return new CircleOptions()
-        .center(latLng)
-        .radius(500)
-        .strokeColor(Color.TRANSPARENT)
-        .fillColor(getResources().getColor(R.color.app_color_10))
-        .strokeWidth(STROKE_WIDTH);
+                .center(latLng)
+                .radius(500)
+                .strokeColor(Color.TRANSPARENT)
+                .fillColor(getResources().getColor(R.color.app_color_10))
+                .strokeWidth(STROKE_WIDTH);
     }
 
     public void actionBarSettings() {
@@ -279,8 +293,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             /**
              *   Outside the Radius
              */
-            String kiloMeters = new DecimalFormat("0").format(distance[0]/1000);
-            mTextView_map_km.setText(kiloMeters+" kms");
+            String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
+            mTextView_map_km.setText(kiloMeters + " kms");
 
             if (requestForCheckInCheckOut) {
                 GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
@@ -290,8 +304,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             /**
              *   Inside the Radius
              */
-            String kiloMeters = new DecimalFormat("0").format(distance[0]/1000);
-            mTextView_map_km.setText(kiloMeters+" kms");
+            String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
+            mTextView_map_km.setText(kiloMeters + " kms");
 
             if (requestForCheckInCheckOut) {
                 CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
@@ -321,28 +335,65 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
 
         DestinationData data = null;
-        for (DestinationData destinationData: destinationsModel.getDestinationData()) {
+        for (DestinationData destinationData : destinationsModel.getDestinationData()) {
             if (assignDestinationID == destinationData.getAssignDestinationID()) {
                 data = destinationData;
                 break;
             }
         }
 
-        address = data.getAddress();
-        checkedIn = data.isCheckedIn();
-        checkedOut = data.isCheckedOut();
-        destinationName = data.getDestinationName();
-        assignDestinationID = data.getAssignDestinationID();
-        destinationLatitude = data.getDestinationLatitude();
-        destinationLongitude = data.getDestinationLongitude();
-        checkedOutReportedDate = data.getCheckedOutReportedDate();
-        checkInRadius = data.getCheckInRadius();
+        if(data!=null) {
+            address = data.getAddress();
+            checkedIn = data.isCheckedIn();
+            checkedOut = data.isCheckedOut();
+            destinationName = data.getDestinationName();
+            assignDestinationID = data.getAssignDestinationID();
+            destinationLatitude = data.getDestinationLatitude();
+            destinationLongitude = data.getDestinationLongitude();
+            checkedOutReportedDate = data.getCheckedOutReportedDate();
+            checkInRadius = data.getCheckInRadius();
 
-        setData();
+            setData();
+        }
+
     }
 
     @Override
     public void onGetDestinationFailure(String errorMessage) {
         GeneralUtils.createAlertDialog(DetailDestinationActivity.this, errorMessage);
+    }
+
+    @OnClick(R.id.destModify)
+    public void modifyDestinationActivity() {
+        if (assignDestinationID > -1) {
+
+            Intent intentModifyLoc = new Intent(this, DestinationModify_MapActivity.class);
+            intentModifyLoc.putExtra("destinationID", destinationID);
+            intentModifyLoc.putExtra("destinationLatitude", destinationLatitude);
+            intentModifyLoc.putExtra("destinationLongitude", destinationLongitude);
+            startActivityForResult(intentModifyLoc,REQUEST_CODE_MODIFY_DESTINATION);
+        }
+    }
+
+    /**
+     * Called after the autocomplete activity has finished to return its result.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_MODIFY_DESTINATION) {
+            if (resultCode == RESULT_OK && data.getStringExtra("result").equals("success")) {
+
+                if(isRequiresApproval==false)
+                {
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result","success");
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                }
+            }
+        }
     }
 }

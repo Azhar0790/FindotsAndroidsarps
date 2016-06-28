@@ -55,6 +55,9 @@
     <string name="failed">Failed</string>
     <string name="checkin_failed">Check In Failed</string>
     <string name="checkout_failed">Check Out Failed</string>
+    <string name="update_destination">Update Destination</string>
+    <string name="modify_destination">Modify Destination</string>
+
 
     <!-- Strings related to login -->
     <string name="action_sign_in">Sign in or register</string>
@@ -99,4 +102,5 @@
     <string name="password_cannotBeSame">current and old password cannot be same</string>
     <string name="password_same">confirm and new passwords should be same</string>
     <string name="password_updateInfoError">Unable to Update Password</string>
+
 </resources>

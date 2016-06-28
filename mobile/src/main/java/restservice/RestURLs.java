@@ -13,6 +13,7 @@ public class RestURLs {
     public static final String METHOD_REGISTER_USER = "RegisterUser";
     public static final String METHOD_FORGOT_PASSWORD = "ForgotPassword";
     public static final String METHOD_GET_ASSIGNED_DESTINATIONS = "GetAssignedDestinationsDetails";
+    public static final String METHOD_MODIFY_DESTINATION  = "ModifyDestinationLocation";
     public static final String METHOD_CHECK_IN = "CheckedIn";
     public static final String METHOD_CHECK_OUT = "CheckedOut";
     public static final String METHOD_LCATION_TRACKING  = "InsertLocations";

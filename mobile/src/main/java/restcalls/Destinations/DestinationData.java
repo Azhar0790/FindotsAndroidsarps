@@ -34,6 +34,13 @@ public class DestinationData {
 
     private boolean checkedOut;
 
+
+
+    private boolean isEditable;
+
+    private boolean isRequiresApproval;
+
+
     public boolean isCheckedIn() {
         return checkedIn;
     }
@@ -136,6 +143,21 @@ public class DestinationData {
 
     public void setDestinationLatitude(double destinationLatitude) {
         this.destinationLatitude = destinationLatitude;
+    }
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+    }
+
+    public boolean isRequiresApproval() {
+        return isRequiresApproval;
+    }
+
+    public void setRequiresApproval(boolean requiresApproval) {
+        isRequiresApproval = requiresApproval;
     }
 
     @Override

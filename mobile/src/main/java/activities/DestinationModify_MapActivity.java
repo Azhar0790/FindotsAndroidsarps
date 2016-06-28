@@ -1,9 +1,11 @@
 package activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +41,22 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import butterknife.Bind;
 import findots.bridgetree.com.findots.Constants;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import locationUtils.FetchAddressIntentService;
 import locationUtils.Utils;
+import restmodels.ResponseModel;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+import utils.AppStringConstants;
+import utils.GeneralUtils;
 
 /**
  * Created by jpaulose on 6/27/2016.
@@ -51,10 +68,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static String TAG = "MAP LOCATION";
     Context mContext;
-    TextView mLocationMarkerText;
+    TextView mLocationMarkerText,mTextView_heading;
     private LatLng mCenterLatLong;
-
-
+   double latDest,longtDest;
+    double destinationLatitude = 0, destinationLongitude = 0;
+    int destinationID = 0;
+    Bundle bundle = null;
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
@@ -67,9 +86,11 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     protected String mCityOutput;
     protected String mStateOutput;
     EditText mLocationAddress;
-    TextView mLocationText;
+    Button mUpdateDestination;
+    LinearLayout addressLay;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     Toolbar mToolbar;
+    ImageView imageView_back;
 
 
     @Override
@@ -81,21 +102,28 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        getBundleData();
+        actionBarSettings();
+
+        addressLay=(LinearLayout)findViewById(R.id.addressLay);
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-        mLocationAddress = (EditText) findViewById(R.id.Address);
-        mLocationText = (TextView) findViewById(R.id.Locality);
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        mLocationAddress = (EditText) findViewById(R.id.address);
+        mUpdateDestination = (Button) findViewById(R.id.updateDestination);
 
 
-        mLocationText.setOnClickListener(new View.OnClickListener() {
+
+//
+//        addressLay.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                openAutocompleteActivity();
+//            }
+//        });
+
+        mUpdateDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                openAutocompleteActivity();
+                updateDestination();
 
             }
 
@@ -114,6 +142,31 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         } else {
             Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    public void actionBarSettings() {
+
+        /* Assigning the toolbar object ot the view
+         * and setting the the Action bar to our toolbar
+         */
+        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
+
+        mTextView_heading = (TextView) findViewById(R.id.TextView_heading);
+        mTextView_heading.setText(getString(R.string.modify_destination));
+        mTextView_heading.setTypeface(typefaceMyriadHebrew);
+        imageView_back = (ImageView) findViewById(R.id.imageView_back);
+        imageView_back.setVisibility(View.VISIBLE);
+        imageView_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
     }
 
@@ -146,7 +199,8 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
                     Location mLocation = new Location("");
                     mLocation.setLatitude(mCenterLatLong.latitude);
                     mLocation.setLongitude(mCenterLatLong.longitude);
-
+                    latDest=mCenterLatLong.latitude;
+                    longtDest=mCenterLatLong.longitude;
                     startIntentService(mLocation);
                     mLocationMarkerText.setText("Lat : " + mCenterLatLong.latitude + "," + "Long : " + mCenterLatLong.longitude);
 
@@ -165,6 +219,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+//        Location mDestLocation = new Location("");
+//        mDestLocation.setLatitude(destinationLatitude);
+//        mDestLocation.setLongitude(destinationLatitude);
+//        latDest=mDestLocation.getLatitude();
+//        longtDest=mDestLocation.getLongitude();
+//        changeMap(mDestLocation);
 //        mMap.setMyLocationEnabled(true);
 //        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 //
@@ -172,6 +232,15 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void getBundleData() {
+        bundle = getIntent().getExtras();
+        destinationID = bundle.getInt("destinationID");
+        destinationLatitude = bundle.getDouble("destinationLatitude");
+        destinationLongitude = bundle.getDouble("destinationLongitude");
+//        isEditable = bundle.getBoolean("editable");
+//        isRequiresApproval = bundle.getBoolean("requireApproval");
     }
 
     @Override
@@ -308,14 +377,27 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
 
             latLong = new LatLng(location.getLatitude(), location.getLongitude());
+            latDest=location.getLatitude();
+            longtDest=location.getLongitude();
             Log.d("jomy", "Auto  Complete...Lang : " + latLong.latitude);
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLong).zoom(19f).tilt(70).build();
+
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mMap.animateCamera(CameraUpdateFactory
-                    .newCameraPosition(cameraPosition));
+            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
+            mMap.moveCamera(center);
+            mMap.animateCamera(zoom);
+
+
+
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(latLong).zoom(11f).tilt(70).build();
+//
+//            mMap.setMyLocationEnabled(true);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            mMap.animateCamera(CameraUpdateFactory
+//                    .newCameraPosition(cameraPosition));
 
             mLocationMarkerText.setText("Lat : " + location.getLatitude() + "," + "Long : " + location.getLongitude());
             startIntentService(location);
@@ -357,13 +439,8 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 //  showToast(getString(R.string.address_found));
-
-
             }
-
-
         }
-
     }
 
     /**
@@ -404,6 +481,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
 
     private void openAutocompleteActivity() {
+        Log.d("jomy","openAutocompleteActivity()");
         try {
             // The autocomplete activity requires Google Play Services to be available. The intent
             // builder checks this and throws an exception if it is not the case.
@@ -446,9 +524,11 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
 
                 latLong = place.getLatLng();
-                Location targetLocation = new Location("");//provider name is unecessary
-                targetLocation.setLatitude(place.getLatLng().latitude);//your coords of course
+                Location targetLocation = new Location("");
+                targetLocation.setLatitude(place.getLatLng().latitude);
                 targetLocation.setLongitude(place.getLatLng().longitude);
+                latDest=targetLocation.getLatitude();
+                longtDest=targetLocation.getLongitude();
                 Log.d("jomy", "Auto  Complete...Lang : " + place.getAddress() + "  LAtitude : " + targetLocation.getLatitude());
 //                changeMap(targetLocation);
 
@@ -503,5 +583,63 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         }
     }
 
+    public void updateDestination()
+    {
+        GeneralUtils.initialize_progressbar(this);
+        Call<ResponseModel> modifyDestinationCall = FinDotsApplication.getRestClient().getApiService().modifyDestination(setModifyDestinationRequest());
 
+        modifyDestinationCall.enqueue(new Callback<ResponseModel>() {
+
+
+                          @Override
+                          public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                              GeneralUtils.stop_progressbar();
+
+                              if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                                  Toast.makeText(DestinationModify_MapActivity.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+
+                                  Intent returnIntent = new Intent();
+                                  returnIntent.putExtra("result","success");
+                                  setResult(Activity.RESULT_OK,returnIntent);
+                                  finish();
+                              } else
+                                  Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+
+                          }
+
+                          @Override
+                          public void onFailure(Throwable t) {
+                              GeneralUtils.stop_progressbar();
+                              Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+
+                          }
+                      }
+        );
+    }
+
+    private Map<String, Object> setModifyDestinationRequest() {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("destinationID", destinationID);
+        postValues.put("newLatitude",latDest);
+        postValues.put("newLongitude", longtDest);
+        postValues.put("requestedDate", GeneralUtils.DateTimeInUTC());
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
+    }
+
+    public  void openAutoCompletePlace(View view)
+    {
+        openAutocompleteActivity();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

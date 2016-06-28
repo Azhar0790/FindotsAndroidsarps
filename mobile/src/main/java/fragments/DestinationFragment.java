@@ -16,13 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
-
 import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
@@ -31,7 +28,6 @@ import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
 import restcalls.destinations.GetDestinationsRestCall;
 import restcalls.destinations.IGetDestinations;
-import retrofit.Call;
 import utils.GeneralUtils;
 
 /**
@@ -44,6 +40,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
+    private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
 
     public static DestinationFragment newInstance() {
         DestinationFragment destinationFragment = new DestinationFragment();
@@ -70,16 +67,21 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     @Override
     public void onDestinationSelected(int itemPosition) {
 
+        Log.d("jomy","Pos... "+itemPosition);
+
         String address = destinationDatas[itemPosition].getAddress();
         boolean checkedIn = destinationDatas[itemPosition].isCheckedIn();
         boolean checkedOut = destinationDatas[itemPosition].isCheckedOut();
         int checkInRadius = destinationDatas[itemPosition].getCheckInRadius();
         String destinationName = destinationDatas[itemPosition].getDestinationName();
         int assignDestinationID = destinationDatas[itemPosition].getAssignDestinationID();
+        int destinationID = destinationDatas[itemPosition].getDestinationID();
         double destinationLatitude = destinationDatas[itemPosition].getDestinationLatitude();
         double destinationLongitude = destinationDatas[itemPosition].getDestinationLongitude();
         String checkedOutReportedDate = destinationDatas[itemPosition].getCheckedOutReportedDate();
-
+        boolean iseditable = destinationDatas[itemPosition].isEditable();
+        boolean isrequireApproval = destinationDatas[itemPosition].isRequiresApproval();
+        Log.d("jomy","assignDestinationID... "+assignDestinationID);
         listViewState = layoutManager.onSaveInstanceState();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
@@ -87,12 +89,16 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         intentDetailDestination.putExtra("checkedIn", checkedIn);
         intentDetailDestination.putExtra("checkedOut", checkedOut);
         intentDetailDestination.putExtra("destinationName", destinationName);
+        intentDetailDestination.putExtra("destinationName", destinationName);
+        intentDetailDestination.putExtra("destinationID", destinationID);
         intentDetailDestination.putExtra("assignDestinationID", assignDestinationID);
         intentDetailDestination.putExtra("destinationLatitude", destinationLatitude);
         intentDetailDestination.putExtra("destinationLongitude", destinationLongitude);
         intentDetailDestination.putExtra("checkedOutReportedDate", checkedOutReportedDate);
         intentDetailDestination.putExtra("checkInRadius", checkInRadius);
-        startActivity(intentDetailDestination);
+        intentDetailDestination.putExtra("editable", iseditable);
+        intentDetailDestination.putExtra("requireApproval", isrequireApproval);
+        startActivityForResult(intentDetailDestination,REQUEST_CODE_ACTIVITYDETAILS);
     }
 
     DestinationData[] destinationDatas = null;
@@ -164,6 +170,23 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
             restCall.callCheckInService(checkedIn, assignDestinationID);
+        }
+    }
+    /**
+     * Called after the autocomplete activity has finished to return its result.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
+            if (resultCode == getActivity().RESULT_OK && data.getStringExtra("result").equals("success")) {
+
+                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                destinationsRestCall.delegate = DestinationFragment.this;
+                destinationsRestCall.callGetDestinations();
+            }
         }
     }
 }

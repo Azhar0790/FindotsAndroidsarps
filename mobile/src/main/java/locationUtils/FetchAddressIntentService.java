@@ -96,12 +96,15 @@ public class FetchAddressIntentService extends IntentService {
                     location.getLongitude(),
                     // In this sample, we get just a single address.
                     1);
+            Log.d("jomy","Adress :"+addresses);
         } catch (IOException ioException) {
             // Catch network or other I/O problems.
+            Log.d("jomy","Adress errr :");
             errorMessage = "Service Not Available";
             Log.e(TAG, errorMessage, ioException);
         } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
+            Log.d("jomy","Adress catch :");
             errorMessage = "Invalid Lat & Longitude Used";
             Log.e(TAG, errorMessage + ". " +
                     "Latitude = " + location.getLatitude() +
@@ -116,6 +119,7 @@ public class FetchAddressIntentService extends IntentService {
             }
             deliverResultToReceiver(Constants.FAILURE_RESULT, errorMessage, null);
         } else {
+            Log.d("jomy","Adress sent :");
             Address address = addresses.get(0);
             ArrayList<String> addressFragments = new ArrayList<String>();
 

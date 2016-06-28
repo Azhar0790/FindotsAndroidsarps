@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/divider_color">
 
     <LinearLayout
         android:id="@+id/container_toolbar"
@@ -16,40 +16,55 @@
         android:paddingTop="@dimen/tool_bar_paddingTop"/>
 
 
+
+</LinearLayout>
+
     <LinearLayout
+        android:id="@+id/addressLay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/container_toolbar"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
-        <TextView android:gravity="center_vertical"
-            android:id="@+id/Locality"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/top_loc_padding"
-            android:ellipsize="end"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:text="Click to change location"
-            android:textSize="@dimen/top_loc_font" />
+
 
         <EditText
-            android:id="@+id/Address"
+            android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:enabled="false"
             android:hint="Address"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/black"/>
     </LinearLayout>
-</LinearLayout>
+
+
+    <Button
+        android:gravity="center"
+        android:id="@+id/updateDestination"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:drawablePadding="@dimen/top_loc_padding"
+        android:ellipsize="end"
+        android:textAllCaps="false"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_checked_at"
+        android:text="@string/update_destination"
+        android:textSize="@dimen/top_loc_font"
+        android:textColor="@color/white"
+        android:layout_marginBottom="1dp"/>
 <FrameLayout
+    android:id="@+id/mapframelay"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:layout_below="@+id/container_toolbar">
+android:layout_below="@+id/addressLay"
+    android:layout_above="@+id/updateDestination">
 
 <fragment
     xmlns:tools="http://schemas.android.com/tools"
@@ -76,7 +91,7 @@ android:layout_below="@+id/container_toolbar">
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:text=""
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/transparent" />
 
     <ImageView
         android:id="@+id/imageMarker"
@@ -88,5 +103,14 @@ android:layout_below="@+id/container_toolbar">
 
 
 </FrameLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/container_toolbar"
+        android:layout_above="@+id/mapframelay"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:onClick="openAutoCompletePlace"/>
 
 </RelativeLayout>

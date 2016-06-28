@@ -20,7 +20,7 @@
     <RelativeLayout
         android:id="@+id/RelativeLayout_address"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="65dp"
         android:layout_above="@+id/LinearLayout_checkIncheckOut"
         android:layout_marginBottom="6dp"
         android:layout_marginLeft="20dp"
@@ -41,16 +41,19 @@
         <TextView
             android:id="@+id/TextView_address"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="0dp"
             android:layout_toRightOf="@+id/TextView_map_km"
-            android:lines="7"
+            android:lines="2"
             android:scrollbars="vertical"
-            android:maxLines="8"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="@string/bd"
             android:textColor="@color/black_70"
             android:textSize="14sp" />
+
+
 
     </RelativeLayout>
 
@@ -70,7 +73,7 @@
         <Button
             android:id="@+id/Button_checkIncheckOut"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/button_height"
             android:layout_gravity="center"
             android:background="@null"
             android:drawablePadding="10dp"
@@ -81,5 +84,20 @@
             android:textSize="20sp" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/destModify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/modify_destination"
+        android:textColor="@color/app_color"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/LinearLayout_checkIncheckOut"
+        android:layout_alignRight="@+id/LinearLayout_checkIncheckOut"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:gravity="right"
+        android:textSize="14sp"
+        android:visibility="gone"/>
 
 </RelativeLayout>

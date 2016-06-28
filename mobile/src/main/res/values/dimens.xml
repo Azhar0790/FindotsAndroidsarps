@@ -91,4 +91,6 @@
     <dimen name="button_saveAccount_marginTop">30dp</dimen>
     <dimen name="accntSetting_edtTextSize">20dp</dimen>
 
+    <dimen name="button_height">60dp</dimen>
+
 </resources>

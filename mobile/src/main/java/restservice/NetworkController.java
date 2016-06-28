@@ -34,6 +34,9 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_GET_ASSIGNED_DESTINATIONS)
     Call<DestinationsModel> getDestinations(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_MODIFY_DESTINATION)
+    Call<ResponseModel> modifyDestination(@Body Map<String, Object> request);
+
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<LocationResponseData> getLogin(@Body BackgroundLocData bgData);
 
@@ -54,5 +57,6 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_CHANGEPASSWORD)
     Call<ResponseModel> changePassword(@Body Map<String, Object> request);
+
 
 }
