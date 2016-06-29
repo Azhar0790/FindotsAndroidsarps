@@ -38,7 +38,7 @@ public interface NetworkController {
     Call<ResponseModel> modifyDestination(@Body Map<String, Object> request);
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
-    Call<LocationResponseData> getLogin(@Body BackgroundLocData bgData);
+    Call<LocationResponseData> saveLocationPath(@Body BackgroundLocData bgData);
 
     @POST(RestURLs.METHOD_LOGOUT)
     Call<ResponseModel> logOut(@Body Map<String, Object> request);

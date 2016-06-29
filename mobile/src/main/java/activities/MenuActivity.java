@@ -219,7 +219,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             case Constants.TRACKLOCATION:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 locationReport = true;
-                GeneralUtils.initialize_progressbar(this);
+
                 connectGoogleApiClient();
 
                 break;
@@ -363,6 +363,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     }
 
     public void ReportMyLocation(Location currentLoc) {
+        GeneralUtils.initialize_progressbar(this);
         BackgroundLocData bgData = new BackgroundLocData();
         bgData.setDeviceID(GeneralUtils.getUniqueDeviceId(this));
         bgData.setDeviceInfo(GeneralUtils.getDeviceInfo());
@@ -386,7 +387,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         Log.d("jomy", "getUserID() : " + bgData.getUserID());
 
-        Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().getLogin(bgData);
+        Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().saveLocationPath(bgData);
 
 
         login.enqueue(new Callback<LocationResponseData>() {
@@ -395,7 +396,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                           @Override
                           public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
                               GeneralUtils.stop_progressbar();
-                              Log.d("jomy", "sucessLoc... " );
+                              Log.d("jomy", "sucessReportLoc... " );
                               if (response.isSuccess() && response.body().getErrorCode() == 0) {
                                   Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_success), Toast.LENGTH_SHORT).show();
 
@@ -410,7 +411,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                           public void onFailure(Throwable t) {
                               GeneralUtils.stop_progressbar();
                               Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
-
+                              Log.d("jomy", "Failure... " );
                           }
                       }
         );

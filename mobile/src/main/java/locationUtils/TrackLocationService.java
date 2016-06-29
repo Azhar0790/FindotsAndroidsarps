@@ -9,7 +9,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -17,15 +16,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import database.DataHelper;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import locationUtils.LocationModel.LocationData;
 import utils.GeneralUtils;
 
-//import com.techmagic.locationapp.webclient.ITrackLocationClient;
-//import com.techmagic.locationapp.webclient.TrackLocationClient;
-//import com.techmagic.locationapp.webclient.model.FriendResult;
-//import com.techmagic.locationapp.webclient.model.TrackLocationRequest;
-//import com.techmagic.locationapp.webclient.model.TrackLocationResponse;
 
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {

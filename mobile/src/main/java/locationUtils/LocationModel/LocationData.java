@@ -4,7 +4,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import locationUtils.Data;
+import database.Data;
 
 
 @Table(name = Data.LocationData.TABLE)

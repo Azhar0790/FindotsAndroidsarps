@@ -1,4 +1,4 @@
-package locationUtils;
+package database;
 
 import android.content.Context;
 import android.net.Uri;
