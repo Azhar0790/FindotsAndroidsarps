@@ -81,6 +81,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
                     .into(holder.mImageView_userImage);*/
             holder.mTextView_userName.setTypeface(typefaceLight);
+            holder.mTextView_userName.setText(username);
 
         } else if (holder.holderID == TYPE_ITEM) {
             holder.mTextView_menuItem.setTypeface(typefaceLight);

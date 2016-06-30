@@ -36,6 +36,7 @@ import java.util.Map;
 import adapters.MenuItemsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import database.DataHelper;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
@@ -169,14 +170,16 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
 
-        mTextView_heading.setText(getString(R.string.tracking_list));
+        mTextView_heading.setText(getString(R.string.destinations));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
     }
 
     public void setViewForDashboard() {
         mRecyclerView_menu_items.setHasFixedSize(true);
 
-        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, null, null);
+        String username = GeneralUtils.getSharedPreferenceString(MenuActivity.this, AppStringConstants.USERNAME);
+
+        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, username, null);
         MenuItemsAdapter.delegate = MenuActivity.this;
         mRecyclerView_menu_items.setAdapter(mAdapter);
 
@@ -247,7 +250,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 mailIntent.setAction(Intent.ACTION_SENDTO);
                 mailIntent.setData(Uri.parse("mailto:"));
 //                mailIntent.setType("message/rfc822");
-                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"finddotsapp@gmail.com"});
+                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"analytics@findots.com@gmail.com"});
                 mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Request");
                 try {
                     startActivity(Intent.createChooser(mailIntent, "Send Help Email"));
@@ -389,32 +392,26 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().saveLocationPath(bgData);
 
-
         login.enqueue(new Callback<LocationResponseData>() {
 
+            @Override
+            public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
+                Log.d("jomy", "sucessReportLoc... ");
+                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_success), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                          @Override
-                          public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
-                              GeneralUtils.stop_progressbar();
-                              Log.d("jomy", "sucessReportLoc... " );
-                              if (response.isSuccess() && response.body().getErrorCode() == 0) {
-                                  Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_success), Toast.LENGTH_SHORT).show();
-
-                              } else {
-                                  Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
-
-
-                              }
-                          }
-
-                          @Override
-                          public void onFailure(Throwable t) {
-                              GeneralUtils.stop_progressbar();
-                              Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
-                              Log.d("jomy", "Failure... " );
-                          }
-                      }
-        );
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                Log.d("jomy", "Failure... ");
+            }
+        });
     }
 
     public void logOut() {
@@ -454,6 +451,8 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     public void logOutNavigation() {
         GeneralUtils.stop_progressbar();
         stopTracking();
+        DataHelper dataHelper = DataHelper.getInstance(this);
+        dataHelper.deleteAllLocations();
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USERID);
         Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
         startActivity(intentLogout);
