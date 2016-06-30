@@ -255,7 +255,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.HELP:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-
+                FinDotsApplication.getDatabaseInfo(this);
                 Intent mailIntent = new Intent();
                 mailIntent.setAction(Intent.ACTION_SENDTO);
                 mailIntent.setData(Uri.parse("mailto:"));

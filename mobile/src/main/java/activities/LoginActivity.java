@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -78,6 +77,9 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
         mEditText_userName.setText("vanithaergam405@gmail.com");
         mEditText_password.setText("vani@1234");
+
+        mEditText_userName.setText("sravan@gmail.com");
+        mEditText_password.setText("Test1234");
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
