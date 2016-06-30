@@ -105,6 +105,10 @@
             android:name="locationUtils.FetchAddressIntentService"
             android:exported="false" />
 
+        <service
+            android:name="offlineServices.CheckInOutOfflineService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

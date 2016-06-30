@@ -7,7 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
+import java.util.List;
+
+import database.DataHelper;
+import database.dataModel.checkIn;
 import findots.bridgetree.com.findots.R;
+import offlineServices.CheckInOutOfflineService;
 
 /**
  * Created by parijathar on 6/7/2016.
@@ -46,9 +51,35 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected()) {
+            callCheckInOffline(context);
             return true;
         }
 
         return false;
     }
+
+    public static void callCheckInOffline(Context context)
+    {
+        DataHelper dataHelper = DataHelper.getInstance(context);
+        List<checkIn> checkInList = dataHelper.getCheckInListToSync();
+
+
+        if(checkInList.size()>0)
+        {
+            Intent intent = new Intent(context, CheckInOutOfflineService.class);
+            intent.putExtra("checkinStatus", false);
+            context.startService(intent);
+        }
+        List<checkIn> checkOutList = dataHelper.getCheckOutListToSync();
+        if(checkOutList.size()>0)
+        {
+            Intent intent = new Intent(context, CheckInOutOfflineService.class);
+            intent.putExtra("checkinStatus", true);
+            context.startService(intent);
+        }
+
+
+    }
+
+
 }

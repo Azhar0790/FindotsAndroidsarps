@@ -102,12 +102,19 @@ public class DataHelper {
         data.save();
     }
 
-    public List<checkIn> getCheckInToSync() {
+    public List<checkIn> getCheckInListToSync() {
+        List<checkIn> data = new Select().from(checkIn.class)
+                .where(Data.CheckInData.COLUMN_ISCHECKEDIN + " = " + 0)
+                .execute();
+        return data;
+    }
+    public List<checkIn> getCheckOutListToSync() {
         List<checkIn> data = new Select().from(checkIn.class)
                 .where(Data.CheckInData.COLUMN_ISCHECKEDIN + " = " + 1)
                 .execute();
         return data;
     }
+
     private void notifyChanged(Uri uri) {
         context.getContentResolver().notifyChange(uri, null);
     }

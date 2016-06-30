@@ -60,6 +60,7 @@
     <string name="checkout_failed">Check Out Failed</string>
     <string name="update_destination">Update Destination</string>
     <string name="modify_destination">Modify Destination</string>
+    <string name="modify_destinationError">Unable to Modify Destination</string>
 
 
     <!-- Strings related to login -->
