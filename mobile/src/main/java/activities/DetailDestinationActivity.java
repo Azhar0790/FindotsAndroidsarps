@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -80,7 +81,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     Bundle bundle = null;
 
-    int assignDestinationID = 0,destinationID=0;
+    int assignDestinationID = 0, destinationID = 0;
     double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
     boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
@@ -129,7 +130,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         destinationLatitude = bundle.getDouble("destinationLatitude");
         destinationLongitude = bundle.getDouble("destinationLongitude");
         checkedOutReportedDate = bundle.getString("checkedOutReportedDate");
-        checkInRadius = bundle.getDouble("checkInRadius");
+        checkInRadius = (double) bundle.getInt("checkInRadius");
         isEditable = bundle.getBoolean("editable");
         isRequiresApproval = bundle.getBoolean("requireApproval");
     }
@@ -248,7 +249,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public CircleOptions drawCircleOnMap() {
         return new CircleOptions()
                 .center(latLng)
-                .radius(500)
+                .radius(checkInRadius)
                 .strokeColor(Color.TRANSPARENT)
                 .fillColor(getResources().getColor(R.color.app_color_10))
                 .strokeWidth(STROKE_WIDTH);
@@ -281,7 +282,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut) {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        List<String> providers = locationManager.getProviders(true);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = null;
+
+        for (String provider: providers) {
+
+            Location currentLocation = locationManager.getLastKnownLocation(provider);
+            if (currentLocation == null) {
+                continue;
+            }
+            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                location = currentLocation;
+            }
+
+        }
+
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 

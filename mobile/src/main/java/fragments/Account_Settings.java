@@ -81,6 +81,7 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         ButterKnife.bind(this, rootView);
         setUIElementsProperty();
         mParentLay.setVisibility(View.GONE);
+
         GetAccountInfoRestCall accountInfoRestCall = new GetAccountInfoRestCall(getActivity());
         accountInfoRestCall.delegate = Account_Settings.this;
         accountInfoRestCall.callGetAccountInfoService();
@@ -134,28 +135,27 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
 
             login.enqueue(new Callback<ResponseModel>() {
 
+                @Override
+                public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                    GeneralUtils.stop_progressbar();
 
-                              @Override
-                              public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
-                                  GeneralUtils.stop_progressbar();
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                        GeneralUtils.setSharedPreferenceString(getActivity(), AppStringConstants.NAME,
+                                mEditText_name.getText().toString());
+                        GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.ACCOUNT_UPDATE, 1);
+                        Toast.makeText(getActivity(), response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
 
-                                  if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                }
 
-                                      Toast.makeText(getActivity(), response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Throwable t) {
+                    GeneralUtils.stop_progressbar();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
 
-                                  } else
-                                      Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
-
-                              }
-
-                              @Override
-                              public void onFailure(Throwable t) {
-                                  GeneralUtils.stop_progressbar();
-                                  Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
-
-                              }
-                          }
-            );
+                }
+            });
         }
     }
 
@@ -196,8 +196,9 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
     @Override
     public void onGetAccountInfoSuccess(GetAccountInfoModel accountInfoModel) {
         this.accountInfoModel = accountInfoModel;
-        if(accountInfoModel.getData().size()>0)
+        if(accountInfoModel.getData().size()>0) {
             setAccountInfoText();
+        }
         else
         {
             Toast.makeText(getActivity(), accountInfoModel.getMessage(), Toast.LENGTH_SHORT).show();

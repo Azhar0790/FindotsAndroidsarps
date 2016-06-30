@@ -120,20 +120,19 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
     @Override
     public void onLoginSuccess(LoginModel loginModel) {
-        if (loginModel.getErrorCode() == 2) {
-            GeneralUtils.createAlertDialog(LoginActivity.this, loginModel.getMessage());
-        } else {
-
+        if (loginModel.getErrorCode() == 0) {
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, userName);
             GeneralUtils.setSharedPreferenceString(this,AppStringConstants.PASSWORD, password);
 
-            if(loginModel.getLoginData().length>0) {
+            if(loginModel.getLoginData().length > 0) {
+                GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
-
-                Log.d("jomy", "sP Val : " + GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
             }
+
             startMenuActivity();
+        } else {
+            GeneralUtils.createAlertDialog(LoginActivity.this, loginModel.getMessage());
         }
     }
 

@@ -2,9 +2,11 @@ package activities;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Typeface;
@@ -129,6 +131,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                int account_update = GeneralUtils.getSharedPreferenceInt(MenuActivity.this,
+                        AppStringConstants.ACCOUNT_UPDATE);
+                if (account_update == 1) {
+                    setViewForDashboard();
+                    GeneralUtils.setSharedPreferenceInt(MenuActivity.this, AppStringConstants.ACCOUNT_UPDATE, 0);
+                }
+
             }
         };
 
@@ -177,9 +187,9 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     public void setViewForDashboard() {
         mRecyclerView_menu_items.setHasFixedSize(true);
 
-        String username = GeneralUtils.getSharedPreferenceString(MenuActivity.this, AppStringConstants.USERNAME);
+        String name = GeneralUtils.getSharedPreferenceString(MenuActivity.this, AppStringConstants.NAME);
 
-        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, username, null);
+        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, name, null);
         MenuItemsAdapter.delegate = MenuActivity.this;
         mRecyclerView_menu_items.setAdapter(mAdapter);
 
@@ -250,7 +260,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 mailIntent.setAction(Intent.ACTION_SENDTO);
                 mailIntent.setData(Uri.parse("mailto:"));
 //                mailIntent.setType("message/rfc822");
-                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"analytics@findots.com@gmail.com"});
+                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@findots.com"});
                 mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Request");
                 try {
                     startActivity(Intent.createChooser(mailIntent, "Send Help Email"));
@@ -260,7 +270,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
                 break;
             case Constants.LOGOUT:
-                logOut();
+                logoutConfirmation();
                 break;
 
             default:
@@ -272,6 +282,25 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     @Override
     public void onPermissionsGranted(int requestCode) {
 
+    }
+
+    public void logoutConfirmation() {
+        new AlertDialog.Builder(MenuActivity.this)
+                .setTitle(getString(R.string.app_name))
+                .setMessage(getString(R.string.logout_confirmation))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        logOut();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     private void showErrorDialog(int errorCode) {

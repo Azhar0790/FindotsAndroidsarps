@@ -34,12 +34,9 @@ public class DestinationData {
 
     private boolean checkedOut;
 
-
-
     private boolean isEditable;
 
     private boolean isRequiresApproval;
-
 
     public boolean isCheckedIn() {
         return checkedIn;
@@ -144,6 +141,7 @@ public class DestinationData {
     public void setDestinationLatitude(double destinationLatitude) {
         this.destinationLatitude = destinationLatitude;
     }
+
     public boolean isEditable() {
         return isEditable;
     }
@@ -162,6 +160,6 @@ public class DestinationData {
 
     @Override
     public String toString() {
-        return "ClassPojo [destinationID = " + destinationID + ", checkedOutReportedDate = " + checkedOutReportedDate + ", address = " + address + ", assigndestinationTime = " + assigndestinationTime + ", name = " + name + ", checkedIn = " + ", checkedInReportedDate = " + checkedInReportedDate + ", destinationLongitude = " + destinationLongitude + ", destinationName = " + destinationName + ", destinationLatitude = " + destinationLatitude + ", checkedOut = "  + "]";
+        return "ClassPojo [destinationID = " + destinationID + ", checkedOutReportedDate = " + checkedOutReportedDate + ", address = " + address + ", assigndestinationTime = " + assigndestinationTime + ", name = " + name + ", checkedIn = " + ", checkedInReportedDate = " + checkedInReportedDate + ", destinationLongitude = " + destinationLongitude + ", destinationName = " + destinationName + ", destinationLatitude = " + destinationLatitude + ", checkedOut = " + "]";
     }
 }

@@ -21,8 +21,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (isNetworkAvailable(context)) {
-            toastInfo = context.getString(R.string.network_available) +
-                    networkInfo.getExtraInfo() + " " + networkInfo.getTypeName();
+
+            if (networkInfo.getExtraInfo() != null) {
+                toastInfo = context.getString(R.string.network_available) + " "+
+                        networkInfo.getExtraInfo() + " " + networkInfo.getTypeName();
+            } else {
+                toastInfo = context.getString(R.string.network_not_available);
+            }
 
             Toast.makeText(context, toastInfo, Toast.LENGTH_SHORT).show();
         } else {

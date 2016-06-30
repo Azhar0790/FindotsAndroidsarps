@@ -5,8 +5,10 @@ package utils;
  */
 public class AppStringConstants {
 
+    public static String NAME = "name";
     public static String USERNAME = "username";
     public static String PASSWORD = "password";
     public static String USERID = "userID";
     public static String CORPORATEUSERID = "corporateUserID";
+    public static String ACCOUNT_UPDATE = "account_update";
 }

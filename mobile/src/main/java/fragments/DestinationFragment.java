@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+
 import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
@@ -67,8 +69,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     @Override
     public void onDestinationSelected(int itemPosition) {
 
-        Log.d("jomy","Pos... "+itemPosition);
-
         String address = destinationDatas[itemPosition].getAddress();
         boolean checkedIn = destinationDatas[itemPosition].isCheckedIn();
         boolean checkedOut = destinationDatas[itemPosition].isCheckedOut();
@@ -79,9 +79,9 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         double destinationLatitude = destinationDatas[itemPosition].getDestinationLatitude();
         double destinationLongitude = destinationDatas[itemPosition].getDestinationLongitude();
         String checkedOutReportedDate = destinationDatas[itemPosition].getCheckedOutReportedDate();
-        boolean iseditable = destinationDatas[itemPosition].isEditable();
-        boolean isrequireApproval = destinationDatas[itemPosition].isRequiresApproval();
-        Log.d("jomy","assignDestinationID... "+assignDestinationID);
+        boolean isEditable = destinationDatas[itemPosition].isEditable();
+        boolean isRequireApproval = destinationDatas[itemPosition].isRequiresApproval();
+
         listViewState = layoutManager.onSaveInstanceState();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
@@ -96,8 +96,8 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         intentDetailDestination.putExtra("destinationLongitude", destinationLongitude);
         intentDetailDestination.putExtra("checkedOutReportedDate", checkedOutReportedDate);
         intentDetailDestination.putExtra("checkInRadius", checkInRadius);
-        intentDetailDestination.putExtra("editable", iseditable);
-        intentDetailDestination.putExtra("requireApproval", isrequireApproval);
+        intentDetailDestination.putExtra("editable", isEditable);
+        intentDetailDestination.putExtra("requireApproval", isRequireApproval);
         startActivityForResult(intentDetailDestination,REQUEST_CODE_ACTIVITYDETAILS);
     }
 
@@ -149,7 +149,24 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                                                        double destinationLongitude, double checkInRadius,
                                                        boolean checkedIn, int assignDestinationID) {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        List<String> providers = locationManager.getProviders(true);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = null;
+
+        for (String provider: providers) {
+
+            Location currentLocation = locationManager.getLastKnownLocation(provider);
+            if (currentLocation == null) {
+                continue;
+            }
+            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                location = currentLocation;
+            }
+
+        }
+
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
