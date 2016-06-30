@@ -1,6 +1,7 @@
 package offlineServices;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Map;
 
 import database.DataHelper;
 import database.dataModel.checkIn;
+import de.greenrobot.event.EventBus;
+import events.AppEvents;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import restcalls.checkInCheckOut.CheckInCheckOutModel;
@@ -25,7 +28,6 @@ import utils.GeneralUtils;
 public class CheckInCheckOutOfflineRestCall {
 
     Context context = null;
-
 
 
     public CheckInCheckOutOfflineRestCall(Context context) {
@@ -49,6 +51,17 @@ public class CheckInCheckOutOfflineRestCall {
             public void onResponse(Response<CheckInCheckOutModel> response, Retrofit retrofit) {
 
                 if (response.isSuccess()) {
+                    DataHelper dataHelper = DataHelper.getInstance(context);
+                    if (!isCheckIn) {
+                        EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
+                        Log.d("jomy","call Offline");
+                        dataHelper.deleteCheckinList();
+                    }
+                    else {
+                        EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
+                        Log.d("jomy","call Offlineout");
+                        dataHelper.deleteCheckoutList();
+                    }
                 }
             }
 
@@ -67,10 +80,9 @@ public class CheckInCheckOutOfflineRestCall {
 
         DataHelper dataHelper = DataHelper.getInstance(context);
         List<checkIn> checkInList;
-        if(!isCheckIn) {
+        if (!isCheckIn) {
             checkInList = dataHelper.getCheckInListToSync();
-        }
-        else
+        } else
             checkInList = dataHelper.getCheckOutListToSync();
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -79,8 +91,7 @@ public class CheckInCheckOutOfflineRestCall {
          *   fetch all the checkIn details from database If any
          *   and create request
          */
-        for(checkIn checkInData : checkInList)
-        {
+        for (checkIn checkInData : checkInList) {
             Map<String, Object> checkInValues = new HashMap<>();
             checkInValues.put("assignDestinationID", checkInData.getAssigned_destinationId());
             checkInValues.put("reportedTime", checkInData.getReportedTime());
@@ -88,9 +99,6 @@ public class CheckInCheckOutOfflineRestCall {
             checkInValues.put("checkedInOutLongitude", checkInData.getCheckInOUTlongitude());
             list.add(checkInValues);
         }
-
-
-
 
 
         int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);

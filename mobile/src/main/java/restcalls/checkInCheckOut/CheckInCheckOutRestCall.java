@@ -91,8 +91,15 @@ public class CheckInCheckOutRestCall {
          */
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        currentLatitude = location.getLatitude();
-        currentLongitude = location.getLongitude();
+        try {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        }
+        catch(Exception e)
+        {
+            currentLatitude = 12.777;
+            currentLongitude = 77.896;
+        }
 
         /**
          *   fetching current time in UTC format
