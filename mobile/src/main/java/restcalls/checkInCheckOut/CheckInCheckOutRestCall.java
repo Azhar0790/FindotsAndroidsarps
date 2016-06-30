@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import database.DataHelper;
+import database.dataModel.checkIn;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
@@ -22,6 +24,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import utils.AppStringConstants;
 import utils.GeneralUtils;
+import utils.NetworkChangeReceiver;
 
 /**
  * Created by parijathar on 6/22/2016.
@@ -30,12 +33,17 @@ public class CheckInCheckOutRestCall {
 
     public ICheckInCheckOut delegate = null;
     Context context = null;
+    double currentLatitude = 0, currentLongitude = 0;
+    String reportedTime;
+    int assignedDestinationID;
+
 
     public CheckInCheckOutRestCall(Context context) {
         this.context = context;
     }
 
-    public void callCheckInService(final boolean isCheckIn, int assignedDestinationID) {
+    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID) {
+        this.assignedDestinationID = assignedDestinationID;
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID);
@@ -66,6 +74,11 @@ public class CheckInCheckOutRestCall {
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
+                if (!NetworkChangeReceiver.isNetworkAvailable(context)) {
+                    checkIn checkInData = checkIn.getInstance(assignedDestinationID, reportedTime, currentLatitude, currentLongitude, isCheckIn);
+                    DataHelper dataHelper = DataHelper.getInstance(context);
+                    dataHelper.saveCheckInOut(checkInData);
+                }
                 delegate.onCheckInFailure(context.getString(R.string.failed));
             }
         });
@@ -78,15 +91,15 @@ public class CheckInCheckOutRestCall {
          */
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
 
         /**
          *   fetching current time in UTC format
          */
         DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
         DateTime dateTime = new DateTime();
-        String reportedTime = dateTime.toString(fmt1);
+        reportedTime = dateTime.toString(fmt1);
 
         List<Map<String, Object>> list = new ArrayList<>();
 

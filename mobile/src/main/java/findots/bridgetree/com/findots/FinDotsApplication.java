@@ -13,6 +13,10 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.google.android.gms.location.LocationRequest;
 
+import java.util.List;
+
+import database.DataHelper;
+import database.dataModel.checkIn;
 import locationUtils.LocationModel.LocationData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationPreferencesManager;
@@ -116,7 +120,29 @@ public class FinDotsApplication extends MultiDexApplication {
     private void initializeDB() {
         Configuration.Builder configurationBuilder = new Configuration.Builder(this);
         configurationBuilder.addModelClasses(LocationData.class);
+        configurationBuilder.addModelClasses(checkIn.class);
+
         ActiveAndroid.initialize(configurationBuilder.create());
+    }
+
+    public static void getDatabaseInfo(Context context)
+    {
+        DataHelper dataHelper = DataHelper.getInstance(context);
+        List<LocationData> locations = dataHelper.getLocationsToSync();
+
+        for (LocationData locData : locations) {
+         Log.d("jomy"," Lat : "+locData.getLatitude()+"  Long:  "+locData.getLongitude());
+
+
+        }
+
+        List<checkIn> checkInlist = dataHelper.getCheckInToSync();
+
+        for ( checkIn  checkInData : checkInlist) {
+            Log.d("jomy"," destinationId : "+checkInData.getAssigned_destinationId()+"  ReportedTime:  "+checkInData.getReportedTime());
+
+
+        }
     }
 
 
