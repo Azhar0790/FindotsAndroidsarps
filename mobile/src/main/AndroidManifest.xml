@@ -87,7 +87,7 @@
             android:value="2" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="locationUtils.LocationModel.LocationData" />
+            android:value="locationUtils.LocationModel.LocationData,database.dataModel.checkIn" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

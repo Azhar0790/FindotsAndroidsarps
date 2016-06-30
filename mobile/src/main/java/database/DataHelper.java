@@ -8,6 +8,7 @@ import com.activeandroid.query.Select;
 
 import java.util.List;
 
+import database.dataModel.checkIn;
 import locationUtils.LocationModel.LocationData;
 
 
@@ -96,7 +97,17 @@ public class DataHelper {
 //    public void deleteAllGeoPoints() {
 //        new Delete().from(GeoPoint.class).execute();
 //    }
-//
+
+    public void saveCheckInOut(checkIn data) {
+        data.save();
+    }
+
+    public List<checkIn> getCheckInToSync() {
+        List<checkIn> data = new Select().from(checkIn.class)
+                .where(Data.CheckInData.COLUMN_ISCHECKEDIN + " = " + 1)
+                .execute();
+        return data;
+    }
     private void notifyChanged(Uri uri) {
         context.getContentResolver().notifyChange(uri, null);
     }
