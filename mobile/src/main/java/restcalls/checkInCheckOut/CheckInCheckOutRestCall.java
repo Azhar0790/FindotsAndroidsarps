@@ -42,8 +42,10 @@ public class CheckInCheckOutRestCall {
         this.context = context;
     }
 
-    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID) {
+    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID,double lattitude,double longitude) {
         this.assignedDestinationID = assignedDestinationID;
+        currentLatitude =lattitude;
+        currentLongitude = longitude;
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID);

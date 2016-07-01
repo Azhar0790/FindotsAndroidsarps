@@ -1,14 +1,17 @@
 package activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -21,6 +24,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,9 +45,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import database.DataHelper;
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
 import findots.bridgetree.com.findots.R;
+import locationUtils.LocationModel.LocationData;
+import locationUtils.Utils;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import restcalls.checkInCheckOut.ICheckInCheckOut;
 import restcalls.destinations.DestinationData;
@@ -53,47 +63,52 @@ import utils.GeneralUtils;
  * Created by parijathar on 6/21/2016.
  */
 public class DetailDestinationActivity extends AppCompatActivity implements
-        OnMapReadyCallback, ICheckInCheckOut, IGetDestinations {
+        OnMapReadyCallback, ICheckInCheckOut, IGetDestinations,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
 
-    @Bind(R.id.TextView_map_km)
-    TextView mTextView_map_km;
 
-    @Bind(R.id.imageView_back)
-    ImageView imageView_back;
+        @Bind(R.id.TextView_map_km)
+        TextView mTextView_map_km;
 
-    @Bind(R.id.TextView_address)
-    TextView mTextView_address;
+        @Bind(R.id.imageView_back)
+        ImageView imageView_back;
 
-    @Bind(R.id.LinearLayout_checkIncheckOut)
-    LinearLayout mLinearLayout_checkIncheckOut;
+        @Bind(R.id.TextView_address)
+        TextView mTextView_address;
 
-    @Bind(R.id.Button_checkIncheckOut)
-    Button mButton_checkIncheckOut;
+        @Bind(R.id.LinearLayout_checkIncheckOut)
+        LinearLayout mLinearLayout_checkIncheckOut;
 
-    @Bind(R.id.TextView_heading)
-    TextView mTextView_heading;
+        @Bind(R.id.Button_checkIncheckOut)
+        Button mButton_checkIncheckOut;
 
-    @Bind(R.id.destModify)
-    TextView mDestModify;
+        @Bind(R.id.TextView_heading)
+        TextView mTextView_heading;
 
-    Toolbar mToolbar = null;
+        @Bind(R.id.destModify)
+        TextView mDestModify;
 
-    GoogleMap mGoogleMap = null;
-    Circle mCircle = null;
-    LatLng latLng = null;
+        Toolbar mToolbar = null;
 
-    Bundle bundle = null;
+        private GoogleApiClient mGoogleApiClient;
+        GoogleMap mGoogleMap = null;
+        Circle mCircle = null;
+        LatLng latLng = null;
 
-    int assignDestinationID = 0, destinationID = 0;
-    double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
-    String address = null, destinationName = null, checkedOutReportedDate = null;
+        Bundle bundle = null;
 
-    public static final int STROKE_WIDTH = 6;
-    private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
+        int assignDestinationID = 0, destinationID = 0;
+        double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
+        boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
+        String address = null, destinationName = null, checkedOutReportedDate = null;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        public static final int STROKE_WIDTH = 6;
+        private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
+        double currentLatitude = 0.0, currentLongitude = 0.0;
+
+        @Override
+        protected void onCreate (@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_destination);
 
@@ -120,22 +135,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    protected void onStop() {
+        @Override
+        protected void onStop () {
         super.onStop();
 
     }
 
-    @Override
-    protected void onDestroy() {
+        @Override
+        protected void onDestroy () {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
     }
 
-    /**
-     * get Bundle data
-     */
+        /**
+         * get Bundle data
+         */
+
     public void getBundleData() {
         bundle = getIntent().getExtras();
         address = bundle.getString("address");
@@ -143,7 +159,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         checkedOut = bundle.getBoolean("checkedOut");
         destinationName = bundle.getString("destinationName");
         assignDestinationID = bundle.getInt("assignDestinationID");
-        destinationID= bundle.getInt("destinationID");
+        destinationID = bundle.getInt("destinationID");
         destinationLatitude = bundle.getDouble("destinationLatitude");
         destinationLongitude = bundle.getDouble("destinationLongitude");
         checkedOutReportedDate = bundle.getString("checkedOutReportedDate");
@@ -230,17 +246,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
 
     public LatLngBounds getCenterCoordinates() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        double currentLatitude, currentLongitude;
-        try {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        } catch (Exception e) {
-            currentLatitude = 0.0;
-            currentLongitude = 0.0;
-        }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(destinationLatitude, destinationLongitude));
@@ -304,7 +309,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location location = null;
 
-        for (String provider: providers) {
+        for (String provider : providers) {
 
             Location currentLocation = locationManager.getLastKnownLocation(provider);
             if (currentLocation == null) {
@@ -344,7 +349,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             if (requestForCheckInCheckOut) {
                 CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
                 restCall.delegate = DetailDestinationActivity.this;
-                restCall.callCheckInService(checkedIn, assignDestinationID);
+                restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
             }
         }
     }
@@ -376,7 +381,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             }
         }
 
-        if(data!=null) {
+        if (data != null) {
             address = data.getAddress();
             checkedIn = data.isCheckedIn();
             checkedOut = data.isCheckedOut();
@@ -405,7 +410,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             intentModifyLoc.putExtra("destinationID", destinationID);
             intentModifyLoc.putExtra("destinationLatitude", destinationLatitude);
             intentModifyLoc.putExtra("destinationLongitude", destinationLongitude);
-            startActivityForResult(intentModifyLoc,REQUEST_CODE_MODIFY_DESTINATION);
+            startActivityForResult(intentModifyLoc, REQUEST_CODE_MODIFY_DESTINATION);
         }
     }
 
@@ -420,11 +425,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_CODE_MODIFY_DESTINATION) {
             if (resultCode == RESULT_OK && data.getStringExtra("result").equals("success")) {
 
-                if(isRequiresApproval==false)
-                {
+                if (isRequiresApproval == false) {
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result","success");
-                    setResult(Activity.RESULT_OK,returnIntent);
+                    returnIntent.putExtra("result", "success");
+                    setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }
             }
@@ -435,16 +439,122 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         switch (event) {
             case OFFLINECHECKIN:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
-                Log.d("jomy","onLineCheckin");
+                Log.d("jomy", "onLineCheckin");
                 EventBus.getDefault().unregister(this);
                 finish();
                 break;
             case OFFLINECHECKOUT:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
-                Log.d("jomy","onLineCheckOut");
+                Log.d("jomy", "onLineCheckOut");
                 EventBus.getDefault().unregister(this);
                 finish();
                 break;
         }
+    }
+
+    public void checkLocationData() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (location != null) {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        } else {
+
+            DataHelper dataHelper = DataHelper.getInstance(this);
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            } else {
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                    return;
+                }
+                if(!(Utils.isLocationServiceEnabled(this))) {
+                    Utils.createLocationServiceError(this);
+                }
+
+                buildGoogleApiClient();
+            }
+        }
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+
+            currentLatitude = mLastLocation.getLatitude();
+            currentLongitude = mLastLocation.getLongitude();
+        } else
+            try {
+                LocationServices.FusedLocationApi.removeLocationUpdates(
+                        mGoogleApiClient, this);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        try {
+            if (location != null)
+            {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+            }
+
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

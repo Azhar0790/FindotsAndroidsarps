@@ -54,6 +54,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
+    double currentLatitude = 0.0, currentLongitude = 0.0;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
     double currentLatitude = 0.013, currentLongitude = 0.012;
 
@@ -237,8 +238,24 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
         }
 
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+        if (location != null) {
+
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        }
+        else
+        {
+            DataHelper dataHelper = DataHelper.getInstance(getActivity());
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+        }
+
+
 
         float[] distance = new float[2];
 
