@@ -50,6 +50,7 @@ import locationUtils.LocationModel.LocationResponseData;
 import locationUtils.LocationModel.LocationSyncData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationService;
+import locationUtils.Utils;
 import restmodels.ResponseModel;
 import retrofit.Call;
 import retrofit.Callback;
@@ -118,6 +119,9 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         ButterKnife.bind(this);
 
+        if(!(Utils.isLocationServiceEnabled(this))) {
+            Utils.createLocationServiceError(this);
+        }
         actionBarSettings();
         setViewForDashboard();
 

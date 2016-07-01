@@ -29,11 +29,13 @@ import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import database.DataHelper;
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
+import locationUtils.LocationModel.LocationData;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import restcalls.checkInCheckOut.ICheckInCheckOut;
 import restcalls.destinations.DestinationData;
@@ -52,6 +54,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
+    double currentLatitude = 0.0, currentLongitude = 0.0;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
 
     public static DestinationFragment newInstance() {
@@ -233,8 +236,24 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
         }
 
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+        if (location != null) {
+
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        }
+        else
+        {
+            DataHelper dataHelper = DataHelper.getInstance(getActivity());
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+        }
+
+
 
         float[] distance = new float[2];
 
@@ -252,7 +271,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
              */
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID);
+            restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
         }
     }
     /**

@@ -142,7 +142,9 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         } else {
             Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
-
+        if(!(Utils.isLocationServiceEnabled(this))) {
+            Utils.createLocationServiceError(this);
+        }
     }
 
     public void actionBarSettings() {
