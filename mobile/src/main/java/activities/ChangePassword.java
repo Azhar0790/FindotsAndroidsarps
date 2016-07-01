@@ -190,7 +190,6 @@ public class ChangePassword extends AppCompatActivity {
     }
     public void logOutNavigation() {
         GeneralUtils.stop_progressbar();
-//        stopTracking();
         stopService(new Intent(this, TrackLocationService.class));
         DataHelper dataHelper = DataHelper.getInstance(ChangePassword.this);
         dataHelper.deleteAllLocations();
