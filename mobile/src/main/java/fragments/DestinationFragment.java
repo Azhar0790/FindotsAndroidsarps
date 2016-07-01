@@ -22,6 +22,8 @@ import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+import events.AppEvents;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
@@ -49,6 +51,23 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         return destinationFragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +81,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationFragment.this;
         destinationsRestCall.callGetDestinations();
-
         return rootView;
     }
 
@@ -114,6 +132,8 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
             mRecyclerView_destinations.setAdapter(destinationsAdapter);
             destinationsAdapter.notifyDataSetChanged();
             layoutManager.onRestoreInstanceState(listViewState);
+            if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
         }
     }
 
@@ -138,6 +158,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationFragment.this;
         destinationsRestCall.callGetDestinations();
+
     }
 
     @Override
@@ -206,4 +227,33 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
             }
         }
     }
+    public void onEvent(AppEvents event) {
+        GetDestinationsRestCall destinationsRestCall;
+
+        switch (event) {
+
+            case OFFLINECHECKIN:
+                EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
+                EventBus.getDefault().cancelEventDelivery(event) ;
+                EventBus.getDefault().unregister(this);
+
+
+                Log.d("jomy","callll checkout22...");
+                destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                destinationsRestCall.delegate = DestinationFragment.this;
+                destinationsRestCall.callGetDestinations();
+
+                break;
+            case OFFLINECHECKOUT:
+                EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
+                EventBus.getDefault().cancelEventDelivery(event) ;
+                EventBus.getDefault().unregister(this);
+                Log.d("jomy","callll checkout...");
+                destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                destinationsRestCall.delegate = DestinationFragment.this;
+                destinationsRestCall.callGetDestinations();
+                break;
+        }
+    }
+
 }

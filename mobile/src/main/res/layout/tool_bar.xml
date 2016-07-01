@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:elevation="2dp"
-    android:paddingTop="@dimen/tool_bar_paddingTop"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView

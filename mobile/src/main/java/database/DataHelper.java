@@ -115,6 +115,20 @@ public class DataHelper {
         return data;
     }
 
+    public void deleteCheckinList() {
+        new Delete().from(checkIn.class)
+                .where(Data.CheckInData.COLUMN_ISCHECKEDIN + " = " + 0)
+                .execute();
+
+    }
+
+    public void deleteCheckoutList() {
+        new Delete().from(checkIn.class)
+                .where(Data.CheckInData.COLUMN_ISCHECKEDIN + " = " + 1)
+                .execute();
+
+    }
+
     private void notifyChanged(Uri uri) {
         context.getContentResolver().notifyChange(uri, null);
     }

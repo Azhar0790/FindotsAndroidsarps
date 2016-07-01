@@ -30,6 +30,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             if (networkInfo.getExtraInfo() != null) {
                 toastInfo = context.getString(R.string.network_available) + " "+
                         networkInfo.getExtraInfo() + " " + networkInfo.getTypeName();
+                callCheckInOffline(context);
             } else {
                 toastInfo = context.getString(R.string.network_not_available);
             }
@@ -51,7 +52,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected()) {
-            callCheckInOffline(context);
             return true;
         }
 

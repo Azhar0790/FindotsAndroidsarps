@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,6 +38,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+import events.AppEvents;
 import findots.bridgetree.com.findots.R;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import restcalls.checkInCheckOut.ICheckInCheckOut;
@@ -113,8 +116,22 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             mDestModify.setVisibility(View.VISIBLE);
         }
 
+        EventBus.getDefault().register(this);
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+
+    }
 
     /**
      * get Bundle data
@@ -411,6 +428,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     finish();
                 }
             }
+        }
+    }
+
+    public void onEvent(AppEvents event) {
+        switch (event) {
+            case OFFLINECHECKIN:
+                EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
+                Log.d("jomy","onLineCheckin");
+                EventBus.getDefault().unregister(this);
+                finish();
+                break;
+            case OFFLINECHECKOUT:
+                EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
+                Log.d("jomy","onLineCheckOut");
+                EventBus.getDefault().unregister(this);
+                finish();
+                break;
         }
     }
 }
