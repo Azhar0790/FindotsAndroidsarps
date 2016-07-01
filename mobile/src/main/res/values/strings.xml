@@ -63,6 +63,8 @@
     <string name="modify_destinationError">Unable to Modify Destination</string>
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
+    <string name="not_the_right_destination">Please CheckIn when you reach the destination.</string>
+
 
     <!-- Strings related to login -->
     <string name="action_sign_in">Sign in or register</string>

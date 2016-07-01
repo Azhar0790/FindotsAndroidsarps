@@ -21,6 +21,8 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import java.util.ArrayList;
+
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
@@ -35,11 +37,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     public static IDestinations delegate = null;
 
     Context context = null;
-    DestinationData[] destinationDatas = null;
+    ArrayList<DestinationData> destinationDatas = null;
     final String assignedBy = "Assigned by ";
     String getTime = null;
 
-    public DestinationsAdapter(Context context, DestinationData[] destinationDatas) {
+    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas) {
         this.context = context;
         this.destinationDatas = destinationDatas;
 
@@ -74,7 +76,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public int getItemCount() {
-        return destinationDatas.length;
+        return destinationDatas.size();
     }
 
 
@@ -92,12 +94,12 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         /**
          *   to display assigned Destination Time, get the time difference
          */
-        String assignDestinationTime = destinationDatas[position].getAssigndestinationTime();
+        String assignDestinationTime = destinationDatas.get(position).getAssigndestinationTime();
         if (assignDestinationTime.length() != 0) {
             String timeDifference = dateTimeDifference(assignDestinationTime);
-            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName() +" "+timeDifference);
+            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas.get(position).getName() +" "+timeDifference);
         } else {
-            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas[position].getName());
+            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas.get(position).getName());
         }
 
         /**
@@ -110,15 +112,15 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         /**
          *   set Destination Name
          */
-        holder.mTextView_destinationName.setText(destinationDatas[position].getDestinationName());
+        holder.mTextView_destinationName.setText(destinationDatas.get(position).getDestinationName());
 
         /**
          *   based on CheckIn / CheckOut status
          *   display the background and button name
          *   set checked_out time if any.
          */
-        boolean isCheckIn = destinationDatas[position].isCheckedIn();
-        boolean isCheckOut = destinationDatas[position].isCheckedOut();
+        boolean isCheckIn = destinationDatas.get(position).isCheckedIn();
+        boolean isCheckOut = destinationDatas.get(position).isCheckedOut();
 
         if (!isCheckIn) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
@@ -133,7 +135,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
             holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
         } else {
-            String checkedOutTime = destinationDatas[position].getCheckedOutReportedDate();
+            String checkedOutTime = destinationDatas.get(position).getCheckedOutReportedDate();
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
             holder.mLinearLayout_checkIncheckOut.setEnabled(false);
             holder.mButton_checkIncheckOut.setEnabled(false);
@@ -152,7 +154,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedIn());
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
             }
         });
 
@@ -161,7 +163,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas[position].isCheckedIn());
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
             }
         });
     }

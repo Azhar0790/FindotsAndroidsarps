@@ -332,7 +332,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
             if (requestForCheckInCheckOut) {
                 GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
-                        "You haven't reach the destination.");
+                        getString(R.string.not_the_right_destination));
             }
         } else {
             /**

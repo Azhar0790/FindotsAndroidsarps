@@ -27,11 +27,12 @@ public class RegisterRestCall {
     }
 
     public void callRegisterUserService(String email, String password, String mobile,
-                                        String name, String redeemCode, String company) {
+                                        String name, String redeemCode, String company,
+                                        double lat, double lng ) {
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getRegisterUserRequest(email, password, mobile,
-                name, redeemCode, company);
+                name, redeemCode, company, lat, lng);
 
         Call<RegisterModel> call = FinDotsApplication.getRestClient().getApiService().registerUser(postValues);
         call.enqueue(new Callback<RegisterModel>() {
@@ -57,7 +58,8 @@ public class RegisterRestCall {
     }
 
     private Map<String, Object> getRegisterUserRequest(String email, String password, String mobile,
-                                                      String name, String redeemCode, String company) {
+                                                      String name, String redeemCode, String company,
+                                                       double lat, double lng) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", email);
         postValues.put("password", password);
@@ -70,8 +72,8 @@ public class RegisterRestCall {
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("userID", 0);
-        postValues.put("latitude", 12.34567);
-        postValues.put("longitude", 27.567890);
+        postValues.put("latitude", lat);
+        postValues.put("longitude", lng);
         postValues.put("userTypeID", 2);
         postValues.put("organizationID", 1);
         postValues.put("countryID", 103);

@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity
         IRegisterRestCall,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
-        LocationListener{
+        LocationListener {
 
     @Bind(R.id.TextView_signUpHeading)
     TextView mTextView_signUpHeading;
@@ -86,12 +86,11 @@ public class RegisterActivity extends AppCompatActivity
 
     private GoogleApiClient googleApiClient = null;
     private LocationRequest mLocationRequest = null;
+    Location currentLocation = null;
 
     // Location updates intervals in sec
     private static long INTERVAL = 1000 * 10; // 10 sec
     private static int FATEST_INTERVAL = 1000 * 5; // 5 sec
-
-    private static final int REQUEST_PERMISSIONS = 20;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +102,10 @@ public class RegisterActivity extends AppCompatActivity
 
         if (!GeneralUtils.checkPlayServices(RegisterActivity.this)) {
             finish();
+        }
+
+        if(!(Utils.isLocationServiceEnabled(RegisterActivity.this))) {
+            Utils.createLocationServiceError(RegisterActivity.this);
         }
 
         createLocationRequest();
@@ -159,13 +162,22 @@ public class RegisterActivity extends AppCompatActivity
              *   check whether terms and conditions accepted
              */
             if (mImageView_onOff.getTag() == true) {
+                double lat, lng;
+                if (currentLocation != null) {
+                    lat = currentLocation.getLatitude();
+                    lng = currentLocation.getLongitude();
+                } else {
+                    lat = 0.0012;
+                    lng = 0.0013;
+                }
+
                 /**
                  *   Call WebService to create an account
                  */
                 RegisterRestCall registerRestCall = new RegisterRestCall(RegisterActivity.this);
                 registerRestCall.delegate = RegisterActivity.this;
                 registerRestCall.callRegisterUserService(emailID, password, mobileNo,
-                        name, redeemCode, company);
+                        name, redeemCode, company, lat, lng);
 
             } else if (mImageView_onOff.getTag() == false) {
                 GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
@@ -181,7 +193,12 @@ public class RegisterActivity extends AppCompatActivity
 
     @Override
     public void onRegisterUserSuccess(RegisterModel registerModel) {
-        redirectToLogin();
+        if (registerModel.getErrorCode() == 0) {
+            redirectToLogin();
+        } else {
+            GeneralUtils.createAlertDialog(RegisterActivity.this, registerModel.getMessage());
+        }
+
     }
 
     /**
@@ -357,12 +374,10 @@ public class RegisterActivity extends AppCompatActivity
         startLocationUpdates();
     }
 
-    Location currentLocation = null;
+
     @Override
     public void onLocationChanged(Location location) {
         currentLocation = location;
-        Toast.makeText(RegisterActivity.this, currentLocation.getLatitude()
-                +" "+currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
     }
 
     protected void startLocationUpdates() {

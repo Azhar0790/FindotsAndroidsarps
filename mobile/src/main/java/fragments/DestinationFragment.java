@@ -16,6 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import activities.DetailDestinationActivity;
@@ -24,6 +31,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
@@ -127,14 +135,51 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         } else if (destinationsModel.getDestinationData() != null) {
             destinationDatas = destinationsModel.getDestinationData();
 
-            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), destinationsModel.getDestinationData());
+            ArrayList<DestinationData> arrayList = sortDestinationsOnDate(destinationDatas);
+
+            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayList);
             destinationsAdapter.delegate = DestinationFragment.this;
             mRecyclerView_destinations.setAdapter(destinationsAdapter);
             destinationsAdapter.notifyDataSetChanged();
             layoutManager.onRestoreInstanceState(listViewState);
+
             if(!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
+                EventBus.getDefault().register(this);
         }
+    }
+
+    /**
+     *   sort the destinations
+     * @param destinationDatas
+     * @return
+     */
+    public ArrayList<DestinationData> sortDestinationsOnDate(DestinationData[] destinationDatas) {
+        ArrayList<DestinationData> arrayList = new ArrayList<>();
+
+        for (DestinationData data:destinationDatas) {
+            arrayList.add(data);
+        }
+
+        Log.i(Constants.TAG, "before sorting --> "+arrayList.toString());
+
+        Collections.sort(arrayList, new Comparator<DestinationData>() {
+            @Override
+            public int compare(DestinationData lhs, DestinationData rhs) {
+
+                DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
+                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
+
+                if (d1 == null || d2 == null)
+                    return 0;
+
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.reverse(arrayList);
+        Log.i(Constants.TAG, "after sorting --> "+arrayList.toString());
+        return arrayList;
     }
 
     @Override
@@ -200,7 +245,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
              *   Outside the Radius
              */
             GeneralUtils.createAlertDialog(getActivity(),
-                    "You haven't reach the destination.");
+                    getActivity().getString(R.string.not_the_right_destination));
         } else {
             /**
              *   Inside the Radius

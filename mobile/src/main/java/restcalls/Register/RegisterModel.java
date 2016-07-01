@@ -11,7 +11,7 @@ import org.parceler.Parcel;
 public class RegisterModel {
     private String message;
 
-    private String errorCode;
+    private int errorCode;
 
     @SerializedName("data")
     private RegisterData[] mRegisterData;
@@ -26,12 +26,12 @@ public class RegisterModel {
         this.message = message;
     }
 
-    public String getErrorCode ()
+    public int getErrorCode ()
     {
         return errorCode;
     }
 
-    public void setErrorCode (String errorCode)
+    public void setErrorCode (int errorCode)
     {
         this.errorCode = errorCode;
     }
