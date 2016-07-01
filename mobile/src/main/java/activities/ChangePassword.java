@@ -1,5 +1,6 @@
 package activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,9 +17,11 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import database.DataHelper;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
+import locationUtils.TrackLocationService;
 import restmodels.ResponseModel;
 import retrofit.Call;
 import retrofit.Callback;
@@ -89,26 +92,26 @@ public class ChangePassword extends AppCompatActivity {
             changePassWord.enqueue(new Callback<ResponseModel>() {
 
 
-                              @Override
-                              public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
-                                  GeneralUtils.stop_progressbar();
+                                       @Override
+                                       public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                                           GeneralUtils.stop_progressbar();
 
-                                  if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                                           if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                                      Toast.makeText(ChangePassword.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                                               Toast.makeText(ChangePassword.this, response.body().getData().get(0).getStatus() , Toast.LENGTH_LONG).show();
+                                               logOut();
+                                           } else
+                                               Toast.makeText(ChangePassword.this,response.body().getMessage() , Toast.LENGTH_SHORT).show();
 
-                                  } else
-                                      Toast.makeText(ChangePassword.this, getResources().getString(R.string.password_updateInfoError), Toast.LENGTH_SHORT).show();
+                                       }
 
-                              }
+                                       @Override
+                                       public void onFailure(Throwable t) {
+                                           GeneralUtils.stop_progressbar();
+                                           Toast.makeText(ChangePassword.this, getResources().getString(R.string.password_updateInfoError), Toast.LENGTH_SHORT).show();
 
-                              @Override
-                              public void onFailure(Throwable t) {
-                                  GeneralUtils.stop_progressbar();
-                                  Toast.makeText(ChangePassword.this, getResources().getString(R.string.password_updateInfoError), Toast.LENGTH_SHORT).show();
-
-                              }
-                          }
+                                       }
+                                   }
             );
 
         }
@@ -147,5 +150,54 @@ public class ChangePassword extends AppCompatActivity {
         }
 
         return true;
+
+    }
+
+
+
+    public void logOut() {
+        GeneralUtils.initialize_progressbar(this);
+        Map<String, Object> postValues = new HashMap<>();
+
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("ipAddress", "");
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+
+        Call<ResponseModel> call = FinDotsApplication.getRestClient().getApiService().logOut(postValues);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+
+                logOutNavigation();
+//                if (response.isSuccess() & response.body().getData().size() > 0) {
+//                    Toast.makeText(ChangePassword.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+
+//                } else {
+//                    Toast.makeText(ChangePassword.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                logOutNavigation();
+
+            }
+        });
+
+    }
+    public void logOutNavigation() {
+        GeneralUtils.stop_progressbar();
+//        stopTracking();
+        stopService(new Intent(this, TrackLocationService.class));
+        DataHelper dataHelper = DataHelper.getInstance(ChangePassword.this);
+        dataHelper.deleteAllLocations();
+        dataHelper.deleteCheckinList();
+        GeneralUtils.removeSharedPreference(ChangePassword.this, AppStringConstants.USERID);
+        Intent intentLogout = new Intent(ChangePassword.this, LoginActivity.class);
+        startActivity(intentLogout);
+        finish();
     }
 }

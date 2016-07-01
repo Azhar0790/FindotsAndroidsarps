@@ -81,6 +81,14 @@ public class DataHelper {
         location.delete();
     }
 
+    public List<LocationData> getLocationLastRecord() {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy("id DESC")
+                .limit(1)
+                .execute();
+        return data;
+    }
+
     public void deleteAllLocations() {
         new Delete().from(LocationData.class).execute();
     }
@@ -129,12 +137,10 @@ public class DataHelper {
 
     }
 
-    public List<LocationData> getLocationLastRecord() {
-        List<LocationData> data = new Select().from(LocationData.class)
-                .orderBy("id DESC")
-                .limit(1)
-                .execute();
-        return data;
+
+
+    public void deleteAllCheckinInfo() {
+        new Delete().from(checkIn.class).execute();
     }
 
     private void notifyChanged(Uri uri) {
