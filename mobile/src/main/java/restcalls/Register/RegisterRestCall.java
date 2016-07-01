@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import retrofit.Call;
@@ -26,15 +27,11 @@ public class RegisterRestCall {
     }
 
     public void callRegisterUserService(String email, String password, String mobile,
-                                        String name, String redeemCode, String company,
-                                        String deviceID, String appVersion,
-                                        String deviceTypeID, String deviceInfo,
-                                        String userID, String ipAddress) {
+                                        String name, String redeemCode, String company) {
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getRegisterUserRequest(email, password, mobile,
-                name, redeemCode, company, deviceID, appVersion,
-                deviceTypeID, deviceInfo);
+                name, redeemCode, company);
 
         Call<RegisterModel> call = FinDotsApplication.getRestClient().getApiService().registerUser(postValues);
         call.enqueue(new Callback<RegisterModel>() {
@@ -60,9 +57,7 @@ public class RegisterRestCall {
     }
 
     private Map<String, Object> getRegisterUserRequest(String email, String password, String mobile,
-                                                      String name, String redeemCode, String company,
-                                                      String deviceID, String appVersion,
-                                                      String deviceTypeID, String deviceInfo) {
+                                                      String name, String redeemCode, String company) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", email);
         postValues.put("password", password);
@@ -70,9 +65,10 @@ public class RegisterRestCall {
         postValues.put("name", name);
         postValues.put("redeemCode", redeemCode);
         postValues.put("company", company);
-        postValues.put("appVersion", "1.0");
-        postValues.put("deviceTypeID", 2);
-        postValues.put("deviceInfo", "Samsung");
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
+        postValues.put("appVersion", GeneralUtils.getAppVersion(context));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("userID", 0);
         postValues.put("latitude", 12.34567);
         postValues.put("longitude", 27.567890);

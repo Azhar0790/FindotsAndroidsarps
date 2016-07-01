@@ -122,6 +122,7 @@ public class CheckInCheckOutRestCall {
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
         postValues.put("userID", userID);
         return postValues;
     }

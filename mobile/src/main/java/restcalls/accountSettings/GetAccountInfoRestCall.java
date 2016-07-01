@@ -64,7 +64,7 @@ public class GetAccountInfoRestCall {
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("userID", GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID));
-        postValues.put("ipAddress", "");
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
 
         return postValues;
     }

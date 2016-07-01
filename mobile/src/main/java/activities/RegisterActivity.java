@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -19,10 +21,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import findots.bridgetree.com.findots.R;
+import locationUtils.Utils;
 import restcalls.register.IRegisterRestCall;
 import restcalls.register.RegisterModel;
 import restcalls.register.RegisterRestCall;
@@ -32,7 +43,13 @@ import utils.GeneralUtils;
 /**
  * Created by parijathar on 6/13/2016.
  */
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, IRegisterRestCall {
+public class RegisterActivity extends AppCompatActivity
+        implements
+        View.OnClickListener,
+        IRegisterRestCall,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        LocationListener{
 
     @Bind(R.id.TextView_signUpHeading)
     TextView mTextView_signUpHeading;
@@ -67,6 +84,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     String name = null, company = null, emailID = null;
     String mobileNo = null, password = null, redeemCode = null;
 
+    private GoogleApiClient googleApiClient = null;
+    private LocationRequest mLocationRequest = null;
+
+    // Location updates intervals in sec
+    private static long INTERVAL = 1000 * 10; // 10 sec
+    private static int FATEST_INTERVAL = 1000 * 5; // 5 sec
+
+    private static final int REQUEST_PERMISSIONS = 20;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +100,24 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         setUIElementsProperty();
         setListeners();
+
+        if (!GeneralUtils.checkPlayServices(RegisterActivity.this)) {
+            finish();
+        }
+
+        createLocationRequest();
+        buildGoogleApiClient();
     }
 
 
+    /**
+     *   sets all UI elements properties
+     */
     public void setUIElementsProperty() {
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
-        Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(),
+                "fonts/MyriadHebrew-Bold.otf");
+        Typeface typefaceLight = Typeface.createFromAsset(getAssets(),
+                "fonts/Roboto-Light.ttf");
 
         mTextView_signUpHeading.setTypeface(typefaceMyriadHebrew);
         mEditText_name.setTypeface(typefaceLight);
@@ -112,6 +150,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @OnClick(R.id.Button_createAccount)
     public void validateAndCreateAccount() {
+
+        /**
+         *   let the user to register if all the permissions granted
+         */
         if (validateEnteredValues()) {
             /**
              *   check whether terms and conditions accepted
@@ -123,14 +165,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 RegisterRestCall registerRestCall = new RegisterRestCall(RegisterActivity.this);
                 registerRestCall.delegate = RegisterActivity.this;
                 registerRestCall.callRegisterUserService(emailID, password, mobileNo,
-                        name, redeemCode, company, "", "", "", "", "", "");
+                        name, redeemCode, company);
 
             } else if (mImageView_onOff.getTag() == false) {
                 GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
             }
 
         }
-
     }
 
     @Override
@@ -143,6 +184,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         redirectToLogin();
     }
 
+    /**
+     *   on Successful Registration, lets the user to Login
+     */
     public void redirectToLogin() {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setTitle(getString(R.string.app_name))
@@ -164,7 +208,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     * validating the entered values for creating account
+     *   validating the entered values for creating account
      */
     public boolean validateEnteredValues() {
         name = mEditText_name.getText().toString();
@@ -192,8 +236,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         } else if (redeemCode == null || redeemCode.length() == 0) {
             mEditText_redeemCode.setError(getString(R.string.prompt_required));
             return false;
-        } else if (!GeneralUtils.isvalid_email(emailID))
-        {
+        } else if (!GeneralUtils.isvalid_email(emailID)) {
             mEditText_emailID.setError(getString(R.string.validate_email));
             return false;
         }
@@ -202,7 +245,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
-     * set Listeners to the UI Widgets
+     *   set Listeners to the UI Widgets
      */
     public void setListeners() {
         mEditText_name.addTextChangedListener(new AddTextWatcher(mEditText_name));
@@ -212,7 +255,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mEditText_password.addTextChangedListener(new AddTextWatcher(mEditText_password));
         mEditText_redeemCode.addTextChangedListener(new AddTextWatcher(mEditText_redeemCode));
         mImageView_onOff.setOnClickListener(this);
-
     }
 
 
@@ -253,5 +295,83 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (googleApiClient.isConnected())
+            startLocationUpdates();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            if (googleApiClient != null && googleApiClient.isConnected()) {
+                googleApiClient.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    private void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(RegisterActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        startLocationUpdates();
+    }
+
+    Location currentLocation = null;
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLocation = location;
+        Toast.makeText(RegisterActivity.this, currentLocation.getLatitude()
+                +" "+currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+    }
+
+    protected void startLocationUpdates() {
+        PendingResult<Status> pendingResult =
+                LocationServices.FusedLocationApi
+                        .requestLocationUpdates(googleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
 }

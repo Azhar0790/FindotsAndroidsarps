@@ -321,7 +321,6 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         super.onStart();
         try {
             mGoogleApiClient.connect();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -331,13 +330,13 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     protected void onStop() {
         super.onStop();
         try {
-
-        } catch (RuntimeException e) {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.disconnect();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
+
     }
 
     private boolean checkPlayServices() {
@@ -591,31 +590,30 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         modifyDestinationCall.enqueue(new Callback<ResponseModel>() {
 
 
-                          @Override
-                          public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
-                              GeneralUtils.stop_progressbar();
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
 
-                              if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                                  Toast.makeText(DestinationModify_MapActivity.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DestinationModify_MapActivity.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
 
-                                  Intent returnIntent = new Intent();
-                                  returnIntent.putExtra("result","success");
-                                  setResult(Activity.RESULT_OK,returnIntent);
-                                  finish();
-                              } else
-                                  Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result","success");
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                } else
+                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
 
-                          }
+            }
 
-                          @Override
-                          public void onFailure(Throwable t) {
-                              GeneralUtils.stop_progressbar();
-                              Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
 
-                          }
-                      }
-        );
+            }
+        });
     }
 
     private Map<String, Object> setModifyDestinationRequest() {
