@@ -486,6 +486,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         stopTracking();
         DataHelper dataHelper = DataHelper.getInstance(this);
         dataHelper.deleteAllLocations();
+        dataHelper.deleteCheckinList();
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USERID);
         Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
         startActivity(intentLogout);
