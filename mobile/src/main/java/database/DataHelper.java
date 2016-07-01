@@ -129,6 +129,14 @@ public class DataHelper {
 
     }
 
+    public List<LocationData> getLocationLastRecord() {
+        List<LocationData> data = new Select().from(LocationData.class)
+                .orderBy("id DESC")
+                .limit(1)
+                .execute();
+        return data;
+    }
+
     private void notifyChanged(Uri uri) {
         context.getContentResolver().notifyChange(uri, null);
     }

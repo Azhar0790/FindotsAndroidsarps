@@ -131,10 +131,18 @@ public class FinDotsApplication extends MultiDexApplication {
         List<LocationData> locations = dataHelper.getLocationsToSync();
 
         for (LocationData locData : locations) {
-//         Log.d("jomy"," Lat : "+locData.getLatitude()+"  Long:  "+locData.getLongitude());
+         Log.d("jomy"," Lat : "+locData.getLatitude()+"  Long:  "+locData.getLongitude()+"  RepTime : "+locData.getTimestamp());
 
 
         }
+        List<LocationData> locations1 = dataHelper.getLocationLastRecord();
+        for (LocationData locData1 : locations1) {
+            Log.d("jomy"," Latt23 : "+locData1.getLatitude()+"  Long:  "+locData1.getLongitude()+"  RepTime : "+locData1.getTimestamp());
+
+
+        }
+
+
 
         List<checkIn> checkInlist = dataHelper.getCheckInListToSync();
 
