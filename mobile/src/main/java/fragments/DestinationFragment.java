@@ -29,11 +29,13 @@ import activities.DetailDestinationActivity;
 import adapters.DestinationsAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import database.DataHelper;
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import interfaces.IDestinations;
+import locationUtils.LocationModel.LocationData;
 import restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import restcalls.checkInCheckOut.ICheckInCheckOut;
 import restcalls.destinations.DestinationData;
@@ -53,6 +55,9 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
+    double currentLatitude = 0.013, currentLongitude = 0.012;
+
+    ArrayList<DestinationData> arrayListDestinations = null;
 
     public static DestinationFragment newInstance() {
         DestinationFragment destinationFragment = new DestinationFragment();
@@ -95,18 +100,18 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     @Override
     public void onDestinationSelected(int itemPosition) {
 
-        String address = destinationDatas[itemPosition].getAddress();
-        boolean checkedIn = destinationDatas[itemPosition].isCheckedIn();
-        boolean checkedOut = destinationDatas[itemPosition].isCheckedOut();
-        int checkInRadius = destinationDatas[itemPosition].getCheckInRadius();
-        String destinationName = destinationDatas[itemPosition].getDestinationName();
-        int assignDestinationID = destinationDatas[itemPosition].getAssignDestinationID();
-        int destinationID = destinationDatas[itemPosition].getDestinationID();
-        double destinationLatitude = destinationDatas[itemPosition].getDestinationLatitude();
-        double destinationLongitude = destinationDatas[itemPosition].getDestinationLongitude();
-        String checkedOutReportedDate = destinationDatas[itemPosition].getCheckedOutReportedDate();
-        boolean isEditable = destinationDatas[itemPosition].isEditable();
-        boolean isRequireApproval = destinationDatas[itemPosition].isRequiresApproval();
+        String address = arrayListDestinations.get(itemPosition).getAddress();
+        boolean checkedIn = arrayListDestinations.get(itemPosition).isCheckedIn();
+        boolean checkedOut = arrayListDestinations.get(itemPosition).isCheckedOut();
+        int checkInRadius = arrayListDestinations.get(itemPosition).getCheckInRadius();
+        String destinationName = arrayListDestinations.get(itemPosition).getDestinationName();
+        int assignDestinationID = arrayListDestinations.get(itemPosition).getAssignDestinationID();
+        int destinationID = arrayListDestinations.get(itemPosition).getDestinationID();
+        double destinationLatitude = arrayListDestinations.get(itemPosition).getDestinationLatitude();
+        double destinationLongitude = arrayListDestinations.get(itemPosition).getDestinationLongitude();
+        String checkedOutReportedDate = arrayListDestinations.get(itemPosition).getCheckedOutReportedDate();
+        boolean isEditable = arrayListDestinations.get(itemPosition).isEditable();
+        boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
 
         listViewState = layoutManager.onSaveInstanceState();
 
@@ -127,17 +132,16 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         startActivityForResult(intentDetailDestination,REQUEST_CODE_ACTIVITYDETAILS);
     }
 
-    DestinationData[] destinationDatas = null;
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         if (destinationsModel.getErrorCode() == 2) {
             GeneralUtils.createAlertDialog(getActivity(), destinationsModel.getMessage());
         } else if (destinationsModel.getDestinationData() != null) {
-            destinationDatas = destinationsModel.getDestinationData();
+            DestinationData[] destinationDatas = destinationsModel.getDestinationData();
 
-            ArrayList<DestinationData> arrayList = sortDestinationsOnDate(destinationDatas);
+            arrayListDestinations = sortDestinationsOnDate(destinationDatas);
 
-            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayList);
+            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
             destinationsAdapter.delegate = DestinationFragment.this;
             mRecyclerView_destinations.setAdapter(destinationsAdapter);
             destinationsAdapter.notifyDataSetChanged();
@@ -149,7 +153,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     }
 
     /**
-     *   sort the destinations
+     *   sort destinations
      * @param destinationDatas
      * @return
      */
@@ -186,11 +190,11 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn) {
         listViewState = layoutManager.onSaveInstanceState();
 
-        isDeviceEnteredWithinDestinationRadius(destinationDatas[destinationPosition].getDestinationLatitude(),
-                destinationDatas[destinationPosition].getDestinationLongitude(),
-                destinationDatas[destinationPosition].getCheckInRadius(),
-                destinationDatas[destinationPosition].isCheckedIn(),
-                destinationDatas[destinationPosition].getAssignDestinationID());
+        isDeviceEnteredWithinDestinationRadius(arrayListDestinations.get(destinationPosition).getDestinationLatitude(),
+                arrayListDestinations.get(destinationPosition).getDestinationLongitude(),
+                arrayListDestinations.get(destinationPosition).getCheckInRadius(),
+                arrayListDestinations.get(destinationPosition).isCheckedIn(),
+                arrayListDestinations.get(destinationPosition).getAssignDestinationID());
     }
 
     @Override
@@ -211,7 +215,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
     }
 
-    public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
+   /* public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
                                                        double destinationLongitude, double checkInRadius,
                                                        boolean checkedIn, int assignDestinationID) {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -241,6 +245,68 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
 
         if (distance[0] > checkInRadius) {
+            *//**
+             *   Outside the Radius
+             *//*
+            GeneralUtils.createAlertDialog(getActivity(),
+                    getActivity().getString(R.string.not_the_right_destination));
+        } else {
+            *//**
+             *   Inside the Radius
+             *//*
+            CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
+            restCall.delegate = DestinationFragment.this;
+            restCall.callCheckInService(checkedIn, assignDestinationID);
+        }
+    }
+*/
+
+    public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
+                                                       double destinationLongitude, double checkInRadius,
+                                                       boolean checkedIn, int assignDestinationID) {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        List<String> providers = locationManager.getProviders(true);
+        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = null;
+
+        for (String provider: providers) {
+
+            Location currentLocation = locationManager.getLastKnownLocation(provider);
+            if (currentLocation == null) {
+                continue;
+            }
+            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                location = currentLocation;
+            }
+
+        }
+
+        if (location != null) {
+
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        }
+        else
+        {
+            DataHelper dataHelper = DataHelper.getInstance(getActivity());
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+        }
+
+
+
+        float[] distance = new float[2];
+
+        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
+
+        if (distance[0] > checkInRadius) {
             /**
              *   Outside the Radius
              */
@@ -252,9 +318,13 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
              */
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID);
+            restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
         }
     }
+
+
+
+
     /**
      * Called after the autocomplete activity has finished to return its result.
      */
