@@ -46,6 +46,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import database.DataHelper;
+
+
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
 import findots.bridgetree.com.findots.R;
@@ -68,47 +70,48 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         com.google.android.gms.location.LocationListener {
 
 
-        @Bind(R.id.TextView_map_km)
-        TextView mTextView_map_km;
+    @Bind(R.id.TextView_map_km)
+    TextView mTextView_map_km;
 
-        @Bind(R.id.imageView_back)
-        ImageView imageView_back;
+    @Bind(R.id.imageView_back)
+    ImageView imageView_back;
 
-        @Bind(R.id.TextView_address)
-        TextView mTextView_address;
+    @Bind(R.id.TextView_address)
+    TextView mTextView_address;
 
-        @Bind(R.id.LinearLayout_checkIncheckOut)
-        LinearLayout mLinearLayout_checkIncheckOut;
+    @Bind(R.id.LinearLayout_checkIncheckOut)
+    LinearLayout mLinearLayout_checkIncheckOut;
 
-        @Bind(R.id.Button_checkIncheckOut)
-        Button mButton_checkIncheckOut;
+    @Bind(R.id.Button_checkIncheckOut)
+    Button mButton_checkIncheckOut;
 
-        @Bind(R.id.TextView_heading)
-        TextView mTextView_heading;
+    @Bind(R.id.TextView_heading)
+    TextView mTextView_heading;
 
-        @Bind(R.id.destModify)
-        TextView mDestModify;
+    @Bind(R.id.destModify)
+    TextView mDestModify;
 
-        Toolbar mToolbar = null;
+    Toolbar mToolbar = null;
 
-        private GoogleApiClient mGoogleApiClient;
-        GoogleMap mGoogleMap = null;
-        Circle mCircle = null;
-        LatLng latLng = null;
+    private GoogleApiClient mGoogleApiClient;
+    GoogleMap mGoogleMap = null;
+    Circle mCircle = null;
+    LatLng latLng = null;
 
-        Bundle bundle = null;
+    Bundle bundle = null;
 
-        int assignDestinationID = 0, destinationID = 0;
-        double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-        boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
-        String address = null, destinationName = null, checkedOutReportedDate = null;
+    int assignDestinationID = 0, destinationID = 0;
+    double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
+    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
+    String address = null, destinationName = null, checkedOutReportedDate = null;
 
-        public static final int STROKE_WIDTH = 6;
-        private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
-        double currentLatitude = 0.0, currentLongitude = 0.0;
+    public static boolean FLAG_CHECKINCHECKOUT = false;
+    public static final int STROKE_WIDTH = 6;
+    private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
+    double currentLatitude = 0.0, currentLongitude = 0.0;
 
-        @Override
-        protected void onCreate (@Nullable Bundle savedInstanceState){
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_destination);
 
@@ -119,6 +122,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         getBundleData();
 
         setData();
+
+        checkLocationData();
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -135,22 +140,22 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     }
 
-        @Override
-        protected void onStop () {
+    @Override
+    protected void onStop() {
         super.onStop();
 
     }
 
-        @Override
-        protected void onDestroy () {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
     }
 
-        /**
-         * get Bundle data
-         */
+    /**
+     * get Bundle data
+     */
 
     public void getBundleData() {
         bundle = getIntent().getExtras();
@@ -209,14 +214,21 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDeviceEnteredWithinDestinationRadius(true);
+
+                if (!checkedIn)
+                    isDeviceEnteredWithinDestinationRadius(true, false);
+                else
+                    isDeviceEnteredWithinDestinationRadius(true, true);
             }
         });
 
         mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isDeviceEnteredWithinDestinationRadius(true);
+                if (!checkedIn)
+                    isDeviceEnteredWithinDestinationRadius(true, false);
+                else
+                    isDeviceEnteredWithinDestinationRadius(true, true);
             }
         });
     }
@@ -265,7 +277,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
         mCircle = mGoogleMap.addCircle(drawCircleOnMap());
-        isDeviceEnteredWithinDestinationRadius(false);
+        isDeviceEnteredWithinDestinationRadius(false, false);
     }
 
     public CircleOptions drawCircleOnMap() {
@@ -302,7 +314,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut) {
+    public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut, boolean isCheckOut) {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         List<String> providers = locationManager.getProviders(true);
@@ -321,35 +333,56 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         }
 
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+        if (location != null) {
 
-        float[] distance = new float[2];
-
-        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
-
-        if (distance[0] > mCircle.getRadius()) {
-            /**
-             *   Outside the Radius
-             */
-            String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-            mTextView_map_km.setText(kiloMeters + " kms");
-
-            if (requestForCheckInCheckOut) {
-                GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
-                        getString(R.string.not_the_right_destination));
-            }
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
         } else {
-            /**
-             *   Inside the Radius
-             */
-            String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-            mTextView_map_km.setText(kiloMeters + " kms");
+            DataHelper dataHelper = DataHelper.getInstance(DetailDestinationActivity.this);
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+        }
 
-            if (requestForCheckInCheckOut) {
-                CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
-                restCall.delegate = DetailDestinationActivity.this;
-                restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
+        if (isCheckOut) {
+
+            CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
+            restCall.delegate = DetailDestinationActivity.this;
+            restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+
+        } else {
+
+            float[] distance = new float[2];
+
+            Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
+
+            if (distance[0] > mCircle.getRadius()) {
+                /**
+                 *   Outside the Radius
+                 */
+                String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
+                mTextView_map_km.setText(kiloMeters + " kms");
+
+                if (requestForCheckInCheckOut) {
+                    GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
+                            getString(R.string.not_the_right_destination));
+                }
+            } else {
+                /**
+                 *   Inside the Radius
+                 */
+                String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
+                mTextView_map_km.setText(kiloMeters + " kms");
+
+                if (requestForCheckInCheckOut) {
+                    CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
+                    restCall.delegate = DetailDestinationActivity.this;
+                    restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+                }
             }
         }
     }
@@ -357,11 +390,13 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @Override
     public void onCheckInFailure(String status) {
+        FLAG_CHECKINCHECKOUT = false;
         GeneralUtils.createAlertDialog(DetailDestinationActivity.this, status);
     }
 
     @Override
     public void onCheckInSuccess() {
+        FLAG_CHECKINCHECKOUT = true;
         /**
          *   the data should be refreshed after the checkin or checkout
          */
@@ -474,7 +509,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
                     return;
                 }
-                if(!(Utils.isLocationServiceEnabled(this))) {
+                if (!(Utils.isLocationServiceEnabled(this))) {
                     Utils.createLocationServiceError(this);
                 }
 
@@ -491,10 +526,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API)
                 .build();
     }
+
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -539,8 +574,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
         try {
-            if (location != null)
-            {
+            if (location != null) {
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
             }

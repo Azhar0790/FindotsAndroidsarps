@@ -91,10 +91,17 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView_destinations.setLayoutManager(layoutManager);
 
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationFragment.this;
         destinationsRestCall.callGetDestinations();
-        return rootView;
     }
 
     @Override
@@ -194,7 +201,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 arrayListDestinations.get(destinationPosition).getDestinationLongitude(),
                 arrayListDestinations.get(destinationPosition).getCheckInRadius(),
                 arrayListDestinations.get(destinationPosition).isCheckedIn(),
-                arrayListDestinations.get(destinationPosition).getAssignDestinationID());
+                arrayListDestinations.get(destinationPosition).getAssignDestinationID(), isCheckedIn);
     }
 
     @Override
@@ -215,71 +222,10 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
     }
 
-   /* public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
-                                                       double destinationLongitude, double checkInRadius,
-                                                       boolean checkedIn, int assignDestinationID) {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        List<String> providers = locationManager.getProviders(true);
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location location = null;
-
-        for (String provider: providers) {
-
-            Location currentLocation = locationManager.getLastKnownLocation(provider);
-            if (currentLocation == null) {
-                continue;
-            }
-            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
-                location = currentLocation;
-            }
-
-        }
-
-        if (location != null) {
-
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        }
-        else
-        {
-            DataHelper dataHelper = DataHelper.getInstance(getActivity());
-            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
-            if (locationLatestData.size() > 0) {
-                for (LocationData locLastData : locationLatestData) {
-                    currentLatitude = locLastData.getLatitude();
-                    currentLongitude = locLastData.getLongitude();
-                }
-            }
-        }
-
-
-
-        float[] distance = new float[2];
-
-        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
-
-        if (distance[0] > checkInRadius) {
-            *//**
-             *   Outside the Radius
-             *//*
-            GeneralUtils.createAlertDialog(getActivity(),
-                    getActivity().getString(R.string.not_the_right_destination));
-        } else {
-            *//**
-             *   Inside the Radius
-             *//*
-            CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
-            restCall.delegate = DestinationFragment.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID);
-        }
-    }
-*/
 
     public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
                                                        double destinationLongitude, double checkInRadius,
-                                                       boolean checkedIn, int assignDestinationID) {
+                                                       boolean checkedIn, int assignDestinationID, boolean isCheckIn) {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -316,25 +262,34 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
             }
         }
 
-
-
-        float[] distance = new float[2];
-
-        Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
-
-        if (distance[0] > checkInRadius) {
-            /**
-             *   Outside the Radius
-             */
-            GeneralUtils.createAlertDialog(getActivity(),
-                    getActivity().getString(R.string.not_the_right_destination));
-        } else {
-            /**
-             *   Inside the Radius
-             */
+        /**
+         *   if it is true, checkIn is completed
+         *   do the checkOUt
+         */
+        if (isCheckIn) {
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
             restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
+        } else {
+
+            float[] distance = new float[2];
+
+            Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
+
+            if (distance[0] > checkInRadius) {
+                /**
+                 *   Outside the Radius
+                 */
+                GeneralUtils.createAlertDialog(getActivity(),
+                        getActivity().getString(R.string.not_the_right_destination));
+            } else {
+                /**
+                 *   Inside the Radius
+                 */
+                CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
+                restCall.delegate = DestinationFragment.this;
+                restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+            }
         }
     }
 
