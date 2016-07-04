@@ -54,7 +54,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
-    double currentLatitude = 0.0, currentLongitude = 0.0;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
     double currentLatitude = 0.013, currentLongitude = 0.012;
 
