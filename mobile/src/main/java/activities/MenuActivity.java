@@ -44,6 +44,7 @@ import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import fragments.Account_Settings;
 import fragments.DestinationFragment;
+import fragments.DestinationsTabFragment;
 import interfaces.IMenuItems;
 import locationUtils.LocationModel.BackgroundLocData;
 import locationUtils.LocationModel.LocationResponseData;
@@ -162,13 +163,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         app = (FinDotsApplication) getApplication();
         app.setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
         initalizeLocationService();
+
         /**
          *   Fragment Transaction for Destinations
          */
 
         mToggle.setDrawerIndicatorEnabled(true);
         FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-        destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
+        destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
         destinationTransaction.commit();
 
     }
@@ -227,7 +229,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
                 FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-                destinationTransaction.replace(R.id.FrameLayout_content, DestinationFragment.newInstance());
+                destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
                 destinationTransaction.commit();
 
                 findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);

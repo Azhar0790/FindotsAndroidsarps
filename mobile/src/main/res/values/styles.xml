@@ -29,7 +29,12 @@
         <item name="drawableSize">24dp</item>
     </style>
 
-
+    <style name="custom_tablayout" parent="Widget.Design.TabLayout">
+        <item name="android:textSize">18sp</item>
+        <item name="tabSelectedTextColor">@color/app_color</item>
+        <item name="android:textColor">@color/app_color_25</item>
+        <item name="android:fontFamily">fonts/MyriadHebrew-Bold.otf</item>
+    </style>
 
     <style name="edittext">
         <item name="android:layout_marginLeft">@dimen/login_edittext_marginLeftAndRight</item>

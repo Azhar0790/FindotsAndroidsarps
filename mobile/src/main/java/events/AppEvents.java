@@ -5,5 +5,6 @@ package events;
  */
 public enum AppEvents {
     OFFLINECHECKIN,
-    OFFLINECHECKOUT
+    OFFLINECHECKOUT,
+    REFRESHDESTINATIONS
 }

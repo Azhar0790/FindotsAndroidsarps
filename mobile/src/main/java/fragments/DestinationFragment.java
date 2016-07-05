@@ -59,11 +59,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
     ArrayList<DestinationData> arrayListDestinations = null;
 
-    public static DestinationFragment newInstance() {
-        DestinationFragment destinationFragment = new DestinationFragment();
-        return destinationFragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,18 +86,12 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView_destinations.setLayoutManager(layoutManager);
 
-
+        arrayListDestinations = sortDestinationsOnDate(DestinationsTabFragment.destinationDatas);
+        setAdapterForDestinations();
 
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
-        destinationsRestCall.delegate = DestinationFragment.this;
-        destinationsRestCall.callGetDestinations();
-    }
 
     @Override
     public void onDestinationSelected(int itemPosition) {
@@ -146,17 +135,23 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         } else if (destinationsModel.getDestinationData() != null) {
             DestinationData[] destinationDatas = destinationsModel.getDestinationData();
 
+            DestinationsTabFragment.destinationDatas = destinationDatas;
+            EventBus.getDefault().post(AppEvents.REFRESHDESTINATIONS);
+
             arrayListDestinations = sortDestinationsOnDate(destinationDatas);
-
-            DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
-            destinationsAdapter.delegate = DestinationFragment.this;
-            mRecyclerView_destinations.setAdapter(destinationsAdapter);
-            destinationsAdapter.notifyDataSetChanged();
-            layoutManager.onRestoreInstanceState(listViewState);
-
-            if(!EventBus.getDefault().isRegistered(this))
-                EventBus.getDefault().register(this);
+            setAdapterForDestinations();
         }
+    }
+
+    public void setAdapterForDestinations() {
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
+        destinationsAdapter.delegate = DestinationFragment.this;
+        mRecyclerView_destinations.setAdapter(destinationsAdapter);
+        destinationsAdapter.notifyDataSetChanged();
+        layoutManager.onRestoreInstanceState(listViewState);
+
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     /**
@@ -303,14 +298,19 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.i(Constants.TAG, "onActivityResult..//");
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
             if (resultCode == getActivity().RESULT_OK && data.getStringExtra("result").equals("success")) {
-
+                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall");
                 GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
+            } else {
+                Log.i(Constants.TAG, "onActivityResult..//  else block..");
             }
+        } else {
+            Log.i(Constants.TAG, "onActivityResult..//  else block");
         }
     }
     public void onEvent(AppEvents event) {

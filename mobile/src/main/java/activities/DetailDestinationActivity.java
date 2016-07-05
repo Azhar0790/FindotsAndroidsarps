@@ -311,7 +311,12 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (FLAG_CHECKINCHECKOUT) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", "success");
+            setResult(Activity.RESULT_OK, returnIntent);
+        }
+        finish();
     }
 
     public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut, boolean isCheckOut) {

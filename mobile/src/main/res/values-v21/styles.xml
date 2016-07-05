@@ -21,6 +21,13 @@
         <!--<item name="drawerArrowStyle">@style/custom_drawer</item>-->
     <!--</style>-->
 
+    <style name="custom_tablayout" parent="Widget.Design.TabLayout">
+        <item name="android:textSize">18sp</item>
+        <item name="tabSelectedTextColor">@color/app_color</item>
+        <item name="android:textColor">@color/app_color_25</item>
+        <item name="android:fontFamily">fonts/MyriadHebrew-Bold.otf</item>
+    </style>
+
     <style name="custom_drawer" parent="Widget.AppCompat.DrawerArrowToggle">
         <!-- Customize Drawer Screen -->
         <item name="spinBars">true</item>
