@@ -55,7 +55,7 @@
         <activity
             android:name="activities.DestinationModify_MapActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="stateHidden" />
 
         <provider
             android:name="database.DatabaseProvider"

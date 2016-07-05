@@ -44,7 +44,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
 import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
@@ -57,6 +56,8 @@ import retrofit.Response;
 import retrofit.Retrofit;
 import utils.AppStringConstants;
 import utils.GeneralUtils;
+import utils.mapUtils.MapStateListener;
+import utils.mapUtils.TouchableMapFragment;
 
 /**
  * Created by jpaulose on 6/27/2016.
@@ -91,7 +92,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     Toolbar mToolbar;
     ImageView imageView_back;
-
+    TouchableMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_modify_destination_map);
         mContext = this;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (TouchableMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         getBundleData();
@@ -109,16 +110,6 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
         mLocationAddress = (EditText) findViewById(R.id.address);
         mUpdateDestination = (Button) findViewById(R.id.updateDestination);
-
-
-
-//
-//        addressLay.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                openAutocompleteActivity();
-//            }
-//        });
 
         mUpdateDestination.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,11 +131,11 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             }
             buildGoogleApiClient();
         } else {
-            Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Location not suppoif(!(Utils.isLocationServiceEnabled(this))) {\n" +
+                    "//            Utils.createLocationServiceError(this);\n" +
+                    "//        }rted in this device", Toast.LENGTH_SHORT).show();
         }
-        if(!(Utils.isLocationServiceEnabled(this))) {
-            Utils.createLocationServiceError(this);
-        }
+//
     }
 
     public void actionBarSettings() {
@@ -211,6 +202,40 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
                 }
             }
         });
+
+        new MapStateListener(mMap, mapFragment, this) {
+            @Override
+            public void onMapTouched() {
+                // Map touched
+                Log.d("jomy", "Map Touched..");
+            }
+
+            @Override
+            public void onMapReleased() {
+                // Map released
+                Log.d("jomy", "Map Release..");
+            }
+
+            @Override
+            public void onMapUnsettled() {
+                // Map unsettled
+                Log.d("jomy", "Map UnSettled..");
+            }
+
+            @Override
+            public void onMapSettled() {
+                // Map settled
+                Log.d("jomy", "Map Settled..");
+            }
+        };
+
+//        mMap.setMyLocationEnabled(true);
+//        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//        Log.d("jomy","Lat : "+destinationLatitude+" Longitude : "+destinationLongitude);
+//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(destinationLatitude, destinationLongitude));
+//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+//        mMap.moveCamera(center);
+//        mMap.animateCamera(zoom);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -382,13 +407,23 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             longtDest=location.getLongitude();
             Log.d("jomy", "Auto  Complete...Lang : " + latLong.latitude);
 
-
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
-            mMap.moveCamera(center);
-            mMap.animateCamera(zoom);
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(destinationLatitude,destinationLongitude))      // Sets the center of the map to location user
+                    .zoom(11)                   // Sets the zoom
+                    .bearing(90)                // Sets the orientation of the camera to east
+                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+//            mMap.setMyLocationEnabled(true);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+//            CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
+//            mMap.moveCamera(center);
+//            mMap.animateCamera(zoom);
 
 
 
