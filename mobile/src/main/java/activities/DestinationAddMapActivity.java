@@ -60,9 +60,9 @@ import utils.mapUtils.MapStateListener;
 import utils.mapUtils.TouchableMapFragment;
 
 /**
- * Created by jpaulose on 6/27/2016.
+ * Created by jpaulose on 7/6/2016.
  */
-public class DestinationModify_MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -401,7 +401,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(destinationLatitude, destinationLongitude))      // Sets the center of the map to location user
-                    .zoom(13)                   // Sets the zoom
+                    .zoom(11)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
@@ -453,12 +453,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             Log.d("jomy", "adress hit..");
             // Display the address string or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            Log.d("jomy", "mAddressOutput.."+mAddressOutput);
+
             mAreaOutput = resultData.getString(Constants.LOCATION_DATA_AREA);
 
             mCityOutput = resultData.getString(Constants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(Constants.LOCATION_DATA_STREET);
-            Log.d("jomy", "mCityOutput.."+mCityOutput);
+
             displayAddressOutput();
 
             // Show a toast message if an address was found.
@@ -474,7 +474,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     protected void displayAddressOutput() {
         //  mLocationAddressTextView.setText(mAddressOutput);
         try {
-            if (mAddressOutput != null || mAddressOutput.trim().length()>0) {
+            if (mAreaOutput != null) {
                 // mLocationText.setText(mAreaOutput+ "");
                 Log.d("jomy", "mAddressOutput.." + mAddressOutput);
 
@@ -482,7 +482,6 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
                 //mLocationText.setText(mAreaOutput);
                 destinationAdress = "" + mAddressOutput;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("jomy", "crasjhh");
@@ -571,7 +570,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 //                        .build();                   // Creates a CameraPosition from the builder
 //                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mAdressLoc.getLatitude(), mAdressLoc.getLongitude()));
-                CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
+                CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
                 mMap.moveCamera(center);
                 mMap.animateCamera(zoom);
 
@@ -624,21 +623,21 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
                 if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                    Toast.makeText(DestinationModify_MapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DestinationAddMapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("result", "success");
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else
-                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
 
             }
         });

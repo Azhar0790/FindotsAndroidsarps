@@ -1,7 +1,5 @@
 package restmodels;
 
-import java.util.ArrayList;
-
 /**
  * Created by jpaulose on 6/21/2016.
  */
@@ -11,7 +9,7 @@ public class ResponseModel {
 
     private int errorCode;
 
-    private ArrayList<responseDataModel> data=new ArrayList<responseDataModel>();
+//    private ArrayList<responseDataModel> data=new ArrayList<responseDataModel>();
 
     public String getMessage() {
         return message;
@@ -29,11 +27,11 @@ public class ResponseModel {
         this.errorCode = errorCode;
     }
 
-    public ArrayList<responseDataModel> getData() {
-        return data;
-    }
-
-    public void setData(ArrayList<responseDataModel> data) {
-        this.data = data;
-    }
+//    public ArrayList<responseDataModel> getData() {
+//        return data;
+//    }
+//
+//    public void setData(ArrayList<responseDataModel> data) {
+//        this.data = data;
+//    }
 }

@@ -144,6 +144,8 @@ public class FetchAddressIntentService extends IntentService {
 
             bundle.putString(Constants.LOCATION_DATA_AREA, address.getSubLocality());
 
+            Log.d("jomy","address.getSubLocality() :"+address.getSubLocality());
+
             bundle.putString(Constants.LOCATION_DATA_CITY, address.getLocality());
             bundle.putString(Constants.LOCATION_DATA_STREET, address.getAddressLine(0));
 

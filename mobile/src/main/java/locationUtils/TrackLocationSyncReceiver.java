@@ -17,8 +17,8 @@ import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import locationUtils.LocationModel.BackgroundLocData;
 import locationUtils.LocationModel.LocationData;
-import locationUtils.LocationModel.LocationResponseData;
 import locationUtils.LocationModel.LocationSyncData;
+import restmodels.ResponseModel;
 import restservice.RestClient;
 import retrofit.Call;
 import retrofit.Callback;
@@ -71,12 +71,12 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                      * Hit the Login API to get the Userdetails
                      */
                     RestClient restClient = new RestClient();
-                    Call<LocationResponseData> bglocationCall = restClient.getApiService().saveLocationPath(bgData);
+                    Call<ResponseModel> bglocationCall = restClient.getApiService().saveLocationPath(bgData);
 
 
-                    bglocationCall.enqueue(new Callback<LocationResponseData>() {
+                    bglocationCall.enqueue(new Callback<ResponseModel>() {
                                       @Override
-                                      public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+                                      public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
 
                                           if (response.isSuccess() && response.body().getErrorCode() == 0) {
 

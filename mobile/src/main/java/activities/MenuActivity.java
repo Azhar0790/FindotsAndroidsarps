@@ -43,11 +43,9 @@ import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import fragments.Account_Settings;
-import fragments.DestinationFragment;
 import fragments.DestinationsTabFragment;
 import interfaces.IMenuItems;
 import locationUtils.LocationModel.BackgroundLocData;
-import locationUtils.LocationModel.LocationResponseData;
 import locationUtils.LocationModel.LocationSyncData;
 import locationUtils.LocationRequestData;
 import locationUtils.TrackLocationService;
@@ -425,16 +423,16 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         Log.d("jomy", "getUserID() : " + bgData.getUserID());
 
-        Call<LocationResponseData> login = FinDotsApplication.getRestClient().getApiService().saveLocationPath(bgData);
+        Call<ResponseModel> reportLocationCall = FinDotsApplication.getRestClient().getApiService().saveLocationPath(bgData);
 
-        login.enqueue(new Callback<LocationResponseData>() {
+        reportLocationCall.enqueue(new Callback<ResponseModel>() {
 
             @Override
-            public void onResponse(Response<LocationResponseData> response, Retrofit retrofit) {
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
                 Log.d("jomy", "sucessReportLoc... ");
                 if (response.isSuccess() && response.body().getErrorCode() == 0) {
-                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_success), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
                 }
@@ -466,8 +464,8 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 logOutNavigation();
 
-                if (response.isSuccess() & response.body().getData().size() > 0) {
-                    Toast.makeText(MenuActivity.this, response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                if (response.isSuccess() & response.body().getErrorCode()== 0) {
+                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                 } else {
                     Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
