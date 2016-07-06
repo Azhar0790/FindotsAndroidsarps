@@ -54,7 +54,7 @@
         android:padding="10dp"
         android:singleLine="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_checked_at"
+        android:background="@color/colorPrimaryDark"
         android:text="@string/update_destination"
         android:textSize="@dimen/top_loc_font"
         android:textColor="@color/white"
