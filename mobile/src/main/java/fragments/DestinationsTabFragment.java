@@ -8,7 +8,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import activities.DestinationAddMapActivity;
 import adapters.DestinationsPagerAdapter;
-import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
@@ -32,7 +30,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     TabLayout tabLayout = null;
 
     public static DestinationData[] destinationDatas = null;
-    private static final int REQUEST_CODE_ADD_DESTINATION = 999;
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -54,7 +51,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onClick(View view) {
                 // Click action
                 Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_ADD_DESTINATION);
+                startActivity(intent);
             }
         });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -105,22 +102,5 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     @Override
     public void onGetDestinationFailure(String errorMessage) {
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.i(Constants.TAG, "onActivityResult..//");
-        // Check that the result was from the autocomplete widget.
-        if (requestCode == REQUEST_CODE_ADD_DESTINATION) {
-            if (resultCode == getActivity().RESULT_OK && data.getStringExtra("result").equals("success")) {
-                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
-                destinationsRestCall.delegate = DestinationsTabFragment.this;
-                destinationsRestCall.callGetDestinations();
-            } else {
-            }
-        } else {
-        }
     }
 }
