@@ -384,13 +384,13 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+            //    TODO: Consider calling
             //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //    here to request the missing permissions, and then overriding
+            //    public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            //    To handle the case where the user grants the permission. See the documentation
+            //    For ActivityCompat#requestPermissions for more details.
             return;
         }
 
@@ -408,7 +408,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(11)                   // Sets the zoom
+                    .zoom(13)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
@@ -544,7 +544,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 mAdressLoc.setLatitude(place.getLatLng().latitude);
                 mAdressLoc.setLongitude(place.getLatLng().longitude);
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mAdressLoc.getLatitude(), mAdressLoc.getLongitude()));
-                CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
+                CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
                 mMap.moveCamera(center);
                 mMap.animateCamera(zoom);
 
@@ -591,6 +591,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
                     Toast.makeText(DestinationAddMapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
+                    finish();
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("result", "success");
                     setResult(Activity.RESULT_OK, returnIntent);
