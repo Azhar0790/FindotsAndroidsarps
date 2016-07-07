@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="mapKM_TextSize">14dp</dimen>
+    <dimen name="kmTextSize">12dp</dimen>
+
+</resources>

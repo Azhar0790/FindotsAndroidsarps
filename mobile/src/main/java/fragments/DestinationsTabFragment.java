@@ -6,12 +6,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import adapters.DestinationsPagerAdapter;
+import findots.bridgetree.com.findots.Constants;
 import findots.bridgetree.com.findots.R;
 import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
@@ -59,7 +61,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         destinationsRestCall.callGetDestinations();
 
 
-
         viewPagerDestinations.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -93,5 +94,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     @Override
     public void onGetDestinationFailure(String errorMessage) {
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(Constants.TAG, "onResume: DestinationsTabFragment");
     }
 }
