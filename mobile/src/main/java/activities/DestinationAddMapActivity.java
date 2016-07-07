@@ -2,7 +2,9 @@ package activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -14,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -119,7 +122,36 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         mAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addDestinationRequest();
+                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DestinationAddMapActivity.this);
+                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DestinationAddMapActivity.this);
+                alertDialogBuilderUserInput.setView(mView);
+
+
+                final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+                TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+                userInputDialogTitle.setText(getResources().getString(R.string.add_destination));
+                userInputDialogEditText.setHint(getResources().getString(R.string.destination_name));
+                alertDialogBuilderUserInput
+                        .setCancelable(false)
+                        .setPositiveButton(""+getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                if(userInputDialogEditText.getText().toString().length()>0) {
+                                    dialogBox.dismiss();
+                                    addDestinationRequest((userInputDialogEditText.getText().toString().trim()));
+                                }
+                            }
+                        })
+
+                        .setNegativeButton(""+getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();
 
             }
 
@@ -544,9 +576,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         }
     }
 
-    public void addDestinationRequest() {
+    public void addDestinationRequest(String destinationName) {
         GeneralUtils.initialize_progressbar(this);
-        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest());
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest(destinationName));
 
         addDestinationCall.enqueue(new Callback<ResponseModel>() {
 
@@ -577,9 +609,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         });
     }
 
-    private Map<String, Object> setAddDestinationRequest() {
+    private Map<String, Object> setAddDestinationRequest(String destinationName) {
         Map<String, Object> postValues = new HashMap<>();
-        postValues.put("destinationName", "Kanakpura");
+        postValues.put("destinationName", ""+destinationName);
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + mLocationAddress.getText().toString().trim());
