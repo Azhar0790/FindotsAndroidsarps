@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import utils.AppStringConstants;
 import utils.GeneralUtils;
@@ -29,6 +30,14 @@ public class SplashActivity extends AppCompatActivity {
         SplashActivity.this.mHandlerSplash.sendMessageDelayed(message, DELAY_TIME);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Splash Screen");
+
+    }
+
 
     Handler mHandlerSplash = new Handler(){
         @Override

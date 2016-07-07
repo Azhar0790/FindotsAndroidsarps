@@ -173,6 +173,12 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Home Screen");
+    }
+
     public void actionBarSettings() {
 
         /* Assigning the toolbar object ot the view
@@ -259,7 +265,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
             case Constants.HELP:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                FinDotsApplication.getDatabaseInfo(this);
+//                FinDotsApplication.getDatabaseInfo(this);
                 Intent mailIntent = new Intent();
                 mailIntent.setAction(Intent.ACTION_SENDTO);
                 mailIntent.setData(Uri.parse("mailto:"));

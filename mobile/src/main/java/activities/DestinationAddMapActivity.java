@@ -175,6 +175,14 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 //
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Add New Destination Screen");
+    }
+
+
+
     public void actionBarSettings() {
 
         /* Assigning the toolbar object ot the view

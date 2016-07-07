@@ -17,6 +17,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import locationUtils.Utils;
 import restcalls.forgotPassword.ForgotPasswordModel;
@@ -83,6 +84,12 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Login Screen");
     }
 
     /**

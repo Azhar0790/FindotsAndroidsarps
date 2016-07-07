@@ -17,6 +17,7 @@ import android.widget.Toast;
 import activities.DestinationAddMapActivity;
 import adapters.DestinationsPagerAdapter;
 import findots.bridgetree.com.findots.Constants;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
@@ -52,6 +53,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FinDotsApplication.getInstance().trackEvent("Destination","Click","Clicked Add Destination Event");
+
                 // Click action
                 Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
                 startActivityForResult(intent,REQUEST_CODE_ADD_DESTINATION);
@@ -111,6 +114,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void onResume() {
         super.onResume();
         Log.i(Constants.TAG, "onResume: DestinationsTabFragment");
+        FinDotsApplication.getInstance().trackScreenView("Destination Map & List Fragment");
     }
 
     @Override

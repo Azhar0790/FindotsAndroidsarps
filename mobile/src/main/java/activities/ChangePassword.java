@@ -64,6 +64,12 @@ public class ChangePassword extends AppCompatActivity {
         setUIElementsProperty();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Change Password Screen");
+    }
+
     public void setUIElementsProperty() {
 
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
