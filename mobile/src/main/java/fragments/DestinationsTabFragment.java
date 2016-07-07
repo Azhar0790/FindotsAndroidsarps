@@ -1,7 +1,9 @@
 package fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import activities.DestinationAddMapActivity;
 import adapters.DestinationsPagerAdapter;
 import findots.bridgetree.com.findots.R;
 import restcalls.destinations.DestinationData;
@@ -21,7 +24,7 @@ import restcalls.destinations.IGetDestinations;
 /**
  * Created by parijathar on 7/4/2016.
  */
-public class DestinationsTabFragment extends Fragment implements IGetDestinations{
+public class DestinationsTabFragment extends Fragment implements IGetDestinations {
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
@@ -34,7 +37,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +45,15 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("List"));
-
+        FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
+        fabAddDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Click action
+                Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
+                startActivity(intent);
+            }
+        });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.app_color));
         tabLayout.setSelectedTabIndicatorHeight(8);
@@ -57,7 +67,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationsTabFragment.this;
         destinationsRestCall.callGetDestinations();
-
 
 
         viewPagerDestinations.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

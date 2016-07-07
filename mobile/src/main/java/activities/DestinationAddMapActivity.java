@@ -74,7 +74,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     int destinationID = 0;
     Bundle bundle = null;
     Location mAdressLoc;
-    String destinationAdress = "";
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
@@ -97,8 +96,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     TextView mLocationMarkerText;
     @Bind(R.id.TextView_heading)
     TextView mTextView_heading;
-    @Bind(R.id.updateDestination)
-    Button mUpdateDestination;
+    @Bind(R.id.addDestination)
+    Button mAddDestination;
     @Bind(R.id.address)
     EditText mLocationAddress;
     @Bind(R.id.imageView_back)
@@ -108,21 +107,19 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_destination_map);
+        setContentView(R.layout.activity_add_destination_map);
         ButterKnife.bind(this);
         mContext = this;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (TouchableMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
-        getBundleData();
         actionBarSettings();
 
 
-        mUpdateDestination.setOnClickListener(new View.OnClickListener() {
+        mAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateDestination();
+                addDestinationRequest();
 
             }
 
@@ -137,7 +134,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             if (!(Utils.isLocationServiceEnabled(this))) {
                 Utils.createLocationServiceError(this);
             }
-//            buildGoogleApiClient();
+            buildGoogleApiClient();
         } else {
             Toast.makeText(mContext, "Location not suppoif(!(Utils.isLocationServiceEnabled(this))) {\n" +
                     "//            Utils.createLocationServiceError(this);\n" +
@@ -156,7 +153,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
-        mTextView_heading.setText(getString(R.string.modify_destination));
+        mTextView_heading.setText(getString(R.string.add_destination));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +227,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
             @Override
             public void onMapSettled() {
+                Log.d("jomy", "map Seetled ");
                 CameraPosition cameraPosition = mMap.getCameraPosition();
                 mCenterLatLong = cameraPosition.target;
                 mMap.clear();
@@ -240,42 +238,20 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 startIntentService(mAdressLoc);
             }
         };
-        if (mAdressLoc == null)
-            mAdressLoc = new Location("");
-        mAdressLoc.setLatitude(destinationLatitude);
-        mAdressLoc.setLongitude(destinationLongitude);
-        changeMap(mAdressLoc);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            return;
-        }
+
     }
 
-    public void getBundleData() {
-        bundle = getIntent().getExtras();
-        destinationID = bundle.getInt("destinationID");
-        destinationLatitude = bundle.getDouble("destinationLatitude");
-        destinationLongitude = bundle.getDouble("destinationLongitude");
-//        isEditable = bundle.getBoolean("editable");
-//        isRequiresApproval = bundle.getBoolean("requireApproval");
-    }
+
 
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
+            Log.d("jomy", "onConnected... ");
             changeMap(mLastLocation);
             Log.d(TAG, "ON connected");
 
@@ -298,7 +274,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -400,33 +375,15 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(destinationLatitude, destinationLongitude))      // Sets the center of the map to location user
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
                     .zoom(11)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             startIntentService(location);
-//            mMap.setMyLocationEnabled(true);
-//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//            CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
-//            CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
-//            mMap.moveCamera(center);
-//            mMap.animateCamera(zoom);
-
-
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(latLong).zoom(11f).tilt(70).build();
-//
-//            mMap.setMyLocationEnabled(true);
-//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//            mMap.animateCamera(CameraUpdateFactory
-//                    .newCameraPosition(cameraPosition));
-
             mLocationMarkerText.setText("Lat : " + location.getLatitude() + "," + "Long : " + location.getLongitude());
             startIntentService(location);
-
-
         } else {
             Toast.makeText(getApplicationContext(),
                     "Sorry! unable to create maps", Toast.LENGTH_SHORT)
@@ -474,13 +431,13 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     protected void displayAddressOutput() {
         //  mLocationAddressTextView.setText(mAddressOutput);
         try {
-            if (mAreaOutput != null) {
+            if (mAddressOutput != null || mAddressOutput.trim().length()>0) {
                 // mLocationText.setText(mAreaOutput+ "");
                 Log.d("jomy", "mAddressOutput.." + mAddressOutput);
 
                 mLocationAddress.setText(mAddressOutput);
                 //mLocationText.setText(mAreaOutput);
-                destinationAdress = "" + mAddressOutput;
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -554,33 +511,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                     mAdressLoc = new Location("");
                 mAdressLoc.setLatitude(place.getLatLng().latitude);
                 mAdressLoc.setLongitude(place.getLatLng().longitude);
-//                latDest=targetLocation.getLatitude();
-//                longtDest=targetLocation.getLongitude();
-//                Log.d("jomy", "Auto  Complete...Lang : " + place.getAddress() + "  LAtitude : " + targetLocation.getLatitude());
-//                changeMap(targetLocation);
-
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-//                        new LatLng(targetLocation.getLatitude(), targetLocation.getLongitude()), 13));
-//
-//                CameraPosition cameraPosition = new CameraPosition.Builder()
-//                        .target(new LatLng(targetLocation.getLatitude(), targetLocation.getLongitude()))      // Sets the center of the map to location user
-//                        .zoom(12)                   // Sets the zoom
-//                        .bearing(90)                // Sets the orientation of the camera to east
-//                        .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-//                        .build();                   // Creates a CameraPosition from the builder
-//                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mAdressLoc.getLatitude(), mAdressLoc.getLongitude()));
                 CameraUpdate zoom = CameraUpdateFactory.zoomTo(11);
                 mMap.moveCamera(center);
                 mMap.animateCamera(zoom);
-
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), (width - 300) , (height - 300) , padding));
-
-
-                //mLocationText.setText(place.getName() + "");
-
-//                CameraPosition cameraPosition = new CameraPosition.Builder()
-//                        .target(latLong).zoom(19f).tilt(70).build();
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
@@ -610,11 +544,11 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         }
     }
 
-    public void updateDestination() {
+    public void addDestinationRequest() {
         GeneralUtils.initialize_progressbar(this);
-        Call<ResponseModel> modifyDestinationCall = FinDotsApplication.getRestClient().getApiService().modifyDestination(setModifyDestinationRequest());
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest());
 
-        modifyDestinationCall.enqueue(new Callback<ResponseModel>() {
+        addDestinationCall.enqueue(new Callback<ResponseModel>() {
 
 
             @Override
@@ -630,28 +564,28 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else
-                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
 
             }
 
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    private Map<String, Object> setModifyDestinationRequest() {
+    private Map<String, Object> setAddDestinationRequest() {
         Map<String, Object> postValues = new HashMap<>();
-        postValues.put("destinationID", destinationID);
-        postValues.put("newLatitude", mAdressLoc.getLatitude());
-        postValues.put("newLongitude", mAdressLoc.getLongitude());
-        postValues.put("address", "" + destinationAdress);
-        postValues.put("requestedDate", GeneralUtils.DateTimeInUTC());
+        postValues.put("destinationName", "Kanakpura");
+        postValues.put("latitude", mAdressLoc.getLatitude());
+        postValues.put("longitude", mAdressLoc.getLongitude());
+        postValues.put("address", "" + mLocationAddress.getText().toString().trim());
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
         postValues.put("ipAddress", "");

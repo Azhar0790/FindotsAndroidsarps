@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/divider_color">
+
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        android:paddingTop="@dimen/tool_bar_paddingTop"/>
+
+
+
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addressLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container_toolbar"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical">
+
+
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:enabled="false"
+            android:hint="Address"
+            android:singleLine="true"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+
+    <Button
+        android:gravity="center"
+        android:id="@+id/addDestination"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:drawablePadding="@dimen/top_loc_padding"
+        android:ellipsize="end"
+        android:textAllCaps="false"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/add_destination"
+        android:textSize="@dimen/top_loc_font"
+        android:textColor="@color/white"/>
+<FrameLayout
+    android:id="@+id/mapframelay"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_below="@+id/addressLay"
+    android:layout_above="@+id/updateDestination">
+
+<fragment
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="utils.mapUtils.TouchableMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+<LinearLayout
+    android:id="@+id/locationMarker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="30dp"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/locationMarkertext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minWidth="250dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text=""
+        android:textColor="@android:color/transparent" />
+
+    <ImageView
+        android:id="@+id/imageMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/map_marker" />
+</LinearLayout>
+
+
+
+</FrameLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/container_toolbar"
+        android:layout_above="@+id/mapframelay"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:onClick="openAutoCompletePlace"/>
+
+</RelativeLayout>

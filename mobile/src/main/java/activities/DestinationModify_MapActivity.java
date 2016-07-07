@@ -631,7 +631,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else
-                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
 
             }
 

@@ -60,7 +60,9 @@
     <string name="checkout_failed">Check Out Failed</string>
     <string name="update_destination">Update Destination</string>
     <string name="modify_destination">Modify Destination</string>
+    <string name="add_destination">Add Destination</string>
     <string name="modify_destinationError">Unable to Modify Destination</string>
+    <string name="add_destinationError">Unable to Add New Destination</string>
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="not_the_right_destination">Please CheckIn when you reach the destination.</string>

@@ -36,6 +36,9 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_MODIFY_DESTINATION)
     Call<ResponseModel> modifyDestination(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_ADD_DESTINATION)
+    Call<ResponseModel> addDestination(@Body Map<String, Object> request);
+
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<ResponseModel> saveLocationPath(@Body BackgroundLocData bgData);
 
