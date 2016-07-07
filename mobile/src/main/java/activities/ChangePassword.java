@@ -98,7 +98,7 @@ public class ChangePassword extends AppCompatActivity {
 
                                            if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                                               Toast.makeText(ChangePassword.this, response.body().getData().get(0).getStatus() , Toast.LENGTH_LONG).show();
+                                               Toast.makeText(ChangePassword.this, response.body().getMessage() , Toast.LENGTH_LONG).show();
                                                logOut();
                                            } else
                                                Toast.makeText(ChangePassword.this,response.body().getMessage() , Toast.LENGTH_SHORT).show();

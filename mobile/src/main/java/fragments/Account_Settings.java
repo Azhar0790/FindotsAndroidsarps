@@ -143,7 +143,7 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
                         GeneralUtils.setSharedPreferenceString(getActivity(), AppStringConstants.NAME,
                                 mEditText_name.getText().toString());
                         GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.ACCOUNT_UPDATE, 1);
-                        Toast.makeText(getActivity(), response.body().getData().get(0).getStatus(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     } else
                         Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
 
