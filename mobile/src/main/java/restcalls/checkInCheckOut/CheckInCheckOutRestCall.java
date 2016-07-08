@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -106,7 +107,7 @@ public class CheckInCheckOutRestCall {
         /**
          *   fetching current time in UTC format
          */
-        DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
+        DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
         reportedTime = dateTime.toString(fmt1);
 

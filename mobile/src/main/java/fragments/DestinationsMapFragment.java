@@ -94,7 +94,7 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.title(data.getDestinationName());
                 markerOptions.position(latLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.getDestinationLatitude(), data.getDestinationLongitude())));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.getDestinationLatitude(), data.getDestinationLongitude())));
 
                 mGoogleMap.addMarker(markerOptions).showInfoWindow();
             }
@@ -104,7 +104,8 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
     public void showAllMarkers() {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.10);
+        //int padding = (int) (width * 0.10);
+        int padding = 50;
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
                 (width - 300), (height - 300), padding));
@@ -240,15 +241,28 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
         }
     }
 
-    public Bitmap drawTravelTimeOnMapMarker(double destinationLatitude, double destinationLongitude) {
+    public Bitmap drawTravelTimeOnMapMarker(boolean isCheckIn, double destinationLatitude, double destinationLongitude) {
 
         float[] distance = new float[2];
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
 
         String kilometers = new DecimalFormat("0").format(distance[0]/1000);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(),
-                R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bm = null;
+
+        /**
+         *   if isCheckIn is false, then display checkin map marker
+         *   if it is true, then display checkout map marker
+         */
+        if (!isCheckIn) {
+            // CheckIn
+            bm = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
+        } else {
+            // CheckOut
+            bm = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
+        }
 
         Canvas canvas = new Canvas(bm);
 

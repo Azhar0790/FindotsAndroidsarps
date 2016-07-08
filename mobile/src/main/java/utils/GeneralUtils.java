@@ -22,6 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -223,7 +224,7 @@ public class GeneralUtils {
         String checkedOutTime = null;
 
         if (date.length() != 0) {
-            DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
             DateTime startTime = fmt.parseDateTime(date);
 
             int hour = startTime.getHourOfDay();

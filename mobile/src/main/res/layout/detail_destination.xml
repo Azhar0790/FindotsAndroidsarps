@@ -2,20 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
-        android:paddingTop="@dimen/tool_bar_paddingTop"/>
+        android:paddingTop="@dimen/tool_bar_paddingTop" />
 
-    <include android:id="@+id/map"
+    <include
+        android:id="@+id/map"
         layout="@layout/activity_maps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tool_bar"
-        android:layout_above="@+id/RelativeLayout_address"/>
+        android:layout_above="@+id/destModify"
+        android:layout_below="@+id/tool_bar" />
+
+    <TextView
+        android:id="@+id/destModify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/RelativeLayout_address"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/RelativeLayout_address"
@@ -25,7 +38,7 @@
         android:layout_marginBottom="6dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/TextView_map_km"
@@ -45,16 +58,13 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="0dp"
             android:layout_toRightOf="@+id/TextView_map_km"
-            android:lines="2"
-            android:scrollbars="vertical"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
+            android:scrollbars="vertical"
             android:text="@string/bd"
             android:textColor="@color/black_70"
             android:textSize="14sp" />
-
-
-
     </RelativeLayout>
 
     <LinearLayout
@@ -84,20 +94,5 @@
             android:textSize="20sp" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/destModify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/modify_destination"
-        android:textColor="@color/app_color"
-        android:layout_marginTop="10dp"
-        android:layout_above="@+id/LinearLayout_checkIncheckOut"
-        android:layout_alignRight="@+id/LinearLayout_checkIncheckOut"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:gravity="right"
-        android:textSize="14sp"
-        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -156,7 +156,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
-        mTextView_heading.setText(getString(R.string.modify_destination));
+        mTextView_heading.setText(getString(R.string.modifyDestination));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {

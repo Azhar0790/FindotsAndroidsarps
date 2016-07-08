@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
@@ -91,6 +94,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Bind(R.id.destModify)
     TextView mDestModify;
 
+    @Bind(R.id.imageViewDirections)
+    ImageView imageViewDirections;
+
     Toolbar mToolbar = null;
 
     private GoogleApiClient mGoogleApiClient;
@@ -130,8 +136,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
         if (isEditable && !(checkedIn || checkedOut)) {
-            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify_destination));
-            mDestModifyText.setSpan(new UnderlineSpan(), 0, mDestModifyText.length(), 0);
+            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
+            mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
+            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
+            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_color)), 24, 30, 0);
             mDestModify.setText(mDestModifyText);
             mDestModify.setVisibility(View.VISIBLE);
         }
@@ -302,6 +310,14 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         mTextView_heading.setText(getString(R.string.destinations));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
+        imageViewDirections.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.imageViewDirections)
+    public void openDirectionsMap() {
+        String uri = "http://maps.google.com/maps?saddr="+currentLatitude+","+currentLongitude+"&daddr="+destinationLatitude + "," + destinationLongitude;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
     }
 
     @OnClick(R.id.imageView_back)

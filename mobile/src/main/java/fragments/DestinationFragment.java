@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -172,7 +173,9 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
             @Override
             public int compare(DestinationData lhs, DestinationData rhs) {
 
-                DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
                 DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
                 DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
 

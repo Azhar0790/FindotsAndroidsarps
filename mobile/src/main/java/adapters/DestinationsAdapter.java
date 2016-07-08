@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -45,7 +46,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         this.context = context;
         this.destinationDatas = destinationDatas;
 
-        DateTimeFormatter fmt1 = ISODateTimeFormat.dateHourMinuteSecondMillis();
+        DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
         getTime = dateTime.toString(fmt1);
     }
@@ -180,7 +181,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         Log.i(Constants.TAG, "dateTimeDifference: getTime = "+getTime);
 
-        DateTimeFormatter fmt = ISODateTimeFormat.dateTimeParser();
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime endTime = fmt.parseDateTime(getTime);
         DateTime startTime = fmt.parseDateTime(date);
 
