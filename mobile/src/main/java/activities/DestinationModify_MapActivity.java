@@ -146,6 +146,13 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 //
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FinDotsApplication.getInstance().trackScreenView("Update Destination Screen");
+    }
+
+
     public void actionBarSettings() {
 
         /* Assigning the toolbar object ot the view

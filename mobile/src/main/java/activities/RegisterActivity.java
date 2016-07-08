@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import locationUtils.Utils;
 import restcalls.register.IRegisterRestCall;
@@ -111,6 +112,8 @@ public class RegisterActivity extends AppCompatActivity
         createLocationRequest();
         buildGoogleApiClient();
     }
+
+
 
 
     /**
@@ -325,6 +328,9 @@ public class RegisterActivity extends AppCompatActivity
         super.onResume();
         if (googleApiClient.isConnected())
             startLocationUpdates();
+        FinDotsApplication.getInstance().trackScreenView("Registration Screen");
+
+
     }
 
     @Override

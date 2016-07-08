@@ -17,6 +17,7 @@ import android.widget.Toast;
 import activities.DestinationAddMapActivity;
 import adapters.DestinationsPagerAdapter;
 import findots.bridgetree.com.findots.Constants;
+import findots.bridgetree.com.findots.FinDotsApplication;
 import findots.bridgetree.com.findots.R;
 import restcalls.destinations.DestinationData;
 import restcalls.destinations.DestinationsModel;
@@ -32,6 +33,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     TabLayout tabLayout = null;
 
     public static DestinationData[] destinationDatas = null;
+    private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -51,9 +53,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FinDotsApplication.getInstance().trackEvent("Destination","Click","Clicked Add Destination Event");
+
                 // Click action
                 Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_ADD_DESTINATION);
             }
         });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -110,5 +114,23 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void onResume() {
         super.onResume();
         Log.i(Constants.TAG, "onResume: DestinationsTabFragment");
+        FinDotsApplication.getInstance().trackScreenView("Destination Map & List Fragment");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("jomy", "onActivityResult..//");
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_ADD_DESTINATION) {
+
+                Log.d("jomy", "onActivityResultwwffg..//");
+                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                destinationsRestCall.delegate = DestinationsTabFragment.this;
+                destinationsRestCall.callGetDestinations();
+
+        } else {
+        }
     }
 }
