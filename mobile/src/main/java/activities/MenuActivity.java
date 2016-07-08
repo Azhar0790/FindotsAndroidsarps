@@ -188,7 +188,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
         mTextView_heading.setText(getString(R.string.destinations));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);

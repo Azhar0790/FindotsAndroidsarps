@@ -63,7 +63,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.app_color));
         tabLayout.setSelectedTabIndicatorHeight(8);
-        tabLayout.setTabTextColors(getResources().getColor(R.color.app_color_25),
+        tabLayout.setTabTextColors(getResources().getColor(R.color.app_color),
                 getResources().getColor(R.color.app_color));
 
         ViewCompat.setElevation(tabLayout, 5f);

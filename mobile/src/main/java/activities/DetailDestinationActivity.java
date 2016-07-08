@@ -19,7 +19,6 @@ import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,8 +48,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import database.DataHelper;
-
-
 import de.greenrobot.event.EventBus;
 import events.AppEvents;
 import findots.bridgetree.com.findots.R;
@@ -123,9 +120,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        getBundleData();
         actionBarSettings();
 
-        getBundleData();
 
         setData();
 
@@ -306,16 +303,21 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
-        mTextView_heading.setText(getString(R.string.destinations));
+        if (destinationName.toString().length() > 0)
+            mTextView_heading.setText(""+destinationName);
+        else {
+            destinationName=getResources().getString(R.string.destinations);
+            mTextView_heading.setText(""+destinationName);
+        }
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageViewDirections.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.imageViewDirections)
     public void openDirectionsMap() {
-        String uri = "http://maps.google.com/maps?saddr="+currentLatitude+","+currentLongitude+"&daddr="+destinationLatitude + "," + destinationLongitude;
+        String uri = "http://maps.google.com/maps?saddr=" + currentLatitude + "," + currentLongitude + "&daddr=" + destinationLatitude + "," + destinationLongitude;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
     }
@@ -386,7 +388,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                  *   Outside the Radius
                  */
                 String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-                mTextView_map_km.setText(kiloMeters + " kms");
+                mTextView_map_km.setText(kiloMeters + " km");
 
                 if (requestForCheckInCheckOut) {
                     GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
@@ -397,7 +399,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                  *   Inside the Radius
                  */
                 String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-                mTextView_map_km.setText(kiloMeters + " kms");
+                mTextView_map_km.setText(kiloMeters + " km");
 
                 if (requestForCheckInCheckOut) {
                     CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
@@ -464,9 +466,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
             Intent intentModifyLoc = new Intent(this, DestinationModify_MapActivity.class);
             intentModifyLoc.putExtra("destinationID", destinationID);
+            intentModifyLoc.putExtra("destinationName", destinationName);
             intentModifyLoc.putExtra("destinationLatitude", destinationLatitude);
             intentModifyLoc.putExtra("destinationLongitude", destinationLongitude);
             startActivityForResult(intentModifyLoc, REQUEST_CODE_MODIFY_DESTINATION);
+
         }
     }
 

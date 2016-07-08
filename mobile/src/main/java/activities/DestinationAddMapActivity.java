@@ -102,7 +102,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     @Bind(R.id.addDestination)
     Button mAddDestination;
     @Bind(R.id.address)
-    EditText mLocationAddress;
+    TextView mLocationAddress;
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
 
@@ -117,7 +117,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         mapFragment = (TouchableMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         actionBarSettings();
-
+        mLocationAddress.setSelected(true);
 
         mAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +126,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
                 AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DestinationAddMapActivity.this);
                 alertDialogBuilderUserInput.setView(mView);
+                alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
 
 
                 final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
@@ -192,8 +193,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
-        mTextView_heading.setText(getString(R.string.add_destination));
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+
+        mTextView_heading.setText(getString(R.string.new_destination));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {
@@ -414,9 +416,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
+
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(13)                   // Sets the zoom
+                    .zoom(15)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
@@ -552,7 +555,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 mAdressLoc.setLatitude(place.getLatLng().latitude);
                 mAdressLoc.setLongitude(place.getLatLng().longitude);
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mAdressLoc.getLatitude(), mAdressLoc.getLongitude()));
-                CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
+                CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
                 mMap.moveCamera(center);
                 mMap.animateCamera(zoom);
 

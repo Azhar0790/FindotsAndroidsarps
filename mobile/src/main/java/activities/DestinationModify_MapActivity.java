@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +70,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     Context mContext;
     private LatLng mCenterLatLong;
     double destinationLatitude = 0.12, destinationLongitude = 0.14;
+    String destinationName = "";
     int destinationID = 0;
     Bundle bundle = null;
     Location mAdressLoc;
@@ -100,7 +100,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     @Bind(R.id.updateDestination)
     Button mUpdateDestination;
     @Bind(R.id.address)
-    EditText mLocationAddress;
+    TextView mLocationAddress;
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
 
@@ -117,7 +117,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
         getBundleData();
         actionBarSettings();
-
+        mLocationAddress.setSelected(true);
 
         mUpdateDestination.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,8 +162,11 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
-        mTextView_heading.setText(getString(R.string.modifyDestination));
+        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        if (destinationName.length() > 0)
+            mTextView_heading.setText("" + destinationName);
+        else
+            mTextView_heading.setText(getString(R.string.modifyDestination));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {
@@ -262,6 +265,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     public void getBundleData() {
         bundle = getIntent().getExtras();
         destinationID = bundle.getInt("destinationID");
+        destinationName = bundle.getString("destinationName");
         destinationLatitude = bundle.getDouble("destinationLatitude");
         destinationLongitude = bundle.getDouble("destinationLongitude");
 //        isEditable = bundle.getBoolean("editable");
@@ -408,7 +412,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(destinationLatitude, destinationLongitude))      // Sets the center of the map to location user
-                    .zoom(13)                   // Sets the zoom
+                    .zoom(15)                   // Sets the zoom
                     .bearing(90)                // Sets the orientation of the camera to east
                     .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
@@ -460,12 +464,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             Log.d("jomy", "adress hit..");
             // Display the address string or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            Log.d("jomy", "mAddressOutput.."+mAddressOutput);
+            Log.d("jomy", "mAddressOutput.." + mAddressOutput);
             mAreaOutput = resultData.getString(Constants.LOCATION_DATA_AREA);
 
             mCityOutput = resultData.getString(Constants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(Constants.LOCATION_DATA_STREET);
-            Log.d("jomy", "mCityOutput.."+mCityOutput);
+            Log.d("jomy", "mCityOutput.." + mCityOutput);
             displayAddressOutput();
 
             // Show a toast message if an address was found.
@@ -481,7 +485,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     protected void displayAddressOutput() {
         //  mLocationAddressTextView.setText(mAddressOutput);
         try {
-            if (mAddressOutput != null || mAddressOutput.trim().length()>0) {
+            if (mAddressOutput != null || mAddressOutput.trim().length() > 0) {
                 // mLocationText.setText(mAreaOutput+ "");
                 Log.d("jomy", "mAddressOutput.." + mAddressOutput);
 
@@ -578,7 +582,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 //                        .build();                   // Creates a CameraPosition from the builder
 //                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(mAdressLoc.getLatitude(), mAdressLoc.getLongitude()));
-                CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
+                CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
                 mMap.moveCamera(center);
                 mMap.animateCamera(zoom);
 

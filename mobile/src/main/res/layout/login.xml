@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_bg">
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="false">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
@@ -61,31 +67,41 @@
             android:textColor="@color/app_color"
             android:textSize="@dimen/textView_forgotPassword_textSize" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="100dp">
 
-            <TextView
-                android:id="@+id/TextView_donthaveaccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:text="@string/donthaveaccount"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/textview_donthaveaccount_textSize" />
-
-            <TextView
-                android:id="@+id/TextView_signup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="@dimen/signup_marginLeft"
-                android:text="@string/signup"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/textview_signup_textSize" />
-
-        </LinearLayout>
     </LinearLayout>
+
+
 </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/TextView_donthaveaccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="@string/donthaveaccount"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/textview_donthaveaccount_textSize" />
+
+        <TextView
+            android:id="@+id/TextView_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/signup_marginLeft"
+            android:text="@string/signup"
+            android:textColor="@color/app_color"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="@dimen/textview_signup_textSize" />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -63,12 +63,15 @@
     <string name="modify">Not the right location? Modify</string>
     <string name="modifyDestination">Modify Destination</string>
     <string name="add_destination">Add Destination</string>
+    <string name="new_destination">New Destination</string>
     <string name="modify_destinationError">Unable to Modify Destination</string>
     <string name="add_destinationError">Unable to Add New Destination</string>
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="destination_name">Enter Destination Name</string>
     <string name="not_the_right_destination">Please CheckIn when you reach the destination.</string>
+
+    <!--Move Map Location to Pin Point-->
 
 
     <!-- Strings related to login -->
