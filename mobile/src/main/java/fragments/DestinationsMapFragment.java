@@ -94,7 +94,7 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.title(data.getDestinationName());
                 markerOptions.position(latLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.getDestinationLatitude(), data.getDestinationLongitude())));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
 
                 mGoogleMap.addMarker(markerOptions).showInfoWindow();
             }
@@ -241,7 +241,7 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
         }
     }
 
-    public Bitmap drawTravelTimeOnMapMarker(boolean isCheckIn, double destinationLatitude, double destinationLongitude) {
+    public Bitmap drawTravelTimeOnMapMarker(boolean isCheckIn, boolean isCheckOut, double destinationLatitude, double destinationLongitude) {
 
         float[] distance = new float[2];
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
@@ -258,10 +258,15 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
             // CheckIn
             bm = BitmapFactory.decodeResource(getResources(),
                     R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
-        } else {
+        } else if (!isCheckOut) {
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
+                    R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
+        }
+        else {
+            // CheckOut
+            bm = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
         }
 
         Canvas canvas = new Canvas(bm);
