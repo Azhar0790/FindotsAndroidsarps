@@ -262,8 +262,7 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
                     R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
-        }
-        else {
+        } else {
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
                     R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
