@@ -10,7 +10,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "findots.bridgetree.com.findots"
+        applicationId "com.knowall.findots"
         minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
