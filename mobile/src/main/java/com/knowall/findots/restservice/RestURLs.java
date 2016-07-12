@@ -23,5 +23,6 @@ public class RestURLs {
     public static final String METHOD_SAVEACCOUNTINFO  = "SaveSettings";
     public static final String METHOD_CHANGEPASSWORD  = "ChangePassword";
     public static final String METHOD_DELETE_ASSIGNED_DESTINATION  = "DeleteAssignedDestination";
+    public static final String METHOD_RENAME_ASSIGNED_DESTINATION  = "RenameDestinationName";
 
 }

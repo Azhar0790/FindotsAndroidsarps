@@ -2,7 +2,9 @@ package com.knowall.findots.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -21,9 +23,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -145,7 +149,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         supportMapFragment.getMapAsync(this);
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
-        if (isEditable && !(checkedIn || checkedOut)) {
+//checkin and check out validation for modify is commented
+//        if (isEditable && !(checkedIn || checkedOut)) {
+        if (isEditable) {
             SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
             mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
             mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
@@ -499,6 +505,40 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                         deleteAssigned_destinationRequest();
                     }
 
+                    if (item.getItemId() == R.id.item1) {
+
+                        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DetailDestinationActivity.this);
+                        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+                        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
+                        alertDialogBuilderUserInput.setView(mView);
+                        alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
+
+                        final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+                        TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+                        userInputDialogTitle.setText(getResources().getString(R.string.modify_destination_name));
+                        userInputDialogEditText.setHint(getResources().getString(R.string.modify_destination_namehint));
+                        alertDialogBuilderUserInput
+                                .setCancelable(false)
+                                .setPositiveButton(""+getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        if(userInputDialogEditText.getText().toString().length()>0) {
+                                            dialogBox.dismiss();
+                                            renameAssigned_destinationRequest((userInputDialogEditText.getText().toString().trim()));
+                                        }
+                                    }
+                                })
+
+                                .setNegativeButton(""+getResources().getString(R.string.cancel),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialogBox, int id) {
+                                                dialogBox.cancel();
+                                            }
+                                        });
+
+                        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                        alertDialogAndroid.show();
+                    }
+
 
                         return true;
 
@@ -687,6 +727,54 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     private Map<String, Object> deleteAssigned_DestinationRequest() {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("assignedDestinationID", assignDestinationID);
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
+    }
+
+    public void renameAssigned_destinationRequest(String destinationName) {
+        GeneralUtils.initialize_progressbar(this);
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().renameAssignedDestination(renameAssigned_DestinationRequest(destinationName));
+
+        addDestinationCall.enqueue(new Callback<ResponseModel>() {
+
+
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
+
+                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                    Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                    finish();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", "success");
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                } else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private Map<String, Object> renameAssigned_DestinationRequest(String destnationName) {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("destinationID", destinationID);
+        postValues.put("destinationName", ""+destnationName);
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));

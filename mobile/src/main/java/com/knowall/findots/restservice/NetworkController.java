@@ -43,6 +43,9 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_DELETE_ASSIGNED_DESTINATION)
     Call<ResponseModel> deleteAssignedDestination(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_RENAME_ASSIGNED_DESTINATION)
+    Call<ResponseModel> renameAssignedDestination(@Body Map<String, Object> request);
+
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<ResponseModel> saveLocationPath(@Body BackgroundLocData bgData);
 
