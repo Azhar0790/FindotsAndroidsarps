@@ -86,7 +86,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
-
     @Bind(R.id.TextView_map_km)
     TextView mTextView_map_km;
 
