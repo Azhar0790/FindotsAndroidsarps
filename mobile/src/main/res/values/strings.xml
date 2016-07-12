@@ -63,12 +63,21 @@
     <string name="modify">Not the right location? Modify</string>
     <string name="modifyDestination">Modify Destination</string>
     <string name="add_destination">Add Destination</string>
+    <string name="new_destination">New Destination</string>
     <string name="modify_destinationError">Unable to Modify Destination</string>
     <string name="add_destinationError">Unable to Add New Destination</string>
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="destination_name">Enter Destination Name</string>
     <string name="not_the_right_destination">Please CheckIn when you reach the destination.</string>
+
+    <!--Edit Destination popup items-->
+
+    <string name="modify_destinationName">Modify Destination Name</string>
+    <string name="modify_destinationLoc">Modify Destination Location</string>
+    <string name="delete_destination">Delete Destination</string>
+
+    <!--Move Map Location to Pin Point-->
 
 
     <!-- Strings related to login -->
@@ -112,5 +121,7 @@
     <string name="password_cannotBeSame">current and old password cannot be same</string>
     <string name="password_same">confirm and new passwords should be same</string>
     <string name="password_updateInfoError">Unable to Update Password</string>
+
+
 
 </resources>
