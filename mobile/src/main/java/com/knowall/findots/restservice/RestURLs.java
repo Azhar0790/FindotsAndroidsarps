@@ -22,5 +22,6 @@ public class RestURLs {
     public static final String METHOD_ACCOUNTINFO  = "AccountSettings";
     public static final String METHOD_SAVEACCOUNTINFO  = "SaveSettings";
     public static final String METHOD_CHANGEPASSWORD  = "ChangePassword";
+    public static final String METHOD_DELETE_ASSIGNED_DESTINATION  = "DeleteAssignedDestination";
 
 }
