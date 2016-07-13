@@ -5,16 +5,20 @@
     android:layout_height="match_parent"
     android:background="@drawable/login_bg">
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:isScrollContainer="false">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="3">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:gravity="center">
         <ImageView
             android:id="@+id/ImageView_logo"
             android:layout_width="@dimen/imageView_logo_width_height"
@@ -23,6 +27,15 @@
             android:layout_marginTop="@dimen/imageView_logo_marginTop"
             android:contentDescription="@string/app_name"
             android:src="@drawable/splash_logo" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.75"
+            android:gravity="top"
+            android:orientation="vertical">
+
 
         <EditText
             android:id="@+id/EditText_userName"
@@ -40,7 +53,7 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/login_edittext_marginTop"
             android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword|textNoSuggestions"/>
 
         <Button
             android:id="@+id/Button_login"
@@ -70,38 +83,41 @@
 
     </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
 
-</ScrollView>
+            android:layout_weight="0.35">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_alignParentBottom="true">
+            <TextView
+                android:id="@+id/TextView_donthaveaccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/donthaveaccount"
 
-        <TextView
-            android:id="@+id/TextView_donthaveaccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:text="@string/donthaveaccount"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/textview_donthaveaccount_textSize" />
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textview_donthaveaccount_textSize" />
 
-        <TextView
-            android:id="@+id/TextView_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="@dimen/signup_marginLeft"
-            android:text="@string/signup"
-            android:textColor="@color/app_color"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="@dimen/textview_signup_textSize" />
+            <TextView
+                android:id="@+id/TextView_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/signup_marginLeft"
+                android:text="@string/signup"
+                android:textColor="@color/app_color"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="@dimen/textview_signup_textSize" />
 
+
+        </LinearLayout>
 
     </LinearLayout>
+
+
 
 
 </RelativeLayout>
