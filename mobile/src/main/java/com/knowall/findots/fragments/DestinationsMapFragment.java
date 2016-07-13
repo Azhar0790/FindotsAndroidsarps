@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,31 +31,62 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.knowall.findots.Constants;
+import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.database.DataHelper;
+import com.knowall.findots.distancematrix.DistanceMatrixService;
+import com.knowall.findots.distancematrix.IDistanceMatrix;
+import com.knowall.findots.distancematrix.model.DistanceMatrix;
+import com.knowall.findots.distancematrix.model.Elements;
+import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
+import com.knowall.findots.restservice.RestClient;
+import com.knowall.findots.utils.GeneralUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by parijathar on 7/4/2016.
  */
-public class DestinationsMapFragment extends Fragment implements OnMapReadyCallback, IGetDestinations{
+public class DestinationsMapFragment extends Fragment
+        implements
+        OnMapReadyCallback,
+        IGetDestinations,
+        IDistanceMatrix {
 
     GoogleMap mGoogleMap = null;
     double currentLatitude = 0.012, currentLongitude = 0.013;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
 
     float mapKMTextSize, kmTextSize;
+
+    /**
+     *   Google Distance Matrix URL to fetch distance and duration
+     *   from current location to destination location
+     */
+    private final String DistanceMatrixURL = "https://maps.googleapis.com/maps/api/distancematrix/json?";
+
+    /**
+     * TimeOut for execute request URL
+     */
+    private final int TIMEOUT = 50000;
+    private final String GET = "GET";
 
     @Nullable
     @Override
@@ -139,6 +171,8 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
                 }
             }
         });
+
+        googleDistanceMatrixAPI();
     }
 
     public void callDetailDestinationActivity(int itemPosition) {
@@ -224,6 +258,7 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
                 }
             }
         }
+        Log.i(Constants.TAG, "fetchCurrentLocation: lat and lng = "+currentLatitude+", "+currentLongitude);
     }
 
     public void onEvent(AppEvents events) {
@@ -324,5 +359,60 @@ public class DestinationsMapFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onGetDestinationFailure(String errorMessage) {
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     *   call DistanceMatrix API to display
+     *   duration and distance of the
+     *   current location and destination locations on the map markers
+     */
+    public void googleDistanceMatrixAPI() {
+        DistanceMatrixService service = new DistanceMatrixService(getActivity());
+        service.delegate = DestinationsMapFragment.this;
+        service.callDistanceMatrixService(createOrigins(), createDestinations());
+    }
+
+    @Override
+    public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
+        if (distanceMatrix != null) {
+            for(Rows row :distanceMatrix.getRows()) {
+                for (Elements element:row.getElements()) {
+                    Log.i(Constants.TAG, "onDistanceMatrixSuccess: Distance = "+element.getDistance());
+                    Log.i(Constants.TAG, "onDistanceMatrixSuccess: Duration = "+element.getDuration());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDistanceMatrixFailure() {
+
+    }
+
+    /**
+     *   create Destinations request parameter for DistanceMatrix
+     * @return
+     */
+    public String createDestinations() {
+        StringBuilder destinations = null;
+        if (DestinationsTabFragment.destinationDatas != null) {
+            destinations = new StringBuilder();
+            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
+                destinations.append(data.getDestinationLatitude()+","+data.getDestinationLongitude());
+                destinations.append("|");
+            }
+            return destinations.toString();
+        }
+        return null;
+    }
+
+    /**
+     *   create Origins request parameter for DistanceMatrix
+     * @return
+     */
+    public String createOrigins() {
+        fetchCurrentLocation();
+        String origins = currentLatitude+","+currentLongitude;
+        return origins;
     }
 }
