@@ -704,9 +704,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
                     Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    finish();
+
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "success");
+                    returnIntent.putExtra("result", "deletedDestination");
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else
@@ -751,9 +751,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
                     Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    finish();
+
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "success");
+                    returnIntent.putExtra("result", "renamedDestination");
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 } else
