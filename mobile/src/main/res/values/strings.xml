@@ -61,6 +61,7 @@
     <string name="checkout_failed">Check Out Failed</string>
     <string name="update_destination">Update Destination</string>
     <string name="modify">Not the right location? Modify</string>
+    <string name="options">Options</string>
     <string name="modifyDestination">Modify Destination</string>
     <string name="add_destination">Add Destination</string>
     <string name="new_destination">New Destination</string>

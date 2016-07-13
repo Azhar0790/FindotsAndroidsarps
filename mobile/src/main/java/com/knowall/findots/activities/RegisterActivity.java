@@ -241,9 +241,10 @@ public class RegisterActivity extends AppCompatActivity
         if (name == null || name.length() == 0) {
             mEditText_name.setError(getString(R.string.prompt_required));
             return false;
-        } else if (company == null || company.length() == 0) {
-            mEditText_company.setError(getString(R.string.prompt_required));
-            return false;
+//        }
+//        else if (company == null || company.length() == 0) {
+//            mEditText_company.setError(getString(R.string.prompt_required));
+//            return false;
         } else if (emailID == null || emailID.length() == 0) {
             mEditText_emailID.setError(getString(R.string.prompt_required));
             return false;

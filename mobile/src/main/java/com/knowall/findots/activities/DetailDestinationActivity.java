@@ -18,10 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -151,11 +148,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 //checkin and check out validation for modify is commented
 //        if (isEditable && !(checkedIn || checkedOut)) {
         if (isEditable) {
-            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
-            mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
-            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
-            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_color)), 24, 30, 0);
-            mDestModify.setText(mDestModifyText);
+//            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
+//            mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
+//            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
+//            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_color)), 24, 30, 0);
+//            mDestModify.setText(mDestModifyText);
             mDestModify.setVisibility(View.VISIBLE);
         }
 
