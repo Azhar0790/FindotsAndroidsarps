@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+
 /**
  * Created by parijathar on 6/14/2016.
  */
@@ -125,7 +126,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         intentDetailDestination.putExtra("checkInRadius", checkInRadius);
         intentDetailDestination.putExtra("editable", isEditable);
         intentDetailDestination.putExtra("requireApproval", isRequireApproval);
-        startActivityForResult(intentDetailDestination,REQUEST_CODE_ACTIVITYDETAILS);
+        startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
     @Override
@@ -150,23 +151,24 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         destinationsAdapter.notifyDataSetChanged();
         layoutManager.onRestoreInstanceState(listViewState);
 
-        if(!EventBus.getDefault().isRegistered(this))
+        if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
     }
 
     /**
-     *   sort destinations
+     * sort destinations
+     *
      * @param destinationDatas
      * @return
      */
     public ArrayList<DestinationData> sortDestinationsOnDate(DestinationData[] destinationDatas) {
         ArrayList<DestinationData> arrayList = new ArrayList<>();
 
-        for (DestinationData data:destinationDatas) {
+        for (DestinationData data : destinationDatas) {
             arrayList.add(data);
         }
 
-        Log.i(Constants.TAG, "before sorting --> "+arrayList.toString());
+        Log.i(Constants.TAG, "before sorting --> " + arrayList.toString());
 
         Collections.sort(arrayList, new Comparator<DestinationData>() {
             @Override
@@ -186,7 +188,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         });
 
         Collections.reverse(arrayList);
-        Log.i(Constants.TAG, "after sorting --> "+arrayList.toString());
+        Log.i(Constants.TAG, "after sorting --> " + arrayList.toString());
         return arrayList;
     }
 
@@ -230,7 +232,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location location = null;
 
-        for (String provider: providers) {
+        for (String provider : providers) {
 
             Location currentLocation = locationManager.getLastKnownLocation(provider);
             if (currentLocation == null) {
@@ -246,9 +248,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-        }
-        else
-        {
+        } else {
             DataHelper dataHelper = DataHelper.getInstance(getActivity());
             List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
             if (locationLatestData.size() > 0) {
@@ -266,7 +266,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         if (isCheckIn) {
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID,currentLatitude,currentLongitude);
+            restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
         } else {
 
             float[] distance = new float[2];
@@ -291,8 +291,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     }
 
 
-
-
     /**
      * Called after the autocomplete activity has finished to return its result.
      */
@@ -303,18 +301,23 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         Log.i(Constants.TAG, "onActivityResult..//");
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
-            if (resultCode == getActivity().RESULT_OK && data.getStringExtra("result").equals("success")) {
+            if (resultCode == getActivity().RESULT_OK && (data.getStringExtra("result").equals("success") ||
+                    data.getStringExtra("result").equals("renamedDestination") ||
+                    data.getStringExtra("result").equals("deletedDestination"))) {
+
                 Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall");
                 GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
             } else {
-                Log.i(Constants.TAG, "onActivityResult..//  else block..");
+                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall" + data.getStringExtra("result"));
             }
         } else {
-            Log.i(Constants.TAG, "onActivityResult..//  else block");
+            Log.i(Constants.TAG, "onActivityResult.we.//  else block");
         }
     }
+
+
     public void onEvent(AppEvents event) {
         GetDestinationsRestCall destinationsRestCall;
 
@@ -322,11 +325,11 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
             case OFFLINECHECKIN:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
-                EventBus.getDefault().cancelEventDelivery(event) ;
+                EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
 
 
-                Log.d("jomy","callll checkout22...");
+                Log.d("jomy", "callll checkout22...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
@@ -334,9 +337,9 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 break;
             case OFFLINECHECKOUT:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
-                EventBus.getDefault().cancelEventDelivery(event) ;
+                EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
-                Log.d("jomy","callll checkout...");
+                Log.d("jomy", "callll checkout...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();

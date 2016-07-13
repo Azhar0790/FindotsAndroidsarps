@@ -19,5 +19,5 @@
     It means Android Studio template engine will preserve this line when a new Google Maps Activity is created, so you don't loose your key.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve"
-        translatable="false">AIzaSyDpT618KCJNaGcWck66hfKTwSVhuGggENM</string>
+        translatable="false">AIzaSyDLWetL0TpVEunbTwseFpRUDsYnl74cDvQ</string>
 </resources>
