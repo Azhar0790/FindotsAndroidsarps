@@ -38,7 +38,8 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/company"
-            android:inputType="text" />
+            android:inputType="text"
+            android:visibility="gone"/>
 
         <EditText
             android:id="@+id/EditText_emailID"

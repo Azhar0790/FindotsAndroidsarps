@@ -1,14 +1,14 @@
 package com.knowall.findots.activities;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -176,22 +176,58 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     @OnClick(R.id.TextView_forgotPassword)
     public void showForgotPasswordDialog() {
 
-        Dialog dialog = new Dialog(LoginActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setContentView(R.layout.dialog_forgot_password);
-        dialog.setCancelable(false);
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(LoginActivity.this);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(LoginActivity.this);
+        alertDialogBuilderUserInput.setView(mView);
+        alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
 
-        Window window = dialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wlp.gravity = Gravity.CENTER;
-        window.setAttributes(wlp);
 
-        dialog.show();
+        final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        userInputDialogEditText.addTextChangedListener(new AddTextWatcher(userInputDialogEditText));
 
-        setDialogWidgetsFunctionality(dialog);
+//        TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+//        userInputDialogTitle.setText(getResources().getString(R.string.add_destination));
+        userInputDialogEditText.setHint(getResources().getString(R.string.emailid));
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(""+getResources().getString(R.string.send), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogBox, int id) {
+                        if(userInputDialogEditText.getText().toString().length()>0) {
+                            dialogBox.dismiss();
+                            startForgotPasswordProcess(userInputDialogEditText.getText().toString().trim());
+                        }
+                    }
+                })
+
+                .setNegativeButton(""+getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
+
     }
+
+//
+//        Dialog dialog = new Dialog(LoginActivity.this);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//        dialog.setContentView(R.layout.dialog_forgot_password);
+//        dialog.setCancelable(false);
+//
+//        Window window = dialog.getWindow();
+//        WindowManager.LayoutParams wlp = window.getAttributes();
+//        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//        wlp.gravity = Gravity.CENTER;
+//        window.setAttributes(wlp);
+//
+//        dialog.show();
+//
+//        setDialogWidgetsFunctionality(dialog);
 
     public void setDialogWidgetsFunctionality(final Dialog dialog) {
         mEditText_FrgtPswdUsername = (EditText) dialog.findViewById(R.id.EditText_FrgtPswdUsername);
