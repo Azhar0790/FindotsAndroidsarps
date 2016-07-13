@@ -2,7 +2,9 @@ package com.knowall.findots.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -21,12 +23,15 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +47,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.knowall.findots.Constants;
+import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.events.AppEvents;
@@ -53,15 +60,23 @@ import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
+import com.knowall.findots.restmodels.ResponseModel;
+import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by parijathar on 6/21/2016.
@@ -70,7 +85,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         OnMapReadyCallback, ICheckInCheckOut, IGetDestinations,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
-
 
     @Bind(R.id.TextView_map_km)
     TextView mTextView_map_km;
@@ -134,7 +148,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         supportMapFragment.getMapAsync(this);
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
-        if (isEditable && !(checkedIn || checkedOut)) {
+//checkin and check out validation for modify is commented
+//        if (isEditable && !(checkedIn || checkedOut)) {
+        if (isEditable) {
             SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
             mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
             mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
@@ -483,6 +499,46 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                         intentModifyLoc.putExtra("destinationLongitude", destinationLongitude);
                         startActivityForResult(intentModifyLoc, REQUEST_CODE_MODIFY_DESTINATION);
                     }
+
+                    if (item.getItemId() == R.id.item3) {
+                        deleteAssigned_destinationRequest();
+                    }
+
+                    if (item.getItemId() == R.id.item1) {
+
+                        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DetailDestinationActivity.this);
+                        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+                        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
+                        alertDialogBuilderUserInput.setView(mView);
+                        alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
+
+                        final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+                        TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+                        userInputDialogTitle.setText(getResources().getString(R.string.modify_destination_name));
+                        userInputDialogEditText.setHint(getResources().getString(R.string.modify_destination_namehint));
+                        alertDialogBuilderUserInput
+                                .setCancelable(false)
+                                .setPositiveButton(""+getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        if(userInputDialogEditText.getText().toString().length()>0) {
+                                            dialogBox.dismiss();
+                                            renameAssigned_destinationRequest((userInputDialogEditText.getText().toString().trim()));
+                                        }
+                                    }
+                                })
+
+                                .setNegativeButton(""+getResources().getString(R.string.cancel),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialogBox, int id) {
+                                                dialogBox.cancel();
+                                            }
+                                        });
+
+                        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                        alertDialogAndroid.show();
+                    }
+
+
                         return true;
 
                 }
@@ -631,5 +687,100 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    public void deleteAssigned_destinationRequest() {
+        GeneralUtils.initialize_progressbar(this);
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().deleteAssignedDestination(deleteAssigned_DestinationRequest());
+
+        addDestinationCall.enqueue(new Callback<ResponseModel>() {
+
+
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
+
+                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                    Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", "deletedDestination");
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                } else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private Map<String, Object> deleteAssigned_DestinationRequest() {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("assignedDestinationID", assignDestinationID);
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
+    }
+
+    public void renameAssigned_destinationRequest(String destinationName) {
+        GeneralUtils.initialize_progressbar(this);
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().renameAssignedDestination(renameAssigned_DestinationRequest(destinationName));
+
+        addDestinationCall.enqueue(new Callback<ResponseModel>() {
+
+
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
+
+                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                    Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", "renamedDestination");
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                } else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private Map<String, Object> renameAssigned_DestinationRequest(String destnationName) {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("destinationID", destinationID);
+        postValues.put("destinationName", ""+destnationName);
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
     }
 }
