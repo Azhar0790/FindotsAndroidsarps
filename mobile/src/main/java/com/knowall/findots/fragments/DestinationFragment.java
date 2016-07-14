@@ -310,7 +310,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
             } else {
-                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall" + data.getStringExtra("result"));
+                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
             }
         } else {
             Log.i(Constants.TAG, "onActivityResult.we.//  else block");

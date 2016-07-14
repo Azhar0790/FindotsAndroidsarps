@@ -44,6 +44,7 @@ public class DistanceMatrixService {
             @Override
             public void onResponse(Response<DistanceMatrix> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
+                FinDotsApplication.restClient = null;
 
                 if (response.isSuccess()) {
                     DistanceMatrix distanceMatrix = response.body();
@@ -56,6 +57,7 @@ public class DistanceMatrixService {
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
+                FinDotsApplication.restClient = null;
                 GeneralUtils.createAlertDialog(context, context.getString(R.string.data_error));
             }
         });
