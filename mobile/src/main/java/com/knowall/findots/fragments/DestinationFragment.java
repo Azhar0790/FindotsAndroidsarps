@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,14 +17,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.adapters.DestinationsAdapter;
 import com.knowall.findots.database.DataHelper;
+import com.knowall.findots.distancematrix.DistanceMatrixService;
+import com.knowall.findots.distancematrix.IDistanceMatrix;
+import com.knowall.findots.distancematrix.model.DistanceMatrix;
+import com.knowall.findots.distancematrix.model.Duration;
+import com.knowall.findots.distancematrix.model.Elements;
+import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
+import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import com.knowall.findots.restcalls.checkInCheckOut.ICheckInCheckOut;
 import com.knowall.findots.restcalls.destinations.DestinationData;
@@ -48,11 +61,22 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by parijathar on 6/14/2016.
  */
-public class DestinationFragment extends Fragment implements IDestinations, IGetDestinations, ICheckInCheckOut {
+public class DestinationFragment extends Fragment
+        implements
+        IDestinations,
+        IGetDestinations,
+        ICheckInCheckOut,
+        IDistanceMatrix,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        LocationListener {
 
     @Bind(R.id.RecyclerView_destinations)
     RecyclerView mRecyclerView_destinations;
 
+    GoogleApiClient mGoogleApiClient = null;
+
+    String travelTime = null;
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
@@ -82,6 +106,17 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations, null);
 
+        if (GeneralUtils.checkPlayServices(getActivity())) {
+            // If this check succeeds, proceed with normal processing.
+            // Otherwise, prompt user to get valid Play Services APK.
+            if (!(Utils.isLocationServiceEnabled(getActivity()))) {
+                Utils.createLocationServiceError(getActivity());
+            }
+            buildGoogleApiClient();
+        } else {
+            Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
+        }
+
         ButterKnife.bind(this, rootView);
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -93,6 +128,19 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
         return rootView;
     }
 
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        try {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public void onDestinationSelected(int itemPosition) {
@@ -145,7 +193,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
     }
 
     public void setAdapterForDestinations() {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations, travelTime);
         destinationsAdapter.delegate = DestinationFragment.this;
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
         destinationsAdapter.notifyDataSetChanged();
@@ -161,8 +209,11 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
      * @param destinationDatas
      * @return
      */
+    ArrayList<DestinationData> arrayList = new ArrayList<>();
     public ArrayList<DestinationData> sortDestinationsOnDate(DestinationData[] destinationDatas) {
-        ArrayList<DestinationData> arrayList = new ArrayList<>();
+
+        arrayList = new ArrayList<>();
+        arrayList.clear();
 
         for (DestinationData data : destinationDatas) {
             arrayList.add(data);
@@ -189,6 +240,13 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
 
         Collections.reverse(arrayList);
         Log.i(Constants.TAG, "after sorting --> " + arrayList.toString());
+
+        try {
+            mGoogleApiClient.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return arrayList;
     }
 
@@ -310,7 +368,7 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
             } else {
-                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall" + data.getStringExtra("result"));
+                Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
             }
         } else {
             Log.i(Constants.TAG, "onActivityResult.we.//  else block");
@@ -328,7 +386,6 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
 
-
                 Log.d("jomy", "callll checkout22...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
@@ -345,6 +402,108 @@ public class DestinationFragment extends Fragment implements IDestinations, IGet
                 destinationsRestCall.callGetDestinations();
                 break;
         }
+    }
+
+    /**
+     *   builds Google Api client
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(DestinationFragment.this)
+                .addOnConnectionFailedListener(DestinationFragment.this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            double originLatitude = location.getLatitude();
+            double originLongitude = location.getLongitude();
+
+            String origin = originLatitude+","+originLongitude;
+            String destination = createDestinations();
+
+            googleDistanceMatrixAPI(origin, destination);
+            try{
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     *   call DistanceMatrix API to display
+     *   duration and distance of the
+     *   current location and destination locations on the map markers
+     */
+    public void googleDistanceMatrixAPI(String origin, String destination) {
+        DistanceMatrixService service = new DistanceMatrixService(getActivity());
+        service.delegate = DestinationFragment.this;
+        service.callDistanceMatrixService(origin, destination);
+    }
+
+
+    @Override
+    public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
+        if (distanceMatrix != null) {
+            Rows[] rows = distanceMatrix.getRows();
+            if (rows.length > 0) {
+                Elements[] elements = rows[0].getElements();
+                if (elements.length > 0) {
+                    Duration duration = elements[0].getDuration();
+                    if(duration != null) {
+                        travelTime = duration.getText();
+                        setAdapterForDestinations();
+                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDistanceMatrixFailure() {
+        Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     *   create Origins request parameter for DistanceMatrix
+     * @return
+     */
+
+    public String createDestinations() {
+        String destinations = "";
+        if (arrayList.size() > 0) {
+            destinations = arrayList.get(0).getDestinationLatitude()+","+arrayList.get(0).getDestinationLongitude();
+        }
+        return destinations;
     }
 
 }

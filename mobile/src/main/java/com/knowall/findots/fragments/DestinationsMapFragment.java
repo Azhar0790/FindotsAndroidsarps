@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,6 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,10 +44,12 @@ import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.distancematrix.DistanceMatrixService;
 import com.knowall.findots.distancematrix.IDistanceMatrix;
 import com.knowall.findots.distancematrix.model.DistanceMatrix;
+import com.knowall.findots.distancematrix.model.Duration;
 import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
+import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
@@ -55,6 +63,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -68,25 +77,17 @@ public class DestinationsMapFragment extends Fragment
         implements
         OnMapReadyCallback,
         IGetDestinations,
-        IDistanceMatrix {
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        LocationListener{
 
     GoogleMap mGoogleMap = null;
-    double currentLatitude = 0.012, currentLongitude = 0.013;
+    GoogleApiClient mGoogleApiClient = null;
+
+    double currentLatitude, currentLongitude;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
 
-    float mapKMTextSize, kmTextSize;
-
-    /**
-     *   Google Distance Matrix URL to fetch distance and duration
-     *   from current location to destination location
-     */
-    private final String DistanceMatrixURL = "https://maps.googleapis.com/maps/api/distancematrix/json?";
-
-    /**
-     * TimeOut for execute request URL
-     */
-    private final int TIMEOUT = 50000;
-    private final String GET = "GET";
+    float mapKMTextSize = 24, kmTextSize = 15;
 
     @Nullable
     @Override
@@ -95,19 +96,22 @@ public class DestinationsMapFragment extends Fragment
 
         EventBus.getDefault().register(this);
 
-        //mapKMTextSize = getActivity().getResources().getDimension(R.dimen.mapKM_TextSize);
-        //kmTextSize = getActivity().getResources().getDimension(R.dimen.kmTextSize);
-
-        mapKMTextSize = 24;
-        kmTextSize = 18;
+        if (GeneralUtils.checkPlayServices(getActivity())) {
+            // If this check succeeds, proceed with normal processing.
+            // Otherwise, prompt user to get valid Play Services APK.
+            if (!(Utils.isLocationServiceEnabled(getActivity()))) {
+                Utils.createLocationServiceError(getActivity());
+            }
+            buildGoogleApiClient();
+        } else {
+            Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
+        }
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(DestinationsMapFragment.this);
 
         return rootView;
     }
-
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -118,9 +122,12 @@ public class DestinationsMapFragment extends Fragment
         showAllMarkers();
     }
 
+    /**
+     * adding all the destinations to the map
+     */
     public void addAllDestinationsOnMap() {
         if (DestinationsTabFragment.destinationDatas != null) {
-            for (DestinationData data: DestinationsTabFragment.destinationDatas) {
+            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
                 LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
 
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -131,12 +138,15 @@ public class DestinationsMapFragment extends Fragment
                 mGoogleMap.addMarker(markerOptions).showInfoWindow();
             }
         }
+
     }
 
+    /**
+     * shows all the markers on map
+     */
     public void showAllMarkers() {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        //int padding = (int) (width * 0.10);
         int padding = 50;
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
@@ -145,36 +155,33 @@ public class DestinationsMapFragment extends Fragment
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-
-                Log.i(Constants.TAG, "onInfoWindowClick");
-
                 if (DestinationsTabFragment.destinationDatas != null) {
-                    int increment = 0; boolean foundDestination = false;
+                    int increment = 0;
+                    boolean foundDestination = false;
                     for (DestinationData data : DestinationsTabFragment.destinationDatas) {
                         if (data.getDestinationName().equals(marker.getTitle())) {
                             if (data.getDestinationLatitude() == marker.getPosition().latitude &&
                                     data.getDestinationLongitude() == marker.getPosition().longitude) {
                                 foundDestination = true;
-                                Log.i(Constants.TAG, "onInfoWindowClick: foundDestination");
                                 break;
                             }
                         }
                         increment++;
-                        Log.i(Constants.TAG, "onInfoWindowClick: increment = "+increment);
                     }
 
-                    if (foundDestination) {
-                        Log.i(Constants.TAG, "onInfoWindowClick: callDetailDestinationActivity");
+                    if (foundDestination)
                         callDetailDestinationActivity(increment);
-                    }
-
                 }
             }
         });
 
-        googleDistanceMatrixAPI();
     }
 
+    /**
+     * calls DetailDestinationActivity
+     *
+     * @param itemPosition position from the destination list
+     */
     public void callDetailDestinationActivity(int itemPosition) {
         String address = DestinationsTabFragment.destinationDatas[itemPosition].getAddress();
         boolean checkedIn = DestinationsTabFragment.destinationDatas[itemPosition].isCheckedIn();
@@ -206,22 +213,26 @@ public class DestinationsMapFragment extends Fragment
         startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
+    /**
+     * creating bounds to zoomToFit all the destinations
+     *
+     * @return
+     */
     public LatLngBounds getCenterCoordinates() {
-
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        if (DestinationsTabFragment.destinationDatas != null) {
-            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
+        if (DestinationsTabFragment.destinationDatas != null)
+            for (DestinationData data : DestinationsTabFragment.destinationDatas)
                 builder.include(new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude()));
-            }
-        }
 
         builder.include(new LatLng(currentLatitude, currentLongitude));
 
-        LatLngBounds bounds = builder.build();
-        return bounds;
+        return builder.build();
     }
 
+    /**
+     * google map settings
+     */
     public void googleMapSettings() {
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setMyLocationEnabled(true);
@@ -230,36 +241,92 @@ public class DestinationsMapFragment extends Fragment
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
     }
 
+    /**
+     * fetches current location
+     */
     public void fetchCurrentLocation() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location location = null;
 
-        for (String provider: providers) {
+        for (String provider : providers) {
             Location currentLocation = locationManager.getLastKnownLocation(provider);
             if (currentLocation == null)
                 continue;
 
-            if (location == null || currentLocation.getAccuracy() < location.getAccuracy())
+            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
                 location = currentLocation;
+            }
         }
 
         if (location != null) {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
+            Log.i(Constants.TAG, "fetchCurrentLocation: location manager = "+currentLatitude+","+currentLongitude);
+        } else {
+            /**
+             *   call Google api client to fetch current location
+             */
+            try {
+                mGoogleApiClient.connect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
-        else {
-            DataHelper dataHelper = DataHelper.getInstance(getActivity());
-            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
-            if (locationLatestData.size() > 0) {
-                for (LocationData locLastData : locationLatestData) {
-                    currentLatitude = locLastData.getLatitude();
-                    currentLongitude = locLastData.getLongitude();
-                }
+        Log.i(Constants.TAG, "fetchCurrentLocation: lat and lng = " + currentLatitude + ", " + currentLongitude);
+    }
+
+    /**
+     *   builds Google Api client
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(DestinationsMapFragment.this)
+                .addOnConnectionFailedListener(DestinationsMapFragment.this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+            try{
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-        Log.i(Constants.TAG, "fetchCurrentLocation: lat and lng = "+currentLatitude+", "+currentLongitude);
     }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
 
     public void onEvent(AppEvents events) {
         switch (events) {
@@ -268,6 +335,7 @@ public class DestinationsMapFragment extends Fragment
                 EventBus.getDefault().unregister(this);
 
                 Log.i(Constants.TAG, "REFRESHDESTINATIONS");
+                fetchCurrentLocation();
                 addAllDestinationsOnMap();
                 showAllMarkers();
 
@@ -281,7 +349,7 @@ public class DestinationsMapFragment extends Fragment
         float[] distance = new float[2];
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
 
-        String kilometers = new DecimalFormat("0").format(distance[0]/1000);
+        String kilometers = new DecimalFormat("0").format(distance[0] / 1000);
 
         Bitmap bm = null;
 
@@ -297,8 +365,7 @@ public class DestinationsMapFragment extends Fragment
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
                     R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
-        }
-        else {
+        } else {
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
                     R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
@@ -311,14 +378,22 @@ public class DestinationsMapFragment extends Fragment
         paint.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf"));
         paint.setTextAlign(Paint.Align.CENTER);
 
+        if (kilometers.length() <= 4) {
+            // paint defines the text color, stroke width, size
+            paint.setTextSize(mapKMTextSize);
+            canvas.drawText(kilometers, (bm.getWidth() / 2), bm.getHeight() / 2 - 10, paint);
 
-        // paint defines the text color, stroke width, size
-        paint.setTextSize(mapKMTextSize);
-        canvas.drawText(kilometers, (bm.getWidth()/2), bm.getHeight()/2 - 10, paint);
+            paint.setTextSize(kmTextSize);
+            canvas.drawText("KM", (bm.getWidth() / 2), (bm.getHeight() / 2) + 10, paint);
+        } else {
+            // paint defines the text color, stroke width, size
+            mapKMTextSize = 18;
+            paint.setTextSize(mapKMTextSize);
+            canvas.drawText(kilometers, (bm.getWidth() / 2), bm.getHeight() / 2 - 10, paint);
 
-        paint.setTextSize(kmTextSize);
-        canvas.drawText("KM", (bm.getWidth()/2), (bm.getHeight()/2)+10, paint);
-
+            paint.setTextSize(kmTextSize);
+            canvas.drawText("KM", (bm.getWidth() / 2), (bm.getHeight() / 2) + 10, paint);
+        }
 
         BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
         Bitmap drawBmp = draw.getBitmap();
@@ -352,6 +427,7 @@ public class DestinationsMapFragment extends Fragment
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         DestinationsTabFragment.destinationDatas = destinationsModel.getDestinationData();
+        fetchCurrentLocation();
         addAllDestinationsOnMap();
         showAllMarkers();
     }
@@ -361,58 +437,17 @@ public class DestinationsMapFragment extends Fragment
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     *   call DistanceMatrix API to display
-     *   duration and distance of the
-     *   current location and destination locations on the map markers
-     */
-    public void googleDistanceMatrixAPI() {
-        DistanceMatrixService service = new DistanceMatrixService(getActivity());
-        service.delegate = DestinationsMapFragment.this;
-        service.callDistanceMatrixService(createOrigins(), createDestinations());
-    }
-
     @Override
-    public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
-        if (distanceMatrix != null) {
-            for(Rows row :distanceMatrix.getRows()) {
-                for (Elements element:row.getElements()) {
-                    Log.i(Constants.TAG, "onDistanceMatrixSuccess: Distance = "+element.getDistance());
-                    Log.i(Constants.TAG, "onDistanceMatrixSuccess: Duration = "+element.getDuration());
-                }
+    public void onStop() {
+        super.onStop();
+        try {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.disconnect();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onDistanceMatrixFailure() {
 
     }
 
-    /**
-     *   create Destinations request parameter for DistanceMatrix
-     * @return
-     */
-    public String createDestinations() {
-        StringBuilder destinations = null;
-        if (DestinationsTabFragment.destinationDatas != null) {
-            destinations = new StringBuilder();
-            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
-                destinations.append(data.getDestinationLatitude()+","+data.getDestinationLongitude());
-                destinations.append("|");
-            }
-            return destinations.toString();
-        }
-        return null;
-    }
-
-    /**
-     *   create Origins request parameter for DistanceMatrix
-     * @return
-     */
-    public String createOrigins() {
-        fetchCurrentLocation();
-        String origins = currentLatitude+","+currentLongitude;
-        return origins;
-    }
 }

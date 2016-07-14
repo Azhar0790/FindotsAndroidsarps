@@ -173,9 +173,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             }
             buildGoogleApiClient();
         } else {
-            Toast.makeText(mContext, "Location not suppoif(!(Utils.isLocationServiceEnabled(this))) {\n" +
-                    "//            Utils.createLocationServiceError(this);\n" +
-                    "//        }rted in this device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
 //
 

@@ -259,7 +259,7 @@ public class GeneralUtils {
                 googleApiAvailability.getErrorDialog((Activity) context,
                         resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Toast.makeText(context, "This device is not supported.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Location not supported in this device.", Toast.LENGTH_SHORT).show();
             }
             return false;
         }

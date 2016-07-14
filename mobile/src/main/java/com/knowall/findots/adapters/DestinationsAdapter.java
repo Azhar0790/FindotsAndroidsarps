@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
+import com.knowall.findots.fragments.DestinationFragment;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.GeneralUtils;
@@ -35,14 +36,17 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     ArrayList<DestinationData> destinationDatas = null;
     final String assignedBy = "Assigned by ";
     String getTime = null;
+    String travelTime = null;
 
-    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas) {
+    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas, String travelTime) {
         this.context = context;
         this.destinationDatas = destinationDatas;
+        this.travelTime = travelTime;
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
         getTime = dateTime.toString(fmt1);
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -51,6 +55,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         TextView mTextView_destinationName = null;
         LinearLayout mLinearLayout_checkIncheckOut = null;
         Button mButton_checkIncheckOut = null;
+        TextView textViewTravelTime = null;
 
         public ViewHolder(View view) {
             super(view);
@@ -60,6 +65,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             mTextView_destinationName = (TextView) view.findViewById(R.id.TextView_destinationName);
             mLinearLayout_checkIncheckOut = (LinearLayout) view.findViewById(R.id.LinearLayout_checkIncheckOut);
             mButton_checkIncheckOut = (Button) view.findViewById(R.id.Button_checkIncheckOut);
+            textViewTravelTime = (TextView) view.findViewById(R.id.textViewTravelTime);
         }
 
         @Override
@@ -85,6 +91,19 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        /**
+         *   displaying travel time
+         */
+        if (position == 0) {
+            if (travelTime != null) {
+                holder.textViewTravelTime.setText(travelTime);
+                holder.textViewTravelTime.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.textViewTravelTime.setVisibility(View.INVISIBLE);
+        }
+
 
         /**
          *   to display assigned Destination Time, get the time difference
