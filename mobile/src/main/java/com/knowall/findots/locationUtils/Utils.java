@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class Utils {
 
-    public static float distFromCoordinates(float lat1, float lng1, float lat2, float lng2) {
+    public static float distFromCoordinates(Double lat1, Double lng1, Double lat2, Double lng2) {
         double earthRadius = 6371000; //meters
         double dLat = Math.toRadians(lat2 - lat1);
         double dLng = Math.toRadians(lng2 - lng1);

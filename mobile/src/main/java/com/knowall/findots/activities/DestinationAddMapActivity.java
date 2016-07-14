@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
@@ -65,7 +67,7 @@ import retrofit.Retrofit;
 /**
  * Created by jpaulose on 7/6/2016.
  */
-public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -106,6 +108,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
 
+    private GoogleApiClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +130,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
                 AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DestinationAddMapActivity.this);
                 alertDialogBuilderUserInput.setView(mView);
-                alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
+                alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
 
 
                 final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
@@ -135,16 +139,16 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 userInputDialogEditText.setHint(getResources().getString(R.string.destination_name));
                 alertDialogBuilderUserInput
                         .setCancelable(false)
-                        .setPositiveButton(""+getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                        .setPositiveButton("" + getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
-                                if(userInputDialogEditText.getText().toString().length()>0) {
+                                if (userInputDialogEditText.getText().toString().length() > 0) {
                                     dialogBox.dismiss();
                                     addDestinationRequest((userInputDialogEditText.getText().toString().trim()));
                                 }
                             }
                         })
 
-                        .setNegativeButton(""+getResources().getString(R.string.cancel),
+                        .setNegativeButton("" + getResources().getString(R.string.cancel),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogBox, int id) {
                                         dialogBox.cancel();
@@ -174,6 +178,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                     "//        }rted in this device", Toast.LENGTH_SHORT).show();
         }
 //
+
     }
 
     @Override
@@ -181,7 +186,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         super.onResume();
         FinDotsApplication.getInstance().trackScreenView("Add New Destination Screen");
     }
-
 
 
     public void actionBarSettings() {
@@ -284,7 +288,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     }
 
 
-
     @Override
     public void onConnected(Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -354,16 +357,19 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     @Override
     protected void onStart() {
         super.onStart();
+
         try {
             mGoogleApiClient.connect();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
         try {
             if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
                 mGoogleApiClient.disconnect();
@@ -371,6 +377,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
@@ -415,6 +422,13 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            mMap.setPadding(0, 200, 0, 0);
+            View locationButton = mapFragment.getView().findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+//            rlp.setMargins(0,0,0,200);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+
 
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -474,7 +488,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     protected void displayAddressOutput() {
         //  mLocationAddressTextView.setText(mAddressOutput);
         try {
-            if (mAddressOutput != null || mAddressOutput.trim().length()>0) {
+            if (mAddressOutput != null || mAddressOutput.trim().length() > 0) {
                 // mLocationText.setText(mAreaOutput+ "");
                 Log.d("jomy", "mAddressOutput.." + mAddressOutput);
 
@@ -623,7 +637,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
     private Map<String, Object> setAddDestinationRequest(String destinationName) {
         Map<String, Object> postValues = new HashMap<>();
-        postValues.put("destinationName", ""+destinationName);
+        postValues.put("destinationName", "" + destinationName);
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + mLocationAddress.getText().toString().trim());
