@@ -402,8 +402,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 /**
                  *   Outside the Radius
                  */
-                String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-                mTextView_map_km.setText(kiloMeters + " km");
+                String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
+
+                mTextView_map_km.setText(kilometers + " km");
 
                 if (requestForCheckInCheckOut) {
                     GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
@@ -413,8 +414,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 /**
                  *   Inside the Radius
                  */
-                String kiloMeters = new DecimalFormat("0").format(distance[0] / 1000);
-                mTextView_map_km.setText(kiloMeters + " km");
+                String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
+
+                mTextView_map_km.setText(kilometers + " km");
 
                 if (requestForCheckInCheckOut) {
                     CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);

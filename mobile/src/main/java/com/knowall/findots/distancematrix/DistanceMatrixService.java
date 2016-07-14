@@ -33,10 +33,8 @@ public class DistanceMatrixService {
 
         //GeneralUtils.initialize_progressbar(context);
 
-        RestClient restClient = new RestClient(DistanceMatrixURL.DistanceMatrixBaseURL);
-
-        Call<DistanceMatrix> call = restClient.getApiService()
-                .distanceMatrix(units,
+        Call<DistanceMatrix> call = FinDotsApplication.getRestClient().getApiService()
+                .distanceMatrix(DistanceMatrixURL.MethodName_DISTANCEMATRIX, units,
                         context.getString(R.string.server_key),
                         origins,
                         destinations);
@@ -45,7 +43,6 @@ public class DistanceMatrixService {
             @Override
             public void onResponse(Response<DistanceMatrix> response, Retrofit retrofit) {
                 //GeneralUtils.stop_progressbar();
-                FinDotsApplication.restClient = null;
 
                 if (response.isSuccess()) {
                     DistanceMatrix distanceMatrix = response.body();
@@ -58,7 +55,6 @@ public class DistanceMatrixService {
             @Override
             public void onFailure(Throwable t) {
                 //GeneralUtils.stop_progressbar();
-                FinDotsApplication.restClient = null;
                 delegate.onDistanceMatrixFailure();
             }
         });

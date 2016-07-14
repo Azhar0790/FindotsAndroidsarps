@@ -18,6 +18,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
+import retrofit.http.Url;
 
 /**
  * Created by parijathar on 6/6/2016.
@@ -71,8 +72,8 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_CHANGEPASSWORD)
     Call<ResponseModel> changePassword(@Body Map<String, Object> request);
 
-    @GET(DistanceMatrixURL.MethodName_DISTANCEMATRIX)
-    Call<DistanceMatrix> distanceMatrix(@Query("units") String units,
+    @GET
+    Call<DistanceMatrix> distanceMatrix(@Url String url, @Query("units") String units,
                                         @Query("key") String key,
                                         @Query("origins") String origins,
                                         @Query("destinations") String destinations);
