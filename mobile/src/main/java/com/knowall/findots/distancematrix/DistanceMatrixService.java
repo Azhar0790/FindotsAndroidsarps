@@ -1,6 +1,7 @@
 package com.knowall.findots.distancematrix;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
@@ -30,7 +31,7 @@ public class DistanceMatrixService {
 
     public void callDistanceMatrixService(String origins, String destinations) {
 
-        GeneralUtils.initialize_progressbar(context);
+        //GeneralUtils.initialize_progressbar(context);
 
         RestClient restClient = new RestClient(DistanceMatrixURL.DistanceMatrixBaseURL);
 
@@ -43,7 +44,7 @@ public class DistanceMatrixService {
         call.enqueue(new Callback<DistanceMatrix>() {
             @Override
             public void onResponse(Response<DistanceMatrix> response, Retrofit retrofit) {
-                GeneralUtils.stop_progressbar();
+                //GeneralUtils.stop_progressbar();
                 FinDotsApplication.restClient = null;
 
                 if (response.isSuccess()) {
@@ -56,9 +57,9 @@ public class DistanceMatrixService {
 
             @Override
             public void onFailure(Throwable t) {
-                GeneralUtils.stop_progressbar();
+                //GeneralUtils.stop_progressbar();
                 FinDotsApplication.restClient = null;
-                GeneralUtils.createAlertDialog(context, context.getString(R.string.data_error));
+                delegate.onDistanceMatrixFailure();
             }
         });
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/LinearLayout_destination"
@@ -31,20 +31,36 @@
             android:textColor="@color/grey"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/TextView_destinationName"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="78dp"
-            android:layout_gravity="center"
             android:layout_marginTop="2dp"
-            android:background="@drawable/destination_bg"
-            android:gravity="center"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:singleLine="true"
-            android:text="Bridgetree Research Services"
-            android:textColor="@color/blue"
-            android:textSize="22sp" />
+            android:background="@drawable/destination_bg">
+
+            <TextView
+                android:id="@+id/textViewTravelTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="4dp"
+                android:text="25 mins"
+                android:textColor="@color/black_70"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/TextView_destinationName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:singleLine="true"
+                android:text="Bridgetree Research Services"
+                android:textColor="@color/blue"
+                android:textSize="22sp" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/LinearLayout_checkIncheckOut"
@@ -61,9 +77,9 @@
                 android:background="@null"
                 android:drawablePadding="10dp"
                 android:gravity="center"
+                android:singleLine="true"
                 android:text="Checked out at 2.30pm"
                 android:textAllCaps="false"
-                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -71,4 +87,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

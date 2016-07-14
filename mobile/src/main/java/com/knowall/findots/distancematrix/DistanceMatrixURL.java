@@ -5,5 +5,5 @@ package com.knowall.findots.distancematrix;
  */
 public class DistanceMatrixURL {
     public static final String DistanceMatrixBaseURL = "https://maps.googleapis.com/maps/";
-    public static final String MethodName_DISTANCEMATRIX = "api/distancematrix/json";
+    public static final String MethodName_DISTANCEMATRIX = "https://maps.googleapis.com/maps/api/distancematrix/json";
 }
