@@ -67,7 +67,7 @@ public class RegisterRestCall {
         postValues.put("mobileNumber", mobile);
         postValues.put("name", name);
         postValues.put("redeemCode", redeemCode);
-        postValues.put("company", company);
+        postValues.put("company", "");
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
@@ -76,8 +76,8 @@ public class RegisterRestCall {
         postValues.put("latitude", lat);
         postValues.put("longitude", lng);
         postValues.put("userTypeID", 2);
-        postValues.put("organizationID", 1);
-        postValues.put("countryID", 103);
+        postValues.put("organizationID", 0);
+        postValues.put("countryID", 0);
         postValues.put("city", "");
         postValues.put("pincode", "");
         postValues.put("address", "");
