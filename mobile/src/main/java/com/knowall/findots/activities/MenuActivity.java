@@ -118,7 +118,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         ButterKnife.bind(this);
 
-        if(!(Utils.isLocationServiceEnabled(this))) {
+        if (!(Utils.isLocationServiceEnabled(this))) {
             Utils.createLocationServiceError(this);
         }
         actionBarSettings();
@@ -171,6 +171,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
         destinationTransaction.commit();
 
+//        Log.d("jomy","Distance "+Utils.distFromCoordinates(12.987793094478766,77.55964301526546,12.988561489532328,77.5592011213302));
     }
 
     @Override
@@ -470,11 +471,13 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 logOutNavigation();
 
-                if (response.isSuccess() & response.body().getErrorCode()== 0) {
-                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                if (response != null) {
+                    if (response.isSuccess() & response.body().getErrorCode() == 0) {
+                        Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                } else {
-                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

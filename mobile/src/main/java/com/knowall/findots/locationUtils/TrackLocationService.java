@@ -24,7 +24,7 @@ import com.knowall.findots.utils.GeneralUtils;
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private static final long SYNCHRONIZATION_INTERVAL = 5 * 60 * 1000;
+    private static final long SYNCHRONIZATION_INTERVAL = 1 * 60 * 1000;
     private static boolean isServiceRunning;
     private static final String TAG = TrackLocationService.class.getCanonicalName();
     private int notificationId = 9999;

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -313,6 +314,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            //            mMap.setPadding(0, 200, 0, 0);
+            View locationButton = mapFragment.getView().findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+//            rlp.setMargins(0,0,0,200);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(destinationLatitude, destinationLongitude))      // Sets the center of the map to location user
