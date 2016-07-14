@@ -438,10 +438,16 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
                 Log.d("jomy", "sucessReportLoc... ");
-                if (response.isSuccess() && response.body().getErrorCode() == 0) {
-                    Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                        Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(MenuActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 0);
+                    toast.show();
                 }
             }
 
@@ -471,14 +477,20 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 logOutNavigation();
 
-                if (response != null) {
+                if (response.body() != null) {
+
                     if (response.isSuccess() & response.body().getErrorCode() == 0) {
                         Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(MenuActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast toast = Toast.makeText(MenuActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
+
             }
 
             @Override

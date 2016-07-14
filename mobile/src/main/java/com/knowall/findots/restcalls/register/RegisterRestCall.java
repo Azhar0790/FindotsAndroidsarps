@@ -29,7 +29,7 @@ public class RegisterRestCall {
 
     public void callRegisterUserService(String email, String password, String mobile,
                                         String name, String redeemCode, String company,
-                                        double lat, double lng ) {
+                                        double lat, double lng) {
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getRegisterUserRequest(email, password, mobile,
@@ -40,12 +40,16 @@ public class RegisterRestCall {
             @Override
             public void onResponse(Response<RegisterModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    RegisterModel registerModel = response.body();
-                    delegate.onRegisterUserSuccess(registerModel);
+                if (response.body() != null) {
+                    if (response.isSuccess()) {
+                        RegisterModel registerModel = response.body();
+                        delegate.onRegisterUserSuccess(registerModel);
+                    } else {
+                        RegisterModel registerModel = response.body();
+                        delegate.onRegisterUserFailure(registerModel.getMessage());
+                    }
                 } else {
-                    RegisterModel registerModel = response.body();
-                    delegate.onRegisterUserFailure(registerModel.getMessage());
+                    delegate.onRegisterUserFailure(context.getString(R.string.data_error));
                 }
             }
 
@@ -59,7 +63,7 @@ public class RegisterRestCall {
     }
 
     private Map<String, Object> getRegisterUserRequest(String email, String password, String mobile,
-                                                      String name, String redeemCode, String company,
+                                                       String name, String redeemCode, String company,
                                                        double lat, double lng) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", email);

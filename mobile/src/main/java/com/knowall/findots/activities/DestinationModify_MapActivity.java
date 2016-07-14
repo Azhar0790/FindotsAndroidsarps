@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,8 +29,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
@@ -270,7 +269,6 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 //        isEditable = bundle.getBoolean("editable");
 //        isRequiresApproval = bundle.getBoolean("requireApproval");
     }
-
 
 
     private boolean checkPlayServices() {
@@ -543,18 +541,22 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             @Override
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                        Toast.makeText(DestinationModify_MapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(DestinationModify_MapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "success");
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                } else
-                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
-
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", "success");
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else
+                        Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast toast = Toast.makeText(DestinationModify_MapActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 0);
+                    toast.show();
+                }
             }
 
             @Override

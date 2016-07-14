@@ -40,12 +40,18 @@ public class GetAccountInfoRestCall {
             @Override
             public void onResponse(Response<GetAccountInfoModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    GetAccountInfoModel accountInfo = response.body();
-                    delegate.onGetAccountInfoSuccess(accountInfo);
-                } else {
-                    GetAccountInfoModel accountInfo = response.body();
-                    delegate.onGetAccountInfoFailure(accountInfo.getMessage());
+                if(response.body()!=null) {
+                    if (response.isSuccess()) {
+                        GetAccountInfoModel accountInfo = response.body();
+                        delegate.onGetAccountInfoSuccess(accountInfo);
+                    } else {
+                        GetAccountInfoModel accountInfo = response.body();
+                        delegate.onGetAccountInfoFailure(accountInfo.getMessage());
+                    }
+                }
+                else
+                {
+                    delegate.onGetAccountInfoFailure(context.getString(R.string.data_error));
                 }
             }
 

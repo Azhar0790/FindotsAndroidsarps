@@ -37,13 +37,16 @@ public class ForgotPasswordRestCall {
             @Override
             public void onResponse(Response<ForgotPasswordModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    ForgotPasswordModel forgotPasswordModel = response.body();
-                    delegate.onForgotPasswordSuccess(forgotPasswordModel);
-                } else {
-                    ForgotPasswordModel forgotPasswordModel = response.body();
-                    delegate.onForgotPasswordFailure(forgotPasswordModel.getMessage());
-                }
+                if (response.body() != null) {
+                    if (response.isSuccess()) {
+                        ForgotPasswordModel forgotPasswordModel = response.body();
+                        delegate.onForgotPasswordSuccess(forgotPasswordModel);
+                    } else {
+                        ForgotPasswordModel forgotPasswordModel = response.body();
+                        delegate.onForgotPasswordFailure(forgotPasswordModel.getMessage());
+                    }
+                } else
+                    delegate.onForgotPasswordFailure(context.getString(R.string.data_error));
             }
 
             @Override

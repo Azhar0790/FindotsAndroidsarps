@@ -63,15 +63,19 @@ public class CheckInCheckOutRestCall {
             @Override
             public void onResponse(Response<CheckInCheckOutModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    delegate.onCheckInSuccess();
-                } else {
-                    if (!isCheckIn) {
-                        delegate.onCheckInFailure(context.getString(R.string.checkin_failed));
+                if(response.body()!=null) {
+                    if (response.isSuccess()) {
+                        delegate.onCheckInSuccess();
                     } else {
-                        delegate.onCheckInFailure(context.getString(R.string.checkout_failed));
+                        if (!isCheckIn) {
+                            delegate.onCheckInFailure(context.getString(R.string.checkin_failed));
+                        } else {
+                            delegate.onCheckInFailure(context.getString(R.string.checkout_failed));
+                        }
                     }
                 }
+                else
+                    delegate.onCheckInFailure(context.getString(R.string.data_error));
             }
 
             @Override

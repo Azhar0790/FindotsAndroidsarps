@@ -20,6 +20,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -321,10 +322,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
         if (destinationName.toString().length() > 0)
-            mTextView_heading.setText(""+destinationName);
+            mTextView_heading.setText("" + destinationName);
         else {
-            destinationName=getResources().getString(R.string.destinations);
-            mTextView_heading.setText(""+destinationName);
+            destinationName = getResources().getString(R.string.destinations);
+            mTextView_heading.setText("" + destinationName);
         }
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
         imageViewDirections.setVisibility(View.VISIBLE);
@@ -481,9 +482,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public void modifyDestinationActivity() {
         if (assignDestinationID > -1) {
 
-            PopupMenu popupMenu = new PopupMenu(DetailDestinationActivity.this , mDestModify);
+            PopupMenu popupMenu = new PopupMenu(DetailDestinationActivity.this, mDestModify);
 
-            popupMenu.getMenuInflater().inflate(R.menu.edit_destination_type_popup , popupMenu.getMenu());
+            popupMenu.getMenuInflater().inflate(R.menu.edit_destination_type_popup, popupMenu.getMenu());
 
             popupMenu.show();
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -509,7 +510,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                         View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
                         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
                         alertDialogBuilderUserInput.setView(mView);
-                        alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
+                        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
 
                         final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
                         TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
@@ -517,16 +518,16 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                         userInputDialogEditText.setHint(getResources().getString(R.string.modify_destination_namehint));
                         alertDialogBuilderUserInput
                                 .setCancelable(false)
-                                .setPositiveButton(""+getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                                .setPositiveButton("" + getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialogBox, int id) {
-                                        if(userInputDialogEditText.getText().toString().length()>0) {
+                                        if (userInputDialogEditText.getText().toString().length() > 0) {
                                             dialogBox.dismiss();
                                             renameAssigned_destinationRequest((userInputDialogEditText.getText().toString().trim()));
                                         }
                                     }
                                 })
 
-                                .setNegativeButton(""+getResources().getString(R.string.cancel),
+                                .setNegativeButton("" + getResources().getString(R.string.cancel),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialogBox, int id) {
                                                 dialogBox.cancel();
@@ -538,7 +539,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     }
 
 
-                        return true;
+                    return true;
 
                 }
             });
@@ -699,18 +700,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
 
-                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                    Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
 
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "deletedDestination");
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                } else
-                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
-
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", "deletedDestination");
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else
+                        Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast toast = Toast.makeText(DetailDestinationActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
             }
 
             @Override
@@ -746,18 +752,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
 
-                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                    Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
 
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "renamedDestination");
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                } else
-                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
-
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", "renamedDestination");
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else
+                        Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast toast = Toast.makeText(DetailDestinationActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
             }
 
             @Override
@@ -772,7 +783,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     private Map<String, Object> renameAssigned_DestinationRequest(String destnationName) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("destinationID", destinationID);
-        postValues.put("destinationName", ""+destnationName);
+        postValues.put("destinationName", "" + destnationName);
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));

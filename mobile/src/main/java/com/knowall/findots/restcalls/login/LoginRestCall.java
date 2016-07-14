@@ -40,12 +40,19 @@ public class LoginRestCall {
             @Override
             public void onResponse(Response<LoginModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    LoginModel loginModel = response.body();
-                    delegate.onLoginSuccess(loginModel);
-                } else {
-                    LoginModel loginModel = response.body();
-                    delegate.onLoginFailure(loginModel.getMessage());
+                if(response.body()!=null) {
+                    if (response.isSuccess()) {
+                        LoginModel loginModel = response.body();
+                        delegate.onLoginSuccess(loginModel);
+                    } else {
+                        LoginModel loginModel = response.body();
+                        delegate.onLoginFailure(loginModel.getMessage());
+                    }
+
+                }
+                else
+                {
+                    delegate.onLoginFailure(context.getString(R.string.data_error));
                 }
             }
 

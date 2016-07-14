@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -428,7 +429,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 
 
-
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
                     .zoom(15)                   // Sets the zoom
@@ -609,19 +609,24 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
             @Override
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                        Toast.makeText(DestinationAddMapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(DestinationAddMapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        finish();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", "success");
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else
+                        Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
 
-                    finish();
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", "success");
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-                } else
-                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
-
+                } else {
+                    Toast toast = Toast.makeText(DestinationAddMapActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 0);
+                    toast.show();
+                }
             }
 
             @Override

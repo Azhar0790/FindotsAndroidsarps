@@ -39,13 +39,16 @@ public class GetDestinationsRestCall {
             @Override
             public void onResponse(Response<DestinationsModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if (response.isSuccess()) {
-                    DestinationsModel destinationsModel = response.body();
-                    delegate.onGetDestinationSuccess(destinationsModel);
-                } else {
-                    DestinationsModel destinationsModel = response.body();
-                    delegate.onGetDestinationFailure(destinationsModel.getMessage());
-                }
+                if (response.body() != null) {
+                    if (response.isSuccess()) {
+                        DestinationsModel destinationsModel = response.body();
+                        delegate.onGetDestinationSuccess(destinationsModel);
+                    } else {
+                        DestinationsModel destinationsModel = response.body();
+                        delegate.onGetDestinationFailure(destinationsModel.getMessage());
+                    }
+                } else
+                    delegate.onGetDestinationFailure(context.getString(R.string.data_error));
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -103,13 +104,18 @@ public class ChangePassword extends AppCompatActivity {
                                        public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
                                            GeneralUtils.stop_progressbar();
 
-                                           if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                                           if (response.body() != null) {
+                                               if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                                               Toast.makeText(ChangePassword.this, response.body().getMessage() , Toast.LENGTH_LONG).show();
-                                               logOut();
-                                           } else
-                                               Toast.makeText(ChangePassword.this,response.body().getMessage() , Toast.LENGTH_SHORT).show();
-
+                                                   Toast.makeText(ChangePassword.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                                                   logOut();
+                                               } else
+                                                   Toast.makeText(ChangePassword.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                           } else {
+                                               Toast toast = Toast.makeText(ChangePassword.this, getString(R.string.data_error), Toast.LENGTH_LONG);
+                                               toast.setGravity(Gravity.CENTER, 0, 0);
+                                               toast.show();
+                                           }
                                        }
 
                                        @Override
@@ -161,7 +167,6 @@ public class ChangePassword extends AppCompatActivity {
     }
 
 
-
     public void logOut() {
         GeneralUtils.initialize_progressbar(this);
         Map<String, Object> postValues = new HashMap<>();
@@ -195,6 +200,7 @@ public class ChangePassword extends AppCompatActivity {
         });
 
     }
+
     public void logOutNavigation() {
         GeneralUtils.stop_progressbar();
         stopService(new Intent(this, TrackLocationService.class));
