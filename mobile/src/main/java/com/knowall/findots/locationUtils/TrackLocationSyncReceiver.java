@@ -78,14 +78,15 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                     bglocationCall.enqueue(new Callback<ResponseModel>() {
                                       @Override
                                       public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                                          if(response.body()!=null) {
+                                              if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                                          if (response.isSuccess() && response.body().getErrorCode() == 0) {
+                                                  dataHelper.markLocationsSynced(locations);
+                                                  Log.d("jomy", "inside success : " + response.body().getMessage());
+                                              } else {
+                                                  Log.e("data", "inside failure");
 
-                                              dataHelper.markLocationsSynced(locations);
-                                              Log.d("jomy", "inside success : " + response.body().getMessage());
-                                          } else {
-                                              Log.e("data", "inside failure");
-
+                                              }
                                           }
                                       }
 

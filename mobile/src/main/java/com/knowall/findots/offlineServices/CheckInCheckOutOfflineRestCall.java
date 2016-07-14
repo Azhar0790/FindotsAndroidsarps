@@ -51,7 +51,7 @@ public class CheckInCheckOutOfflineRestCall {
             @Override
             public void onResponse(Response<CheckInCheckOutModel> response, Retrofit retrofit) {
 
-                if (response.isSuccess()) {
+                if (response.body()!=null && response.isSuccess()) {
                     DataHelper dataHelper = DataHelper.getInstance(context);
                     if (!isCheckIn) {
                         EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
