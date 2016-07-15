@@ -39,7 +39,6 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
 
     private static void setIsServiceRunning(boolean isServiceRunning) {
         TrackLocationService.isServiceRunning = isServiceRunning;
-//        EventBus.getDefault().post(AppEvent.SERVICE_STATE_CHANGED);
     }
 
     public TrackLocationService() {

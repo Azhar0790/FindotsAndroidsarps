@@ -28,5 +28,17 @@
             android:textColor="@color/black_70"
             android:textSize="@dimen/textView_menuItem_textSize" />
 
+        <TextView
+            android:id="@+id/textViewStopLocationUpdates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TextView_menuItem"
+            android:layout_marginLeft="@dimen/textView_menuItem_marginLeft"
+            android:layout_toRightOf="@+id/ImageView_menuItem"
+            android:text="or stop updating locations"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 </RelativeLayout>
