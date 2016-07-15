@@ -135,6 +135,6 @@
         android:background="@color/transparent"
         android:clickable="true"
         android:onClick="openAutoCompletePlace"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>
