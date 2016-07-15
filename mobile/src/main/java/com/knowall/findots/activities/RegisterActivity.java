@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -85,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity
     String name = null, company = null, emailID = null;
     String mobileNo = null, password = null, redeemCode = null;
 
-    private GoogleApiClient googleApiClient = null;
+    private GoogleApiClient mGoogleApiClient = null;
     private LocationRequest mLocationRequest = null;
     Location currentLocation = null;
 
@@ -105,9 +106,9 @@ public class RegisterActivity extends AppCompatActivity
             finish();
         }
 
-        if(!(Utils.isLocationServiceEnabled(RegisterActivity.this))) {
-            Utils.createLocationServiceError(RegisterActivity.this);
-        }
+//        if(!(Utils.isLocationServiceEnabled(RegisterActivity.this))) {
+//            Utils.createLocationServiceError(RegisterActivity.this);
+//        }
 
         createLocationRequest();
         buildGoogleApiClient();
@@ -164,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity
             /**
              *   check whether terms and conditions accepted
              */
-            if (mImageView_onOff.getTag() == true) {
+//            if (mImageView_onOff.getTag() == true) {
                 double lat, lng;
                 if (currentLocation != null) {
                     lat = currentLocation.getLatitude();
@@ -182,11 +183,18 @@ public class RegisterActivity extends AppCompatActivity
                 registerRestCall.callRegisterUserService(emailID, password, mobileNo,
                         name, redeemCode, company, lat, lng);
 
-            } else if (mImageView_onOff.getTag() == false) {
-                GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
-            }
+//            } else if (mImageView_onOff.getTag() == false) {
+//                GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
+//            }
 
         }
+    }
+
+    @OnClick(R.id.TextView_termsCondition)
+    public void openTermsandCondition() {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("https://findots.com"));
+        startActivity(i);
     }
 
     @Override
@@ -321,13 +329,13 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        googleApiClient.connect();
+        mGoogleApiClient.connect();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (googleApiClient.isConnected())
+        if (mGoogleApiClient.isConnected())
             startLocationUpdates();
         FinDotsApplication.getInstance().trackScreenView("Registration Screen");
 
@@ -344,8 +352,8 @@ public class RegisterActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         try {
-            if (googleApiClient != null && googleApiClient.isConnected()) {
-                googleApiClient.disconnect();
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.disconnect();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -359,12 +367,17 @@ public class RegisterActivity extends AppCompatActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    private void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+    protected synchronized void buildGoogleApiClient() {
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(mGoogleApiClient,RegisterActivity.this);
     }
 
     @Override
@@ -390,10 +403,10 @@ public class RegisterActivity extends AppCompatActivity
     protected void startLocationUpdates() {
         PendingResult<Status> pendingResult =
                 LocationServices.FusedLocationApi
-                        .requestLocationUpdates(googleApiClient, mLocationRequest, this);
+                        .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 }

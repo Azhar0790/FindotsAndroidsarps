@@ -118,9 +118,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
         ButterKnife.bind(this);
 
-        if (!(Utils.isLocationServiceEnabled(this))) {
-            Utils.createLocationServiceError(this);
-        }
+
         actionBarSettings();
         setViewForDashboard();
 
@@ -160,6 +158,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         });
         app = (FinDotsApplication) getApplication();
         app.setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+//        buildGoogleApiClient();
         initalizeLocationService();
 
         /**
@@ -174,9 +173,23 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 //        Log.d("jomy","Distance "+Utils.distFromCoordinates(12.987793094478766,77.55964301526546,12.988561489532328,77.5592011213302));
     }
 
+    protected synchronized void buildGoogleApiClient() {
+
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(googleApiClient, MenuActivity.this);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
         FinDotsApplication.getInstance().trackScreenView("Home Screen");
     }
 
@@ -244,7 +257,11 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 locationReport = true;
 
-                connectGoogleApiClient();
+                if(!Utils.isLocationServiceEnabled(MenuActivity.this)) {
+                    buildGoogleApiClient();
+                }
+                else
+                    connectGoogleApiClient();
 
                 break;
 
@@ -272,7 +289,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 mailIntent.setData(Uri.parse("mailto:"));
 //                mailIntent.setType("message/rfc822");
                 mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@findots.com"});
-                mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Request");
+                mailIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Request Email");
                 try {
                     startActivity(Intent.createChooser(mailIntent, "Send Help Email"));
                 } catch (ActivityNotFoundException e) {
@@ -368,10 +385,11 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         switch (status) {
             case ConnectionResult.SUCCESS:
-                googleApiClient = new GoogleApiClient.Builder(this)
+                googleApiClient =  new GoogleApiClient.Builder(this)
+                        .enableAutoManage(this, 34992, this)
+                        .addApi(LocationServices.API)
                         .addConnectionCallbacks(this)
                         .addOnConnectionFailedListener(this)
-                        .addApi(LocationServices.API)
                         .build();
                 break;
             case ConnectionResult.SERVICE_MISSING:
@@ -513,4 +531,5 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         startActivity(intentLogout);
         finish();
     }
+
 }
