@@ -146,8 +146,6 @@ public class FinDotsApplication extends MultiDexApplication {
         List<LocationData> locations1 = dataHelper.getLocationLastRecord();
         for (LocationData locData1 : locations1) {
             Log.d("jomy"," Latt23 : "+locData1.getLatitude()+"  Long:  "+locData1.getLongitude()+"  RepTime : "+locData1.getTimestamp());
-
-
         }
 
 
@@ -156,7 +154,6 @@ public class FinDotsApplication extends MultiDexApplication {
 
         for ( checkIn  checkInData : checkInlist)
             Log.d("jomy", " destinationId : " + checkInData.getAssigned_destinationId() + "  ReportedTime:  " + checkInData.getReportedTime());
-
 
         List<checkIn> checkInlist1 = dataHelper.getCheckOutListToSync();
             for ( checkIn  checkInData1 : checkInlist1)

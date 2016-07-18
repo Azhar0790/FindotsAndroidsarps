@@ -10,13 +10,13 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.knowall.findots.Constants;
+import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.locationUtils.LocationModel.BackgroundLocData;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.locationUtils.LocationModel.LocationSyncData;
 import com.knowall.findots.restmodels.ResponseModel;
-import com.knowall.findots.restservice.RestClient;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
@@ -38,7 +38,6 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
 
         new AsyncTask<Void, Void, Void>()
         {
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -71,8 +70,8 @@ public class TrackLocationSyncReceiver extends BroadcastReceiver {
                     /**
                      * Hit the Login API to get the Userdetails
                      */
-                    RestClient restClient = new RestClient();
-                    Call<ResponseModel> bglocationCall = restClient.getApiService().saveLocationPath(bgData);
+
+                    Call<ResponseModel> bglocationCall = FinDotsApplication.getRestClient().getApiService().saveLocationPath(bgData);
 
 
                     bglocationCall.enqueue(new Callback<ResponseModel>() {

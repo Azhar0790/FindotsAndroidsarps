@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.locationUtils.Utils;
@@ -34,7 +39,8 @@ import butterknife.OnClick;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  implements ILoginRestCall, IForgotPasswordRestCall{
+public class LoginActivity extends AppCompatActivity implements ILoginRestCall, IForgotPasswordRestCall, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     @Bind(R.id.EditText_userName)
     EditText mEditText_userName;
@@ -60,6 +66,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     public static String PASSWORD = "password";
 
     String userName = null, password = null;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +77,13 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
         setUIElementsProperty();
         setListeners();
-       if(!(Utils.isLocationServiceEnabled(LoginActivity.this))) {
-           Utils.createLocationServiceError(LoginActivity.this);
-       }
+//       if(!(Utils.isLocationServiceEnabled(LoginActivity.this))) {
+//           Utils.createLocationServiceError(LoginActivity.this);
+//       }
+        buildGoogleApiClient();
 
-        //mEditText_userName.setText("parijathar@bridgetree.com");
-        //mEditText_password.setText("pari@123");
-
-        mEditText_userName.setText("vanithaergam405@gmail.com");
-        mEditText_password.setText("1234");
+//        mEditText_userName.setText("vanithaergam405@gmail.com");
+//        mEditText_password.setText("1234");
 
         //mEditText_userName.setText("sravan@gmail.com");
         //mEditText_password.setText("12345");
@@ -94,7 +99,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     }
 
     /**
-     *   adding Listeners to UI Widgets
+     * adding Listeners to UI Widgets
      */
     public void setListeners() {
         mEditText_userName.addTextChangedListener(new AddTextWatcher(mEditText_userName));
@@ -102,8 +107,22 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     }
 
 
+    protected synchronized void buildGoogleApiClient() {
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(mGoogleApiClient, LoginActivity.this);
+    }
+
+
     /**
-     *   Validating the Credentials
+     * Validating the Credentials
      */
     @OnClick(R.id.Button_login)
     public void validateCredentials() {
@@ -120,9 +139,13 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
             /**
              *   call Login webservice
              */
-            LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
-            loginRestCall.delegate = LoginActivity.this;
-            loginRestCall.callLoginService(userName, password);
+            if(Utils.isLocationServiceEnabled(LoginActivity.this)) {
+                LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
+                loginRestCall.delegate = LoginActivity.this;
+                loginRestCall.callLoginService(userName, password);
+            }
+            else
+                buildGoogleApiClient();
         }
 
     }
@@ -132,9 +155,9 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     public void onLoginSuccess(LoginModel loginModel) {
         if (loginModel.getErrorCode() == 0) {
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, userName);
-            GeneralUtils.setSharedPreferenceString(this,AppStringConstants.PASSWORD, password);
+            GeneralUtils.setSharedPreferenceString(this, AppStringConstants.PASSWORD, password);
 
-            if(loginModel.getLoginData().length > 0) {
+            if (loginModel.getLoginData().length > 0) {
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
@@ -153,7 +176,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
 
 
     /**
-     *   setting UI Widgets Properties
+     * setting UI Widgets Properties
      */
     public void setUIElementsProperty() {
         Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
@@ -180,7 +203,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
         View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(LoginActivity.this);
         alertDialogBuilderUserInput.setView(mView);
-        alertDialogBuilderUserInput.setTitle(""+getResources().getString(R.string.app_name));
+        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
 
 
         final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
@@ -191,16 +214,16 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
         userInputDialogEditText.setHint(getResources().getString(R.string.emailid));
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton(""+getResources().getString(R.string.send), new DialogInterface.OnClickListener() {
+                .setPositiveButton("" + getResources().getString(R.string.send), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogBox, int id) {
-                        if(userInputDialogEditText.getText().toString().length()>0) {
+                        if (userInputDialogEditText.getText().toString().length() > 0) {
                             dialogBox.dismiss();
                             startForgotPasswordProcess(userInputDialogEditText.getText().toString().trim());
                         }
                     }
                 })
 
-                .setNegativeButton(""+getResources().getString(R.string.cancel),
+                .setNegativeButton("" + getResources().getString(R.string.cancel),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
@@ -257,7 +280,7 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
     }
 
     /**
-     *  Call Forgot Password API
+     * Call Forgot Password API
      */
     public void startForgotPasswordProcess(String username) {
         ForgotPasswordRestCall forgotPasswordRestCall = new ForgotPasswordRestCall(LoginActivity.this);
@@ -282,5 +305,31 @@ public class LoginActivity extends AppCompatActivity  implements ILoginRestCall,
         finish();
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+            try {
+                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
 }
 

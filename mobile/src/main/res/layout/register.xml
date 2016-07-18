@@ -77,6 +77,22 @@
             android:hint="@string/redeemcode"
             android:inputType="text" />
 
+
+
+        <Button
+            android:id="@+id/Button_createAccount"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_button_height"
+            android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
+            android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
+            android:layout_marginTop="@dimen/button_createAccount_marginTop"
+            android:background="@drawable/selector_login"
+            android:text="@string/create_account"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/login_button_textSize" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/linearLayout_termsCondition_height"
@@ -85,20 +101,21 @@
 
             <ImageView
                 android:id="@+id/ImageView_onOff"
-                android:layout_width="@dimen/imageView_onOff_width"
+                android:layout_width="20dp"
                 android:layout_height="@dimen/imageView_onOff_height"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="2dp"
                 android:background="@drawable/ic_switch_on"
-                android:gravity="center" />
+                android:gravity="center"
+                android:visibility="invisible"/>
 
             <TextView
                 android:id="@+id/TextView_agree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/agree"
+                android:text="By Signing Up, You Agreeing to our "
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/termsCondition_textSize"
                 android:textStyle="normal" />
@@ -115,19 +132,5 @@
                 android:textStyle="normal" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/Button_createAccount"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_button_height"
-            android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
-            android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
-            android:layout_marginTop="@dimen/button_createAccount_marginTop"
-            android:background="@drawable/selector_login"
-            android:text="@string/create_account"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/login_button_textSize" />
     </LinearLayout>
 </ScrollView>

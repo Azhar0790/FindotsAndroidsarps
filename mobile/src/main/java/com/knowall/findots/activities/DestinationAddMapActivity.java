@@ -169,9 +169,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         if (checkPlayServices()) {
             // If this check succeeds, proceed with normal processing.
             // Otherwise, prompt user to get valid Play Services APK.
-            if (!(Utils.isLocationServiceEnabled(this))) {
-                Utils.createLocationServiceError(this);
-            }
+//            if (!(Utils.isLocationServiceEnabled(this))) {
+//                Utils.createLocationServiceError(this);
+//            }
             buildGoogleApiClient();
         } else {
             Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
@@ -283,12 +283,12 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 startIntentService(mAdressLoc);
             }
         };
-
     }
 
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.d("jomy", "onConnected243445... ");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -346,11 +346,16 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+
+        if(mGoogleApiClient==null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(mGoogleApiClient, DestinationAddMapActivity.this);
     }
 
     @Override
@@ -362,7 +367,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
