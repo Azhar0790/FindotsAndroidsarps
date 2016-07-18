@@ -21,10 +21,11 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/firsttext_topMargin"
             android:hint="@string/name"
-            android:inputType="text"
+            android:inputType="textPersonName|textCapSentences"
             android:textSize="@dimen/accntSetting_edtTextSize"
             android:ellipsize="end"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            />
 
         <EditText
             android:id="@+id/editText_company"

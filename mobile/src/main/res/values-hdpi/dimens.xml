@@ -3,4 +3,10 @@
     <dimen name="mapKM_TextSize">22dp</dimen>
     <dimen name="kmTextSize">16dp</dimen>
 
+    <!--Registration -->
+    <dimen name="signup_text_marginTopBottom">20dp</dimen>
+    <dimen name="register_edittexts_marginTop">10dp</dimen>
+    <dimen name="button_createAccount_marginTop">25dp</dimen>
+
+
 </resources>
