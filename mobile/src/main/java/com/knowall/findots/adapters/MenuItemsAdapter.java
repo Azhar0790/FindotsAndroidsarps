@@ -87,6 +87,13 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
             holder.mTextView_menuItem.setTypeface(typefaceLight);
             holder.mTextView_menuItem.setText(TITLES[position - 1]);
             holder.mImageView_menuItem.setBackgroundResource(ICONS[position-1]);
+
+            if ((position - 1) == (TITLES.length - 1)) {
+                holder.textViewStopLocationUpdates.setVisibility(View.VISIBLE);
+                holder.textViewStopLocationUpdates.setTypeface(typefaceLight);
+            } else {
+                holder.textViewStopLocationUpdates.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -102,6 +109,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         // Menu Item widgets
         ImageView mImageView_menuItem = null;
         TextView mTextView_menuItem = null;
+        TextView textViewStopLocationUpdates = null;
 
         public ViewHolder(Context mContext, View view, int viewType) {
             super(view);
@@ -119,7 +127,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
 
                 mImageView_menuItem = (ImageView) view.findViewById(R.id.ImageView_menuItem);
                 mTextView_menuItem = (TextView) view.findViewById(R.id.TextView_menuItem);
-
+                textViewStopLocationUpdates = (TextView) view.findViewById(R.id.textViewStopLocationUpdates);
             }
 
         }

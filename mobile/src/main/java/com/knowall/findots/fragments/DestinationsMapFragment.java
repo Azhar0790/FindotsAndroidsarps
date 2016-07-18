@@ -216,7 +216,6 @@ public class DestinationsMapFragment extends Fragment
     /**
      * creating bounds to zoomToFit all the destinations
      *
-     * @return
      */
     public LatLngBounds getCenterCoordinates() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -351,7 +350,7 @@ public class DestinationsMapFragment extends Fragment
 
         String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
 
-        Bitmap bm = null;
+        Bitmap bm;
 
         /**
          *   if isCheckIn is false, then display checkin map marker
@@ -396,8 +395,7 @@ public class DestinationsMapFragment extends Fragment
         }
 
         BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
-        Bitmap drawBmp = draw.getBitmap();
-        return drawBmp;
+        return draw.getBitmap();
     }
 
 
