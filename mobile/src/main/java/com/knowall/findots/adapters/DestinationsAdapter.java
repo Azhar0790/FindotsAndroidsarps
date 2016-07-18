@@ -16,6 +16,7 @@ import com.knowall.findots.R;
 import com.knowall.findots.fragments.DestinationFragment;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.restcalls.destinations.DestinationData;
+import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
 import org.joda.time.DateTime;
@@ -37,6 +38,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     final String assignedBy = "Assigned by ";
     String getTime = null;
     String travelTime = null;
+    int userID = 0;
+    int assignedUserID = 0;
 
     public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas, String travelTime) {
         this.context = context;
@@ -47,6 +50,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         DateTime dateTime = new DateTime();
         getTime = dateTime.toString(fmt1);
 
+        userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -56,6 +60,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         LinearLayout mLinearLayout_checkIncheckOut = null;
         Button mButton_checkIncheckOut = null;
         TextView textViewTravelTime = null;
+        TextView textViewSchedule = null;
 
         public ViewHolder(View view) {
             super(view);
@@ -66,6 +71,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             mLinearLayout_checkIncheckOut = (LinearLayout) view.findViewById(R.id.LinearLayout_checkIncheckOut);
             mButton_checkIncheckOut = (Button) view.findViewById(R.id.Button_checkIncheckOut);
             textViewTravelTime = (TextView) view.findViewById(R.id.textViewTravelTime);
+            textViewSchedule = (TextView) view.findViewById(R.id.textViewSchedule);
         }
 
         @Override
@@ -104,17 +110,52 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             holder.textViewTravelTime.setVisibility(View.INVISIBLE);
         }
 
+        Log.i("Schedule", "getScheduleDate = "+destinationDatas.get(position).getScheduleDate());
+
+        /**
+         *   to display scheduled and unscheduled textview
+         */
+        String scheduledStatus = destinationDatas.get(position).getScheduledStatus();
+
+        if (scheduledStatus != null) {
+            if (scheduledStatus.equals("scheduled")) {
+                holder.textViewSchedule.setVisibility(View.VISIBLE);
+                holder.textViewSchedule.setText("Scheduled Destinations");
+            } else if (scheduledStatus.equals("unscheduled")) {
+                holder.textViewSchedule.setVisibility(View.VISIBLE);
+                holder.textViewSchedule.setText("Unscheduled Destinations");
+            } else {
+                holder.textViewSchedule.setVisibility(View.GONE);
+            }
+        } else {
+            holder.textViewSchedule.setVisibility(View.GONE);
+        }
+
+
 
         /**
          *   to display assigned Destination Time, get the time difference
          */
+        String timeDifference = null;
         String assignDestinationTime = destinationDatas.get(position).getAssigndestinationTime();
         if (assignDestinationTime.length() != 0) {
-            String timeDifference = dateTimeDifference(assignDestinationTime);
-            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas.get(position).getName() +" "+timeDifference);
+            timeDifference = dateTimeDifference(assignDestinationTime);
         } else {
-            holder.mTextView_destinationAssignedBy.setText(assignedBy + destinationDatas.get(position).getName());
+            timeDifference = "";
         }
+
+        /**
+         *   check userID and assignedUserID to display 'assigned by me'
+         */
+        String assignedUserName = null;
+        assignedUserID = destinationDatas.get(position).getAssignedUserID();
+        if (userID == assignedUserID) {
+            assignedUserName = "Me";
+        } else {
+            assignedUserName = destinationDatas.get(position).getName();
+        }
+
+        holder.mTextView_destinationAssignedBy.setText(assignedBy + assignedUserName +" "+timeDifference);
 
         /**
          *   set drawable left icon and setting the size

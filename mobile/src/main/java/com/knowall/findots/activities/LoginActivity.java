@@ -82,8 +82,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 //       }
         buildGoogleApiClient();
 
-//        mEditText_userName.setText("vanithaergam405@gmail.com");
-//        mEditText_password.setText("1234");
+        //mEditText_userName.setText("vanithaergam405@gmail.com");
+        //mEditText_password.setText("1234");
+
+        mEditText_userName.setText("pnelapati@bridgetree.com");
+        mEditText_password.setText("12345");
 
         //mEditText_userName.setText("sravan@gmail.com");
         //mEditText_password.setText("12345");

@@ -5,7 +5,14 @@ package com.knowall.findots.restservice;
  */
 public class RestURLs {
 
-    public static final String BASE_URL = "https://service.findots.com/API/";
+    /**
+     *   development url
+     */
+    public static final String BASE_URL = "http://182.73.82.185/Findots/API/";
+    /**
+     *   production url
+     */
+    //public static final String BASE_URL = "https://service.findots.com/API/";
 
     // ------------------------   METHODS   ----------------------------------
 

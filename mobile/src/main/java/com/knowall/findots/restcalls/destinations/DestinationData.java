@@ -38,6 +38,36 @@ public class DestinationData {
 
     private boolean isRequiresApproval;
 
+    private int assignedUserID;
+
+    private String scheduleDate;
+
+    private String scheduledStatus = null;
+
+    public String getScheduledStatus() {
+        return scheduledStatus;
+    }
+
+    public void setScheduledStatus(String scheduledStatus) {
+        this.scheduledStatus = scheduledStatus;
+    }
+
+    public String getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public void setScheduleDate(String scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
+
+    public int getAssignedUserID() {
+        return assignedUserID;
+    }
+
+    public void setAssignedUserID(int assignedUserID) {
+        this.assignedUserID = assignedUserID;
+    }
+
     public boolean isCheckedIn() {
         return checkedIn;
     }

@@ -122,7 +122,7 @@ public class DestinationFragment extends Fragment
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView_destinations.setLayoutManager(layoutManager);
 
-        arrayListDestinations = sortDestinationsOnDate(DestinationsTabFragment.destinationDatas);
+        arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
         setAdapterForDestinations();
 
         return rootView;
@@ -188,7 +188,7 @@ public class DestinationFragment extends Fragment
             DestinationsTabFragment.destinationDatas = destinationDatas;
             EventBus.getDefault().post(AppEvents.REFRESHDESTINATIONS);
 
-            arrayListDestinations = sortDestinationsOnDate(destinationDatas);
+            arrayListDestinations = sortDestinationsOnScheduleDate(destinationDatas);
             setAdapterForDestinations();
         }
     }
@@ -250,6 +250,101 @@ public class DestinationFragment extends Fragment
 
         return arrayList;
     }
+
+
+    public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
+        ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
+        arrayListScheduleDate.clear();
+
+        ArrayList<DestinationData> arrayListUnScheduleDate = new ArrayList<>();
+        arrayListUnScheduleDate.clear();
+
+        /**
+         *   dividing scheduled and unscheduled arraylist of destinations
+         */
+        for (DestinationData data : destinationDatas) {
+            if(data.getScheduleDate().length() != 0) {
+                arrayListScheduleDate.add(data);
+            } else {
+                arrayListUnScheduleDate.add(data);
+            }
+        }
+
+
+        /**
+         *    sorting of scheduled arraylist
+         *    based on Schedule Date
+         */
+        Collections.sort(arrayListScheduleDate, new Comparator<DestinationData>() {
+            @Override
+            public int compare(DestinationData lhs, DestinationData rhs) {
+
+                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getScheduleDate());
+                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getScheduleDate());
+
+                if (d1 == null || d2 == null)
+                    return 0;
+
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.reverse(arrayListScheduleDate);
+
+        /**
+         *    sorting of unscheduled arraylist
+         *    based on Assign Destination Time
+         */
+        Collections.sort(arrayListUnScheduleDate, new Comparator<DestinationData>() {
+            @Override
+            public int compare(DestinationData lhs, DestinationData rhs) {
+
+                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
+                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
+
+                if (d1 == null || d2 == null)
+                    return 0;
+
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.reverse(arrayListUnScheduleDate);
+
+        /**
+         *   connect the google api client
+         */
+        try {
+            mGoogleApiClient.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /**
+         *   setting schedule status
+         */
+        if (arrayListScheduleDate.size() > 0) {
+            arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
+        }
+
+        if (arrayListUnScheduleDate.size() > 0) {
+            arrayListUnScheduleDate.get(0).setScheduledStatus("unscheduled");
+        }
+
+        /**
+         *   adding all the arraylist
+         */
+        arrayListScheduleDate.addAll(arrayListUnScheduleDate);
+
+        return arrayListScheduleDate;
+    }
+
 
     public static int destinationListPosition = 0;
     @Override
@@ -378,12 +473,13 @@ public class DestinationFragment extends Fragment
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
 
         Log.i(Constants.TAG, "onActivityResult..//");
         // Check that the result was from the autocomplete widget.
         try {
             if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
+                Log.i(Constants.TAG, "onActivityResult..//"+requestCode +"result ");
                 if (resultCode == getActivity().RESULT_OK && (data.getStringExtra("result").equals("success") ||
                         data.getStringExtra("result").equals("renamedDestination") ||
                         data.getStringExtra("result").equals("deletedDestination"))) {
@@ -392,38 +488,26 @@ public class DestinationFragment extends Fragment
                     GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                     destinationsRestCall.delegate = DestinationFragment.this;
                     destinationsRestCall.callGetDestinations();
-                } else if (resultCode == getActivity().RESULT_CANCELED) {
+                } else if (resultCode == 2) {
                     /**
                      *   offline changing the checkin/checkout status
                      *   from the detailDestination activity
                      */
-                    if (data.getStringExtra("result").equals("checkedIn")) {
+                    if (data.getStringExtra("offlineData").equals("checkedIn")) {
                         arrayListDestinations.get(destinationListPosition).setCheckedIn(true);
-                    } else if (data.getStringExtra("result").equals("checkedOut")) {
-                        arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
                     } else {
-                        String time = data.getStringExtra("result");
+                        arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
+
+                        String time = data.getStringExtra("offlineData");
                         arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
                     }
                     setAdapterForDestinations();
                 } else {
+                    super.onActivityResult(requestCode, resultCode, data);
                     Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
                 }
-            } else if(resultCode == getActivity().RESULT_CANCELED) {
-                /**
-                 *   offline changing the checkin/checkout status
-                 *   from the detailDestination activity
-                 */
-                if (data.getStringExtra("result").equals("checkedIn")) {
-                    arrayListDestinations.get(destinationListPosition).setCheckedIn(true);
-                } else if(data.getStringExtra("result").equals("checkedOut")) {
-                    arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
-                } else {
-                    String time = data.getStringExtra("result");
-                    arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
-                }
-                setAdapterForDestinations();
-            } else {
+            }else {
+                super.onActivityResult(requestCode, resultCode, data);
                 Log.i(Constants.TAG, "onActivityResult.we.//  else block");
             }
         }
