@@ -62,6 +62,10 @@ import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -123,6 +127,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
     public static boolean FLAG_CHECKINCHECKOUT = false;
+    public static boolean FLAG_OFFLINECHECKINCHECKOUT = false;
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
     double currentLatitude = 0.0, currentLongitude = 0.0;
@@ -349,6 +354,24 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             Intent returnIntent = new Intent();
             returnIntent.putExtra("result", "success");
             setResult(Activity.RESULT_OK, returnIntent);
+        } else {
+            if (FLAG_OFFLINECHECKINCHECKOUT) {
+                String resultValue;
+                if (!checkedIn) {
+                    resultValue = "checkedIn";
+                } else if (!checkedOut) {
+                    resultValue = "checkedOut";
+                } else {
+                    DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                    DateTime dateTime = new DateTime();
+                    String getTime = dateTime.toString(fmt1);
+
+                    resultValue = getTime;
+                }
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", resultValue);
+                setResult(Activity.RESULT_CANCELED, returnIntent);
+            }
         }
         finish();
     }
@@ -432,12 +455,29 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Override
     public void onCheckInFailure(String status) {
         FLAG_CHECKINCHECKOUT = false;
+        FLAG_OFFLINECHECKINCHECKOUT = true;
+        if (!checkedIn) {
+            checkedIn = true;
+        } else if(!checkedOut) {
+            checkedOut = true;
+        } else {
+            DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            DateTime dateTime = new DateTime();
+            String getTime = dateTime.toString(fmt1);
+            checkedOutReportedDate = getTime;
+        }
+        /**
+         *   call setData
+         */
+        setData();
+
         GeneralUtils.createAlertDialog(DetailDestinationActivity.this, status);
     }
 
     @Override
     public void onCheckInSuccess() {
         FLAG_CHECKINCHECKOUT = true;
+        FLAG_OFFLINECHECKINCHECKOUT = false;
         /**
          *   the data should be refreshed after the checkin or checkout
          */

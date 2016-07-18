@@ -23,6 +23,7 @@
 
     <!-- Menu Item Row -->
     <dimen name="textView_menuItem_textSize">16sp</dimen>
+    <dimen name="textViewStopUpdating_textSize">12sp</dimen>
     <dimen name="textView_menuItem_marginLeft">30dp</dimen>
     <dimen name="imageView_menuItem_marginLeft">25dp</dimen>
     <dimen name="menu_item_height">60dp</dimen>

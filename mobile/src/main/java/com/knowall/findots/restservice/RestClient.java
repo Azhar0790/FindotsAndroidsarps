@@ -65,40 +65,6 @@ public class RestClient {
         return apiService;
     }
 
-    /**
-     *   changes the url to distance matrix url
-     * @param baseURL
-     */
-    public RestClient(String baseURL) {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        client = new OkHttpClient();
-        client.interceptors().add(loggingInterceptor);
-        client.interceptors().add(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-
-                Request request = original.newBuilder()
-                        .header(ACCEPT_KEY, APPLICATION_JSON)
-                        .header(AUTHORIZATION_KEY, AUTH_TOKEN)
-                        .method(original.method(), original.body())
-                        .build();
-
-                Response response = chain.proceed(request);
-
-                return response;
-            }
-        });
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseURL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        apiService = retrofit.create(NetworkController.class);
-    }
 
 }

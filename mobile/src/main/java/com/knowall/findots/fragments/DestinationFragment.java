@@ -409,6 +409,20 @@ public class DestinationFragment extends Fragment
                 } else {
                     Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
                 }
+            } else if(resultCode == getActivity().RESULT_CANCELED) {
+                /**
+                 *   offline changing the checkin/checkout status
+                 *   from the detailDestination activity
+                 */
+                if (data.getStringExtra("result").equals("checkedIn")) {
+                    arrayListDestinations.get(destinationListPosition).setCheckedIn(true);
+                } else if(data.getStringExtra("result").equals("checkedOut")) {
+                    arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
+                } else {
+                    String time = data.getStringExtra("result");
+                    arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
+                }
+                setAdapterForDestinations();
             } else {
                 Log.i(Constants.TAG, "onActivityResult.we.//  else block");
             }
