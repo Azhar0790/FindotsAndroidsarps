@@ -384,6 +384,7 @@ public class DestinationFragment extends Fragment
         // Check that the result was from the autocomplete widget.
         try {
             if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
+                Log.i(Constants.TAG, "onActivityResult..//"+requestCode +"result ");
                 if (resultCode == getActivity().RESULT_OK && (data.getStringExtra("result").equals("success") ||
                         data.getStringExtra("result").equals("renamedDestination") ||
                         data.getStringExtra("result").equals("deletedDestination"))) {
@@ -392,38 +393,30 @@ public class DestinationFragment extends Fragment
                     GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                     destinationsRestCall.delegate = DestinationFragment.this;
                     destinationsRestCall.callGetDestinations();
-                } else if (resultCode == getActivity().RESULT_CANCELED) {
+                } else if (resultCode == getActivity().RESULT_OK && data.hasExtra("data")) {
+
+                    Log.i(Constants.TAG, "retert");
                     /**
                      *   offline changing the checkin/checkout status
                      *   from the detailDestination activity
                      */
-                    if (data.getStringExtra("result").equals("checkedIn")) {
+                    Log.i(Constants.TAG, "onActivityResult //  else if block - checkedIn "+destinationListPosition);
+                    if (data.getStringExtra("data").equals("checkedIn")) {
+                        Log.i(Constants.TAG, "onActivityResult.we.//  else if block - checkedIn true");
                         arrayListDestinations.get(destinationListPosition).setCheckedIn(true);
-                    } else if (data.getStringExtra("result").equals("checkedOut")) {
+                    } else if (data.getStringExtra("data").equals("checkedOut")) {
+                        Log.i(Constants.TAG, "onActivityResult.we.//  else if block - checkedOut true");
                         arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
                     } else {
-                        String time = data.getStringExtra("result");
+                        String time = data.getStringExtra("data");
+                        Log.i(Constants.TAG, "onActivityResult.we.//  else if block - checkedOut at "+time);
                         arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
                     }
                     setAdapterForDestinations();
                 } else {
                     Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
                 }
-            } else if(resultCode == getActivity().RESULT_CANCELED) {
-                /**
-                 *   offline changing the checkin/checkout status
-                 *   from the detailDestination activity
-                 */
-                if (data.getStringExtra("result").equals("checkedIn")) {
-                    arrayListDestinations.get(destinationListPosition).setCheckedIn(true);
-                } else if(data.getStringExtra("result").equals("checkedOut")) {
-                    arrayListDestinations.get(destinationListPosition).setCheckedOut(true);
-                } else {
-                    String time = data.getStringExtra("result");
-                    arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
-                }
-                setAdapterForDestinations();
-            } else {
+            }else {
                 Log.i(Constants.TAG, "onActivityResult.we.//  else block");
             }
         }

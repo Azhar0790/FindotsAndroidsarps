@@ -126,6 +126,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
+    public static String offlineCheckInCheckOutStatus = null;
     public static boolean FLAG_CHECKINCHECKOUT = false;
     public static boolean FLAG_OFFLINECHECKINCHECKOUT = false;
     public static final int STROKE_WIDTH = 6;
@@ -350,30 +351,20 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+
+        finish();
         if (FLAG_CHECKINCHECKOUT) {
+            Log.i(Constants.TAG, "onBackPressed: FLAG_CHECKINCHECKOUT "+offlineCheckInCheckOutStatus);
             Intent returnIntent = new Intent();
             returnIntent.putExtra("result", "success");
             setResult(Activity.RESULT_OK, returnIntent);
-        } else {
-            if (FLAG_OFFLINECHECKINCHECKOUT) {
-                String resultValue;
-                if (!checkedIn) {
-                    resultValue = "checkedIn";
-                } else if (!checkedOut) {
-                    resultValue = "checkedOut";
-                } else {
-                    DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                    DateTime dateTime = new DateTime();
-                    String getTime = dateTime.toString(fmt1);
-
-                    resultValue = getTime;
-                }
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", resultValue);
-                setResult(Activity.RESULT_CANCELED, returnIntent);
-            }
+        } else if(FLAG_OFFLINECHECKINCHECKOUT){
+            Log.i(Constants.TAG, "onBackPressed: FLAG_OFFLINECHECKINCHECKOUT "+offlineCheckInCheckOutStatus);
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("data", offlineCheckInCheckOutStatus);
+            setResult(Activity.RESULT_OK, returnIntent);
         }
-        finish();
+
     }
 
     public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut, boolean isCheckOut) {
@@ -458,26 +449,28 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         FLAG_OFFLINECHECKINCHECKOUT = true;
         if (!checkedIn) {
             checkedIn = true;
+            offlineCheckInCheckOutStatus = "checkedIn";
         } else if(!checkedOut) {
             checkedOut = true;
+            offlineCheckInCheckOutStatus = "checkedOut";
         } else {
             DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
             DateTime dateTime = new DateTime();
             String getTime = dateTime.toString(fmt1);
             checkedOutReportedDate = getTime;
+            offlineCheckInCheckOutStatus = checkedOutReportedDate;
         }
         /**
          *   call setData
          */
         setData();
 
-        GeneralUtils.createAlertDialog(DetailDestinationActivity.this, status);
+        //GeneralUtils.createAlertDialog(DetailDestinationActivity.this, status);
     }
 
     @Override
     public void onCheckInSuccess() {
         FLAG_CHECKINCHECKOUT = true;
-        FLAG_OFFLINECHECKINCHECKOUT = false;
         /**
          *   the data should be refreshed after the checkin or checkout
          */
