@@ -53,8 +53,6 @@ public class RegisterActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         LocationListener {
 
-    @Bind(R.id.TextView_signUpHeading)
-    TextView mTextView_signUpHeading;
 
     @Bind(R.id.EditText_name)
     EditText mEditText_name;
@@ -126,13 +124,13 @@ public class RegisterActivity extends AppCompatActivity
         Typeface typefaceLight = Typeface.createFromAsset(getAssets(),
                 "fonts/Roboto-Light.ttf");
 
-        mTextView_signUpHeading.setTypeface(typefaceMyriadHebrew);
         mEditText_name.setTypeface(typefaceLight);
         mEditText_company.setTypeface(typefaceLight);
         mEditText_emailID.setTypeface(typefaceLight);
         mEditText_mobileNo.setTypeface(typefaceLight);
         mEditText_password.setTypeface(typefaceLight);
         mEditText_redeemCode.setTypeface(typefaceLight);
+//        mEditText_redeemCode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         mTextView_agree.setTypeface(typefaceLight);
         mButton_createAccount.setTypeface(typefaceLight);
 
