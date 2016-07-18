@@ -54,7 +54,11 @@ import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +72,11 @@ import retrofit.Retrofit;
 /**
  * Created by jpaulose on 7/6/2016.
  */
-public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener,
+        TimePickerDialog.OnTimeSetListener,
+        DatePickerDialog.OnDateSetListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -80,6 +88,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     int destinationID = 0;
     Bundle bundle = null;
     Location mAdressLoc;
+    String scheduleDate = "",destinationName;
+    int day, month, year;
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
@@ -144,7 +154,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                             public void onClick(DialogInterface dialogBox, int id) {
                                 if (userInputDialogEditText.getText().toString().length() > 0) {
                                     dialogBox.dismiss();
-                                    addDestinationRequest((userInputDialogEditText.getText().toString().trim()));
+                                    destinationName=userInputDialogEditText.getText().toString().trim();
+                                    scheduleDestination();
                                 }
                             }
                         })
@@ -178,6 +189,72 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         }
 //
 
+    }
+
+    public void scheduleDestination() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                DestinationAddMapActivity.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+
+        dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Log.d("jomy", "Dialog was cancelled");
+                addDestinationRequest(destinationName,"");
+            }
+        });
+        dpd.setAccentColor(getResources().getColor(R.color.app_color));
+        dpd.setTitle("" + getString(R.string.schedulevisitDate));
+        dpd.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+
+    boolean isToday = false;
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int yearVal, int monthOfYear, int dayOfMonth) {
+        Log.d("jomy", "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+        Calendar now = Calendar.getInstance();
+
+        year = yearVal;
+        month = (monthOfYear + 1);
+        day = dayOfMonth;
+
+
+        Log.d("jomy", "Today....");
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                DestinationAddMapActivity.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                false
+        );
+//        tpd.setThemeDark(true);
+//        tpd.vibrate(true);
+//        tpd.dismissOnPause(true);
+//        tpd.enableSeconds(true);
+        tpd.enableMinutes(true);
+        tpd.setAccentColor(getResources().getColor(R.color.app_color));
+        tpd.setTitle("" + getString(R.string.schedulevisitTime));
+
+        tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                addDestinationRequest(destinationName,"");
+            }
+        });
+        tpd.show(getFragmentManager(), "Timepickerdialog");
+
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        Log.d("jomy", "You picked the following Time: " + hourOfDay + "/" + (minute) + "/" + second);
+        scheduleDate="" + year + "-" + month + "-" + day + " " + hourOfDay + ":" + minute + ":" + second + ".000";
+        addDestinationRequest(destinationName,scheduleDate);
     }
 
     @Override
@@ -347,7 +424,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
     protected synchronized void buildGoogleApiClient() {
 
-        if(mGoogleApiClient==null) {
+        if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .enableAutoManage(this, 34992, this)
                     .addApi(LocationServices.API)
@@ -603,9 +680,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         }
     }
 
-    public void addDestinationRequest(String destinationName) {
+    public void addDestinationRequest(String destinationName,String scheduleTime) {
         GeneralUtils.initialize_progressbar(this);
-        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest(destinationName));
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest(destinationName, scheduleTime));
 
         addDestinationCall.enqueue(new Callback<ResponseModel>() {
 
@@ -627,7 +704,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                         Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
 
                 } else {
-                    Toast toast = Toast.makeText(DestinationAddMapActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(DestinationAddMapActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM, 0, 0);
                     toast.show();
                 }
@@ -642,9 +719,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         });
     }
 
-    private Map<String, Object> setAddDestinationRequest(String destinationName) {
+    private Map<String, Object> setAddDestinationRequest(String destinationName,String scheduleTime) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("destinationName", "" + destinationName);
+        postValues.put("ScheduleDate", "" + GeneralUtils.dateTimeUTC_toLocale(scheduleTime));
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + mLocationAddress.getText().toString().trim());

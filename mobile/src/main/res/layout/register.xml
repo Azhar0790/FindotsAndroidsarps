@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/login_bg">
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/headerlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+
+        <TextView
+            android:id="@+id/TextView_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="fonts/MyriadHebrew-Bold.otf"
+            android:text="@string/create_accnt"
+            android:textColor="@color/app_color"
+            android:maxLines="1"
+            android:paddingTop="@dimen/signup_text_hedding_padding"
+            android:paddingBottom="@dimen/signup_text_hedding_padding"
+            android:textSize="@dimen/textView_heading_textSize" />
+
+
+
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@id/headerlay"
+        android:layout_height="match_parent"
+        android:background="@drawable/login_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/signup_text_marginTopBottom"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/TextView_signUpHeading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/signup_text_marginTopBottom"
-            android:layout_marginTop="@dimen/signup_text_marginTopBottom"
-            android:text="@string/signup_heading"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/signup_textSize"
-            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/EditText_name"
@@ -29,7 +49,7 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/name"
-            android:inputType="text" />
+            android:inputType="textPersonName|textCapSentences"/>
 
         <EditText
             android:id="@+id/EditText_company"
@@ -75,7 +95,7 @@
             android:layout_height="@dimen/login_edittext_height"
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/redeemcode"
-            android:inputType="text" />
+            android:inputType="textCapWords"/>
 
 
 
@@ -97,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/linearLayout_termsCondition_height"
             android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/ImageView_onOff"
@@ -107,15 +128,14 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="2dp"
                 android:background="@drawable/ic_switch_on"
-                android:gravity="center"
-                android:visibility="invisible"/>
+                android:gravity="center_horizontal"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/TextView_agree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="By Signing Up, You Agreeing to our "
+                android:text="@string/agree"
                 android:textColor="@color/black_70"
                 android:textSize="@dimen/termsCondition_textSize"
                 android:textStyle="normal" />
@@ -124,7 +144,6 @@
                 android:id="@+id/TextView_termsCondition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/textView_termsCondition_marginLeft"
                 android:text="@string/termsCondition"
                 android:textColor="@color/app_color"
@@ -133,4 +152,5 @@
 
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</RelativeLayout>

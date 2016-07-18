@@ -47,14 +47,41 @@ public class GeneralUtils {
         //Time in GMT
         return dateFormatGmt.format(new Date());
     }
+    public static String dateTimeInUTC(String date)
+    {
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-    public static String DateTimeInGMT()
+        //Time in GMT
+        return dateFormatGmt.format(new Date(date));
+    }
+
+    public static String dateTimeInGMT()
     {
         SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         //Time in GMT
         return dateFormatGmt.format(new Date());
+    }
+    public static String dateTimeUTC_toLocale(String utcTime)
+    {
+        try {
+            SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date parsed = sourceFormat.parse(utcTime); // => Date is in UTC now
+
+            TimeZone tz = TimeZone.getDefault();
+            SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            destFormat.setTimeZone(tz);
+
+            return destFormat.format(parsed);
+        }
+        catch (Exception e)
+        {
+
+        }
+        return "";
     }
     public static String LatLongToAddress(Double latitude,Double longitude,Context context)
     {
