@@ -8,6 +8,7 @@
     <color name="transparent">#00000000</color>
     <color name="grey">#868686</color>
     <color name="blue">#66BAEA</color>
+    <color name="darkblue">#0080FF</color>
     <color name="green">#4dae23</color>
 
     <color name="app_color">#FF5745</color>

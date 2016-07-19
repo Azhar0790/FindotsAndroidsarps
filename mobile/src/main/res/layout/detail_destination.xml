@@ -30,7 +30,20 @@
         android:textColor="@color/app_color"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/destSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_above="@+id/RelativeLayout_address"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/darkblue"
+        android:layout_marginLeft="20dp"
+        android:clickable="true"
+        android:visibility="visible"
+        />
 
     <RelativeLayout
         android:id="@+id/RelativeLayout_address"
