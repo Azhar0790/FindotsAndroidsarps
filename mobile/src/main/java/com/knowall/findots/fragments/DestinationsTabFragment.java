@@ -2,6 +2,7 @@ package com.knowall.findots.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -23,6 +24,12 @@ import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import java.util.Calendar;
 
 /**
  * Created by parijathar on 7/4/2016.
@@ -31,6 +38,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
+
+    MaterialCalendarView materialCalendarView = null;
 
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
@@ -45,6 +54,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_tab_layout, null);
+
+        initializeMaterialCalendarView(rootView);
 
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
@@ -132,5 +143,30 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         } else {
         }
+    }
+
+    public void initializeMaterialCalendarView(ViewGroup rootView) {
+        materialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.materialCalendarView);
+        materialCalendarViewSettings();
+    }
+
+    public void materialCalendarViewSettings() {
+        materialCalendarView.setTileWidthDp(48);
+        materialCalendarView.setTileHeightDp(24);
+
+        materialCalendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit();
+        materialCalendarView.goToNext();
+        materialCalendarView.setSelectedDate(CalendarDay.today());
+
+        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                Toast.makeText(getActivity(), date.getDay()+" "+
+                                                date.getMonth()+" "+
+                                                date.getYear()+" "+date.getDate(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

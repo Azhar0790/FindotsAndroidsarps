@@ -5,10 +5,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/materialCalendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        app:paddingStart="10dp"
+        app:paddingEnd="10dp"
+        app:mcv_showOtherDates="all"
+        app:mcv_arrowColor="@color/app_color"
+        app:mcv_selectionColor="@color/app_color"
+        app:mcv_headerTextAppearance="?android:attr/textAppearanceMedium"
+        app:mcv_firstDayOfWeek="monday"
+        android:background="@color/white"
+        />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayoutDestinations"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_below="@+id/materialCalendarView"
         android:background="@color/white"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
