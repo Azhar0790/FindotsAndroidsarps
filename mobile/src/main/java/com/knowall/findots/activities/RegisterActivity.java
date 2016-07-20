@@ -1,14 +1,15 @@
 package com.knowall.findots.activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ClickableSpan;
@@ -24,8 +25,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -36,6 +35,7 @@ import com.knowall.findots.restcalls.register.IRegisterRestCall;
 import com.knowall.findots.restcalls.register.RegisterModel;
 import com.knowall.findots.restcalls.register.RegisterRestCall;
 import com.knowall.findots.utils.AddTextWatcher;
+import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
 import butterknife.Bind;
@@ -85,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity
     String mobileNo = null, password = null, redeemCode = null;
 
     private GoogleApiClient mGoogleApiClient = null;
-    private LocationRequest mLocationRequest = null;
     Location currentLocation = null;
 
     // Location updates intervals in sec
@@ -99,24 +98,19 @@ public class RegisterActivity extends AppCompatActivity
         ButterKnife.bind(this);
         setUIElementsProperty();
         setListeners();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
 
         if (!GeneralUtils.checkPlayServices(RegisterActivity.this)) {
             finish();
         }
 
-//        if(!(Utils.isLocationServiceEnabled(RegisterActivity.this))) {
-//            Utils.createLocationServiceError(RegisterActivity.this);
-//        }
-
-        createLocationRequest();
         buildGoogleApiClient();
     }
 
-
-
-
     /**
-     *   sets all UI elements properties
+     * sets all UI elements properties
      */
     public void setUIElementsProperty() {
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(),
@@ -163,15 +157,8 @@ public class RegisterActivity extends AppCompatActivity
             /**
              *   check whether terms and conditions accepted
              */
-//            if (mImageView_onOff.getTag() == true) {
-                double lat, lng;
-                if (currentLocation != null) {
-                    lat = currentLocation.getLatitude();
-                    lng = currentLocation.getLongitude();
-                } else {
-                    lat = 0.0012;
-                    lng = 0.0013;
-                }
+            if ((Utils.isLocationServiceEnabled(RegisterActivity.this)) && currentLocation!=null) {
+
 
                 /**
                  *   Call WebService to create an account
@@ -179,12 +166,17 @@ public class RegisterActivity extends AppCompatActivity
                 RegisterRestCall registerRestCall = new RegisterRestCall(RegisterActivity.this);
                 registerRestCall.delegate = RegisterActivity.this;
                 registerRestCall.callRegisterUserService(emailID, password, mobileNo,
-                        name, redeemCode, company, lat, lng);
+                        name, redeemCode, company, currentLocation.getLatitude(), currentLocation.getLongitude());
 
 //            } else if (mImageView_onOff.getTag() == false) {
 //                GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
 //            }
+            }
+            else
+            {
+                buildGoogleApiClient();
 
+            }
         }
     }
 
@@ -203,28 +195,21 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     public void onRegisterUserSuccess(RegisterModel registerModel) {
         if (registerModel.getErrorCode() == 0) {
-            redirectToLogin();
+            GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, emailID);
+            GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, name);
+
+            Toast.makeText(RegisterActivity.this, registerModel.getMessage(), Toast.LENGTH_SHORT).show();
+            if (registerModel.getRegisterData().length > 0 && registerModel.getRegisterData()[0].getUserID() > 0) {
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, registerModel.getRegisterData()[0].getUserID());
+                startMenuActivity();
+            }
+
         } else {
-            GeneralUtils.createAlertDialog(RegisterActivity.this, registerModel.getMessage());
+            Toast.makeText(RegisterActivity.this, registerModel.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    /**
-     *   on Successful Registration, lets the user to Login
-     */
-    public void redirectToLogin() {
-        new AlertDialog.Builder(RegisterActivity.this)
-                .setTitle(getString(R.string.app_name))
-                .setMessage(getString(R.string.sucessful_registration))
-                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        onBackPressed();
-                    }
-                }).show();
-    }
 
     @Override
     public void onBackPressed() {
@@ -234,7 +219,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     /**
-     *   validating the entered values for creating account
+     * validating the entered values for creating account
      */
     public boolean validateEnteredValues() {
         name = mEditText_name.getText().toString();
@@ -272,7 +257,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     /**
-     *   set Listeners to the UI Widgets
+     * set Listeners to the UI Widgets
      */
     public void setListeners() {
         mEditText_name.addTextChangedListener(new AddTextWatcher(mEditText_name));
@@ -333,8 +318,6 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected())
-            startLocationUpdates();
         FinDotsApplication.getInstance().trackScreenView("Registration Screen");
 
 
@@ -343,27 +326,13 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        try {
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.disconnect();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(INTERVAL);
-        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
 
     protected synchronized void buildGoogleApiClient() {
 
@@ -375,7 +344,50 @@ public class RegisterActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        Utils.createLocationServiceChecker(mGoogleApiClient,RegisterActivity.this);
+        Utils.createLocationServiceChecker(mGoogleApiClient, RegisterActivity.this);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+
+        currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (currentLocation == null) {
+            try {
+                LocationServices.FusedLocationApi.removeLocationUpdates(
+                        mGoogleApiClient, this);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                LocationRequest mLocationRequest = new LocationRequest();
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(5000);
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest, this);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        try {
+            if (location != null)
+                currentLocation = location;
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -387,24 +399,14 @@ public class RegisterActivity extends AppCompatActivity
         Toast.makeText(RegisterActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        startLocationUpdates();
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        currentLocation = location;
-    }
-
-    protected void startLocationUpdates() {
-        PendingResult<Status> pendingResult =
-                LocationServices.FusedLocationApi
-                        .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
 
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    public void startMenuActivity() {
+        Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

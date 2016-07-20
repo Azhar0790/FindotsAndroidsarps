@@ -39,7 +39,8 @@
             android:inputType="text"
             android:textSize="@dimen/accntSetting_edtTextSize"
             android:ellipsize="end"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:visibility="gone"/>
 
         <EditText
             android:id="@+id/editText_emailID"

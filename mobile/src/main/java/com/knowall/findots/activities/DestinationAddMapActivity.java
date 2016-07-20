@@ -692,9 +692,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 GeneralUtils.stop_progressbar();
                 if (response.body() != null) {
                     if (response.isSuccess() && response.body().getErrorCode() == 0) {
-
                         Toast.makeText(DestinationAddMapActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
                         finish();
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("result", "success");
@@ -722,7 +720,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     private Map<String, Object> setAddDestinationRequest(String destinationName,String scheduleTime) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("destinationName", "" + destinationName);
-        postValues.put("ScheduleDate", "" + GeneralUtils.dateTimeUTC_toLocale(scheduleTime));
+        postValues.put("ScheduleDate", "" + GeneralUtils.dateTimeInUTC(scheduleTime));
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + mLocationAddress.getText().toString().trim());

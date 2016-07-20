@@ -121,6 +121,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Bind(R.id.destModify)
     TextView mDestModify;
 
+    @Bind(R.id.destModifyName)
+    TextView mDestModifyName;
+
     @Bind(R.id.destSchedule)
     TextView mdestSchedule;
 
@@ -144,11 +147,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public static String offlineCheckInCheckOutStatus = null;
     public static boolean FLAG_CHECKINCHECKOUT = false;
     public static boolean FLAG_OFFLINECHECKINCHECKOUT = false;
-    public boolean mFlag_Scheduled=false;
+    public boolean mFlag_Scheduled = false;
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
     double currentLatitude = 0.0, currentLongitude = 0.0;
-    String scheduleDate = "",serverRequest_scheduleDate="";
+    String scheduleDate = "", serverRequest_scheduleDate = "";
     int day, month, year;
 
     @Override
@@ -170,16 +173,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         supportMapFragment.getMapAsync(this);
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
-//checkin and check out validation for modify is commented
-        if (isEditable && !(checkedIn || checkedOut)) {
-//        if (isEditable) {
-//            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
-//            mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
-//            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
-//            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.app_color)), 24, 30, 0);
-//            mDestModify.setText(mDestModifyText);
-            mDestModify.setVisibility(View.VISIBLE);
-        }
+///checkin and check out validation for modify is commented
+        modifyTextUiCondition(checkedIn,checkedOut);
 
         EventBus.getDefault().register(this);
 
@@ -196,6 +191,17 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
+    }
+
+    public void modifyTextUiCondition(Boolean checkedIn,Boolean checkedOut) {
+        if (isEditable) {
+            if (!(checkedIn || checkedOut)) {
+                mDestModify.setVisibility(View.VISIBLE);
+            } else {
+                mDestModify.setVisibility(View.INVISIBLE);
+                mDestModifyName.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     /**
@@ -219,10 +225,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         scheduleDate = bundle.getString("scheduleDate");
 
         Log.d("jomy", "Schedule Date2 : " + scheduleDate);
-        if (scheduleDate.trim().length() >0)
-            extractDateInfo(GeneralUtils.dateTimeUTC_toLocale(scheduleDate),false);
+        if (scheduleDate.trim().length() > 0)
+            extractDateInfo(GeneralUtils.dateTimeInUTCToLocal(scheduleDate), false);
         else
-            setSpannableScheduleString(""+getString(R.string.schedule));
+            setSpannableScheduleString("" + getString(R.string.schedule));
 
 
     }
@@ -407,7 +413,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         Calendar now = Calendar.getInstance();
 
         year = yearVal;
-        month=(monthOfYear + 1);
+        month = (monthOfYear + 1);
         day = dayOfMonth;
 
 
@@ -440,7 +446,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         Log.d("jomy", "You picked the following Time: " + hourOfDay + "/" + (minute) + "/" + second);
 
-        extractDateInfo("" + year + "-" + month + "-" + day + " " + hourOfDay + ":" + minute + ":" + second + ".000",true);
+        extractDateInfo("" + year + "-" + month + "-" + day + " " + hourOfDay + ":" + minute + ":" + second + ".000", true);
     }
 
     @Override
@@ -457,10 +463,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             Intent returnIntent2 = new Intent();
             returnIntent2.putExtra("offlineData", offlineCheckInCheckOutStatus);
             setResult(2, returnIntent2);
-        }
-        else if(mFlag_Scheduled)
-        {
-            Log.d("jomy","check.00..");
+        } else if (mFlag_Scheduled) {
+            Log.d("jomy", "check.00..");
             Intent returnIntent3 = new Intent();
             returnIntent3.putExtra("scheduled", "ScheduledData");
             setResult(3, returnIntent3);
@@ -579,6 +583,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(DetailDestinationActivity.this);
         destinationsRestCall.delegate = DetailDestinationActivity.this;
         destinationsRestCall.callGetDestinations();
+        modifyTextUiCondition(true,true);
     }
 
     @Override
@@ -613,6 +618,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         GeneralUtils.createAlertDialog(DetailDestinationActivity.this, errorMessage);
     }
 
+
+
     @OnClick(R.id.destModify)
     public void modifyDestinationActivity() {
         if (assignDestinationID > -1) {
@@ -641,36 +648,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
                     if (item.getItemId() == R.id.item1) {
 
-                        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DetailDestinationActivity.this);
-                        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
-                        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
-                        alertDialogBuilderUserInput.setView(mView);
-                        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
-
-                        final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
-                        TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
-                        userInputDialogTitle.setText(getResources().getString(R.string.modify_destination_name));
-                        userInputDialogEditText.setHint(getResources().getString(R.string.modify_destination_namehint));
-                        alertDialogBuilderUserInput
-                                .setCancelable(false)
-                                .setPositiveButton("" + getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogBox, int id) {
-                                        if (userInputDialogEditText.getText().toString().length() > 0) {
-                                            dialogBox.dismiss();
-                                            renameAssigned_destinationRequest((userInputDialogEditText.getText().toString().trim()));
-                                        }
-                                    }
-                                })
-
-                                .setNegativeButton("" + getResources().getString(R.string.cancel),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialogBox, int id) {
-                                                dialogBox.cancel();
-                                            }
-                                        });
-
-                        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
-                        alertDialogAndroid.show();
+                        renameDestinationPopupAction();
                     }
 
 
@@ -679,6 +657,45 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 }
             });
         }
+    }
+
+    @OnClick(R.id.destModifyName)
+    public void renameDestination() {
+        renameDestinationPopupAction();
+    }
+
+    public void renameDestinationPopupAction() {
+
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DetailDestinationActivity.this);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
+        alertDialogBuilderUserInput.setView(mView);
+        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
+
+        final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+        userInputDialogTitle.setText(getResources().getString(R.string.modify_destination_name));
+        userInputDialogEditText.setHint(getResources().getString(R.string.modify_destination_namehint));
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton("" + getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogBox, int id) {
+                        if (userInputDialogEditText.getText().toString().length() > 0) {
+                            dialogBox.dismiss();
+                            renameAssigned_destinationRequest((userInputDialogEditText.getText().toString().trim()));
+                        }
+                    }
+                })
+
+                .setNegativeButton("" + getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
     }
 
     /**
@@ -932,7 +949,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     public void addScheduleDestinationRequest(String scheduletime) {
         GeneralUtils.initialize_progressbar(this);
-        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().scheduleDestinationVisit(setScheduleVisit_destinationRequest(GeneralUtils.dateTimeUTC_toLocale(scheduletime)));
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().scheduleDestinationVisit(setScheduleVisit_destinationRequest(GeneralUtils.dateTimeInUTC(scheduletime)));
 
         addDestinationCall.enqueue(new Callback<ResponseModel>() {
 
@@ -944,10 +961,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 if (response.body() != null) {
                     if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
-                        extractDateInfo(serverRequest_scheduleDate,false);
-                        mFlag_Scheduled=true;
+                        extractDateInfo(serverRequest_scheduleDate, false);
+                        mFlag_Scheduled = true;
                         Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
 
 
                     } else
@@ -982,7 +998,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         return postValues;
     }
 
-    public void extractDateInfo(String scheduleDate,boolean loadData) {
+    public void extractDateInfo(String scheduleDate, boolean loadData) {
 
         try {
 
@@ -992,24 +1008,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 date = date_format.parse(scheduleDate);
                 Calendar cal1 = Calendar.getInstance();
                 cal1.setTime(date);
-                serverRequest_scheduleDate=scheduleDate;
-                checkDateToday(cal1,loadData);
+                serverRequest_scheduleDate = scheduleDate;
+                checkDateToday(cal1, loadData);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.d("jomy","Date22 ");
+                Log.d("jomy", "Date22 ");
             }
 
 
         } catch (Exception e) {
-            Log.d("jomy","Date223 ");
+            Log.d("jomy", "Date223 ");
         }
 
 
     }
 
-    public void checkDateToday(Calendar cal1,boolean loadData) {
+    public void checkDateToday(Calendar cal1, boolean loadData) {
         try {
-            Log.d("jomy","Date55 ");
             String mdestScheduleText = "";
             int hour, minute;
             Date currentDate = Calendar.getInstance().getTime();
@@ -1032,10 +1047,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             else
                 mdestScheduleText = mdestScheduleText + "PM";
 
-            if(loadData)
+            if (loadData)
                 addScheduleDestinationRequest(serverRequest_scheduleDate);
-           else
-            setSpannableScheduleString(mdestScheduleText);
+            else
+                setSpannableScheduleString(mdestScheduleText);
         } catch (Exception e) {
         }
     }

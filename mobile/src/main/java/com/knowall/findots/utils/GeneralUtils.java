@@ -47,13 +47,20 @@ public class GeneralUtils {
         //Time in GMT
         return dateFormatGmt.format(new Date());
     }
-    public static String dateTimeInUTC(String date)
-    {
-        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        //Time in GMT
-        return dateFormatGmt.format(new Date(date));
+    public static String dateTimeInUTC(String strDate) {
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = formatter.parse(strDate);
+            SimpleDateFormat sdfUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfUTC .setTimeZone(TimeZone.getTimeZone("UTC"));
+            String sDateInUTC = sdfUTC .format(date);
+            return sDateInUTC;
+        }
+        catch (Exception e){
+        }
+        return "";
     }
 
     public static String dateTimeInGMT()
@@ -64,6 +71,23 @@ public class GeneralUtils {
         //Time in GMT
         return dateFormatGmt.format(new Date());
     }
+
+    public static String dateTimeInUTCToLocal(String strDate) {
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = formatter.parse(strDate);
+            SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfLocal.setTimeZone(TimeZone.getDefault());
+            String sDateInLocal = sdfLocal .format(date);
+            return sDateInLocal;
+        }
+        catch (Exception e){
+        }
+        return "";
+    }
+
     public static String dateTimeUTC_toLocale(String utcTime)
     {
         try {

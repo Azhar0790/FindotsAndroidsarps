@@ -19,24 +19,7 @@
 
 </LinearLayout>
 
-    <Button
-        android:id="@+id/updateDestination"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/login_button_marginTop"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:background="@drawable/selector_login"
-        android:drawablePadding="@dimen/top_loc_padding"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:text="@string/update_destination"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+
 
     <FrameLayout
         android:id="@+id/mapframelay"
@@ -136,5 +119,24 @@
         android:clickable="true"
         android:onClick="openAutoCompletePlace"
         android:visibility="visible" />
+
+    <Button
+        android:id="@+id/updateDestination"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/login_button_marginTop"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/selector_login"
+        android:drawablePadding="@dimen/top_loc_padding"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text="@string/update_destination"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
 </RelativeLayout>
