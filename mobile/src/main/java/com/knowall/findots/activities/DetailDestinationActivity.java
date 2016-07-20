@@ -144,6 +144,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public static String offlineCheckInCheckOutStatus = null;
     public static boolean FLAG_CHECKINCHECKOUT = false;
     public static boolean FLAG_OFFLINECHECKINCHECKOUT = false;
+    public boolean mFlag_Scheduled=false;
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
     double currentLatitude = 0.0, currentLongitude = 0.0;
@@ -170,8 +171,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
 //checkin and check out validation for modify is commented
-//        if (isEditable && !(checkedIn || checkedOut)) {
-        if (isEditable) {
+        if (isEditable && !(checkedIn || checkedOut)) {
+//        if (isEditable) {
 //            SpannableString mDestModifyText = new SpannableString(getResources().getString(R.string.modify));
 //            mDestModifyText.setSpan(new RelativeSizeSpan(1.1f), 0, 30, 0);
 //            mDestModifyText.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.black_70)), 0, 23, 0);
@@ -456,6 +457,13 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             Intent returnIntent2 = new Intent();
             returnIntent2.putExtra("offlineData", offlineCheckInCheckOutStatus);
             setResult(2, returnIntent2);
+        }
+        else if(mFlag_Scheduled)
+        {
+            Log.d("jomy","check.00..");
+            Intent returnIntent3 = new Intent();
+            returnIntent3.putExtra("scheduled", "ScheduledData");
+            setResult(3, returnIntent3);
         }
 
         super.onBackPressed();
@@ -937,6 +945,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     if (response.isSuccess() && response.body().getErrorCode() == 0) {
 
                         extractDateInfo(serverRequest_scheduleDate,false);
+                        mFlag_Scheduled=true;
                         Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
 

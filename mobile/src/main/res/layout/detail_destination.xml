@@ -30,7 +30,7 @@
         android:textColor="@color/app_color"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:visibility="visible"/>
+        android:visibility="invisible"/>
     <TextView
         android:id="@+id/destSchedule"
         android:layout_width="wrap_content"
