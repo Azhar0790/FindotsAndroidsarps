@@ -10,6 +10,7 @@
     <color name="blue">#66BAEA</color>
     <color name="darkblue">#0080FF</color>
     <color name="green">#4dae23</color>
+    <color name="light_grey">#D7D7D7</color>
 
     <color name="app_color">#FF5745</color>
     <color name="app_color_25">#40FF5745</color>

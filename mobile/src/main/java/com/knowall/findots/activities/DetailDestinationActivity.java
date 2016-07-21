@@ -388,6 +388,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
+        dpd.setMinDate(now);
 
         dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -424,6 +425,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 //        tpd.vibrate(true);
 //        tpd.dismissOnPause(true);
 //        tpd.enableSeconds(true);
+        if((now.get(Calendar.YEAR)==yearVal) && (now.get(Calendar.MONTH)==monthOfYear) && (now.get(Calendar.DAY_OF_MONTH)==dayOfMonth))
+        {
+            tpd.setMinTime(now.get(Calendar.HOUR_OF_DAY),now.get(Calendar.MINUTE),30);
+        }
         tpd.enableMinutes(true);
         tpd.setAccentColor(getResources().getColor(R.color.app_color));
         tpd.setTitle("" + getString(R.string.schedulevisitTime));

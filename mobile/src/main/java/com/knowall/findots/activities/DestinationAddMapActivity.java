@@ -84,9 +84,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     private static String TAG = "MAP LOCATION";
     Context mContext;
     private LatLng mCenterLatLong;
-    double destinationLatitude = 0.12, destinationLongitude = 0.14;
-    int destinationID = 0;
-    Bundle bundle = null;
     Location mAdressLoc;
     String scheduleDate = "",destinationName;
     int day, month, year;
@@ -116,9 +113,11 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     Button mAddDestination;
     @Bind(R.id.address)
     TextView mLocationAddress;
+    @Bind(R.id.lochead)
+    TextView mLochead;
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
-
+    Typeface typefaceRoboRegular;
 
 
     @Override
@@ -131,6 +130,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         mapFragment = (TouchableMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         actionBarSettings();
+        setUpFonts();
         mLocationAddress.setSelected(true);
 
         mAddDestination.setOnClickListener(new View.OnClickListener() {
@@ -200,7 +200,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
-
+        dpd.setMinDate(now);
         dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
@@ -221,12 +221,13 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         Log.d("jomy", "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
         Calendar now = Calendar.getInstance();
 
+
         year = yearVal;
         month = (monthOfYear + 1);
         day = dayOfMonth;
 
 
-        Log.d("jomy", "Today....");
+
         TimePickerDialog tpd = TimePickerDialog.newInstance(
                 DestinationAddMapActivity.this,
                 now.get(Calendar.HOUR_OF_DAY),
@@ -237,6 +238,11 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 //        tpd.vibrate(true);
 //        tpd.dismissOnPause(true);
 //        tpd.enableSeconds(true);
+        if((now.get(Calendar.YEAR)==yearVal) && (now.get(Calendar.MONTH)==monthOfYear) && (now.get(Calendar.DAY_OF_MONTH)==dayOfMonth))
+        {
+            tpd.setMinTime(now.get(Calendar.HOUR_OF_DAY),now.get(Calendar.MINUTE),30);
+        }
+
         tpd.enableMinutes(true);
         tpd.setAccentColor(getResources().getColor(R.color.app_color));
         tpd.setTitle("" + getString(R.string.schedulevisitTime));
@@ -265,6 +271,13 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     }
 
 
+    public void setUpFonts()
+    {
+        Typeface typefaceroboLight= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        mLocationAddress.setTypeface(typefaceroboLight);
+        mLochead.setTypeface(typefaceRoboRegular);
+    }
+
     public void actionBarSettings() {
 
         /* Assigning the toolbar object ot the view
@@ -274,10 +287,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        typefaceRoboRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
         mTextView_heading.setText(getString(R.string.new_destination));
-        mTextView_heading.setTypeface(typefaceMyriadHebrew);
+        mTextView_heading.setTypeface(typefaceRoboRegular);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {
             @Override

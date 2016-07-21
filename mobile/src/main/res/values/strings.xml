@@ -81,7 +81,7 @@
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="destination_name">Enter Destination Name</string>
-    <string name="not_the_right_destination">Please CheckIn when you reach the destination.</string>
+    <string name="not_the_right_destination">Please Check In when you reach the destination.</string>
 
     <!--Edit Destination popup items-->
 

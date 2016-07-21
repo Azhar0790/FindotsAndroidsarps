@@ -157,7 +157,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             }
         });
         app = (FinDotsApplication) getApplication();
-        app.setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+        app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
 //        buildGoogleApiClient();
         initalizeLocationService();
 
