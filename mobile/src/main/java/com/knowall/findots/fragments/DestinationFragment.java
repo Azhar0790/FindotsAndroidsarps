@@ -159,6 +159,8 @@ public class DestinationFragment extends Fragment
         boolean isEditable = arrayListDestinations.get(itemPosition).isEditable();
         boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
 
+        String  scheduleDate=arrayListDestinations.get(itemPosition).getScheduleDate();
+
         listViewState = layoutManager.onSaveInstanceState();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
@@ -175,6 +177,7 @@ public class DestinationFragment extends Fragment
         intentDetailDestination.putExtra("checkInRadius", checkInRadius);
         intentDetailDestination.putExtra("editable", isEditable);
         intentDetailDestination.putExtra("requireApproval", isRequireApproval);
+        intentDetailDestination.putExtra("scheduleDate", scheduleDate);
         startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
@@ -502,7 +505,13 @@ public class DestinationFragment extends Fragment
                         arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
                     }
                     setAdapterForDestinations();
-                } else {
+                } else if(resultCode == 3) {
+                    Log.d("jomy","check...");
+                    GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                    destinationsRestCall.delegate = DestinationFragment.this;
+                    destinationsRestCall.callGetDestinations();
+                }
+                else {
                     super.onActivityResult(requestCode, resultCode, data);
                     Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
                 }

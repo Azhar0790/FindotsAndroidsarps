@@ -196,6 +196,8 @@ public class DestinationsMapFragment extends Fragment
         boolean isEditable = DestinationsTabFragment.destinationDatas[itemPosition].isEditable();
         boolean isRequireApproval = DestinationsTabFragment.destinationDatas[itemPosition].isRequiresApproval();
 
+        String  scheduleDate = DestinationsTabFragment.destinationDatas[itemPosition].getScheduleDate();
+
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
         intentDetailDestination.putExtra("address", address);
         intentDetailDestination.putExtra("checkedIn", checkedIn);
@@ -210,6 +212,7 @@ public class DestinationsMapFragment extends Fragment
         intentDetailDestination.putExtra("checkInRadius", checkInRadius);
         intentDetailDestination.putExtra("editable", isEditable);
         intentDetailDestination.putExtra("requireApproval", isRequireApproval);
+        intentDetailDestination.putExtra("scheduleDate", scheduleDate);
         startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
@@ -414,7 +417,14 @@ public class DestinationsMapFragment extends Fragment
                 GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationsMapFragment.this;
                 destinationsRestCall.callGetDestinations();
-            } else {
+            } else if(resultCode == 3)
+            {
+                Log.d("jomy","check...");
+                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                destinationsRestCall.delegate = DestinationsMapFragment.this;
+                destinationsRestCall.callGetDestinations();
+            }
+            else {
                 Log.i(Constants.TAG, "onActivityResult..//  else block..");
             }
         } else {
