@@ -959,7 +959,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
 
                     } else
-                        Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailDestinationActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast toast = Toast.makeText(DetailDestinationActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);

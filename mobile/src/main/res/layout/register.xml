@@ -78,7 +78,7 @@
             android:layout_marginTop="@dimen/register_edittexts_marginTop"
             android:hint="@string/mobileno"
             android:inputType="number"
-            android:maxLength="13"/>
+            android:maxLength="12"/>
 
         <EditText
             android:id="@+id/EditText_password"

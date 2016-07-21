@@ -146,6 +146,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
                 TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
                 userInputDialogTitle.setText(getResources().getString(R.string.add_destination));
+                if(mStateOutput!=null && mStateOutput.length()>0)
                 userInputDialogEditText.setText(""+mStateOutput.toString().trim());
                 userInputDialogEditText.setHint(getResources().getString(R.string.destination_name));
                 alertDialogBuilderUserInput
