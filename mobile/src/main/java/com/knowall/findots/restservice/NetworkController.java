@@ -1,8 +1,6 @@
 package com.knowall.findots.restservice;
 
-import java.util.Map;
 import com.knowall.findots.distancematrix.model.DistanceMatrix;
-import com.knowall.findots.distancematrix.DistanceMatrixURL;
 import com.knowall.findots.locationUtils.LocationModel.BackgroundLocData;
 import com.knowall.findots.restcalls.accountSettings.GetAccountInfoModel;
 import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutModel;
@@ -12,6 +10,7 @@ import com.knowall.findots.restcalls.login.LoginModel;
 import com.knowall.findots.restcalls.register.RegisterModel;
 import com.knowall.findots.restmodels.ResponseModel;
 
+import java.util.Map;
 
 import retrofit.Call;
 import retrofit.http.Body;
@@ -50,6 +49,9 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_RENAME_ASSIGNED_DESTINATION)
     Call<ResponseModel> renameAssignedDestination(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_SCHEDULE_DESTINATION_VISIT)
+    Call<ResponseModel> scheduleDestinationVisit(@Body Map<String, Object> request);
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<ResponseModel> saveLocationPath(@Body BackgroundLocData bgData);

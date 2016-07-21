@@ -48,13 +48,64 @@ public class GeneralUtils {
         return dateFormatGmt.format(new Date());
     }
 
-    public static String DateTimeInGMT()
+    public static String dateTimeInUTC(String strDate) {
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = formatter.parse(strDate);
+            SimpleDateFormat sdfUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfUTC .setTimeZone(TimeZone.getTimeZone("UTC"));
+            String sDateInUTC = sdfUTC .format(date);
+            return sDateInUTC;
+        }
+        catch (Exception e){
+        }
+        return "";
+    }
+
+    public static String dateTimeInGMT()
     {
         SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         //Time in GMT
         return dateFormatGmt.format(new Date());
+    }
+
+    public static String dateTimeInUTCToLocal(String strDate) {
+        try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = formatter.parse(strDate);
+            SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfLocal.setTimeZone(TimeZone.getDefault());
+            String sDateInLocal = sdfLocal .format(date);
+            return sDateInLocal;
+        }
+        catch (Exception e){
+        }
+        return "";
+    }
+
+    public static String dateTimeUTC_toLocale(String utcTime)
+    {
+        try {
+            SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date parsed = sourceFormat.parse(utcTime); // => Date is in UTC now
+
+            TimeZone tz = TimeZone.getDefault();
+            SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            destFormat.setTimeZone(tz);
+
+            return destFormat.format(parsed);
+        }
+        catch (Exception e)
+        {
+
+        }
+        return "";
     }
     public static String LatLongToAddress(Double latitude,Double longitude,Context context)
     {

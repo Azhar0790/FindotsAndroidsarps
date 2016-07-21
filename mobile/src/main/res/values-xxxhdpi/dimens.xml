@@ -4,7 +4,7 @@
     <dimen name="kmTextSize">14dp</dimen>
 
     <!--Registration -->
-    <dimen name="signup_text_marginTopBottom">45dp</dimen>
-    <dimen name="register_edittexts_marginTop">25dp</dimen>
-    <dimen name="button_createAccount_marginTop">45dp</dimen>
+    <dimen name="signup_text_marginTopBottom">20dp</dimen>
+    <dimen name="register_edittexts_marginTop">30dp</dimen>
+    <dimen name="button_createAccount_marginTop">40dp</dimen>
 </resources>
