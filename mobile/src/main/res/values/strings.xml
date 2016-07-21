@@ -85,8 +85,8 @@
 
     <!--Edit Destination popup items-->
 
-    <string name="modify_destinationName">Modify Destination Name</string>
-    <string name="modify_destinationLoc">Modify Destination Location</string>
+    <string name="modify_destinationName">Rename Destination</string>
+    <string name="modify_destinationLoc">Modify Location</string>
     <string name="delete_destination">Delete Destination</string>
 
     <!--Move Map Location to Pin Point-->

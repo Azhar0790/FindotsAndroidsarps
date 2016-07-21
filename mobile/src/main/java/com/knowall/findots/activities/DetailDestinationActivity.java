@@ -121,8 +121,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Bind(R.id.destModify)
     TextView mDestModify;
 
-    @Bind(R.id.destModifyName)
-    TextView mDestModifyName;
 
     @Bind(R.id.destSchedule)
     TextView mdestSchedule;
@@ -141,7 +139,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     int assignDestinationID = 0, destinationID = 0;
     double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false;
+    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false, destRenamOnly = false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
     public static String offlineCheckInCheckOutStatus = null;
@@ -174,7 +172,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         mTextView_address.setMovementMethod(new ScrollingMovementMethod());
 ///checkin and check out validation for modify is commented
-        modifyTextUiCondition(checkedIn,checkedOut);
+        modifyTextUiCondition(checkedIn, checkedOut);
 
         EventBus.getDefault().register(this);
 
@@ -193,13 +191,13 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     }
 
-    public void modifyTextUiCondition(Boolean checkedIn,Boolean checkedOut) {
+    public void modifyTextUiCondition(Boolean checkedIn, Boolean checkedOut) {
         if (isEditable) {
             if (!(checkedIn || checkedOut)) {
+                destRenamOnly = false;
                 mDestModify.setVisibility(View.VISIBLE);
             } else {
-                mDestModify.setVisibility(View.INVISIBLE);
-                mDestModifyName.setVisibility(View.VISIBLE);
+                destRenamOnly = true;
             }
         }
     }
@@ -229,8 +227,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             extractDateInfo(GeneralUtils.dateTimeInUTCToLocal(scheduleDate), false);
         else
             setSpannableScheduleString("" + getString(R.string.schedule));
-
-
     }
 
     /**
@@ -583,7 +579,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(DetailDestinationActivity.this);
         destinationsRestCall.delegate = DetailDestinationActivity.this;
         destinationsRestCall.callGetDestinations();
-        modifyTextUiCondition(true,true);
+        modifyTextUiCondition(true, true);
     }
 
     @Override
@@ -619,15 +615,16 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     }
 
 
-
     @OnClick(R.id.destModify)
     public void modifyDestinationActivity() {
         if (assignDestinationID > -1) {
 
             PopupMenu popupMenu = new PopupMenu(DetailDestinationActivity.this, mDestModify);
 
-            popupMenu.getMenuInflater().inflate(R.menu.edit_destination_type_popup, popupMenu.getMenu());
-
+            if (destRenamOnly)
+                popupMenu.getMenuInflater().inflate(R.menu.edit_destination_type_popup_singleitem, popupMenu.getMenu());
+            else
+                popupMenu.getMenuInflater().inflate(R.menu.edit_destination_type_popup, popupMenu.getMenu());
             popupMenu.show();
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
@@ -657,11 +654,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 }
             });
         }
-    }
-
-    @OnClick(R.id.destModifyName)
-    public void renameDestination() {
-        renameDestinationPopupAction();
     }
 
     public void renameDestinationPopupAction() {
@@ -967,7 +959,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
 
                     } else
-                        Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailDestinationActivity.this,response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast toast = Toast.makeText(DetailDestinationActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);

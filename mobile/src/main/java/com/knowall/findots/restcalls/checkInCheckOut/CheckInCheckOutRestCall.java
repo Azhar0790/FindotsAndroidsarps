@@ -13,10 +13,6 @@ import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.NetworkChangeReceiver;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,9 +107,8 @@ public class CheckInCheckOutRestCall {
         /**
          *   fetching current time in UTC format
          */
-        DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        DateTime dateTime = new DateTime();
-        reportedTime = dateTime.toString(fmt1);
+
+        reportedTime = GeneralUtils.DateTimeInUTC();
 
         List<Map<String, Object>> list = new ArrayList<>();
 

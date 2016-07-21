@@ -198,7 +198,7 @@ public class RegisterActivity extends AppCompatActivity
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USERNAME, emailID);
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, name);
 
-            Toast.makeText(RegisterActivity.this, registerModel.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(RegisterActivity.this, registerModel.getMessage(), Toast.LENGTH_SHORT).show();
             if (registerModel.getRegisterData().length > 0 && registerModel.getRegisterData()[0].getUserID() > 0) {
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, registerModel.getRegisterData()[0].getUserID());
                 startMenuActivity();
