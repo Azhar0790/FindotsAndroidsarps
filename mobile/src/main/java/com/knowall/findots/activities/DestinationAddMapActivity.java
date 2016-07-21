@@ -119,7 +119,6 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
 
-    private GoogleApiClient client;
 
 
     @Override
@@ -147,6 +146,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
                 TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
                 userInputDialogTitle.setText(getResources().getString(R.string.add_destination));
+                userInputDialogEditText.setText(""+mStateOutput.toString().trim());
                 userInputDialogEditText.setHint(getResources().getString(R.string.destination_name));
                 alertDialogBuilderUserInput
                         .setCancelable(false)
