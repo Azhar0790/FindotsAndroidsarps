@@ -3,21 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/materialCalendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        app:paddingStart="10dp"
-        app:paddingEnd="10dp"
+        android:layout_marginBottom="5dp"
         app:mcv_showOtherDates="all"
-        app:mcv_arrowColor="@color/app_color"
-        app:mcv_selectionColor="@color/app_color"
-        app:mcv_headerTextAppearance="?android:attr/textAppearanceMedium"
+        app:mcv_arrowColor="@color/transparent"
         app:mcv_firstDayOfWeek="monday"
+        app:mcv_selectionColor="@color/blue"
         android:background="@color/white"
         />
 
