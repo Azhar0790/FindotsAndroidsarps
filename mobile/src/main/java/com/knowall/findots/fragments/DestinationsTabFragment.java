@@ -1,9 +1,6 @@
 package com.knowall.findots.fragments;
 
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +9,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
-import android.text.style.LineBackgroundSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 import com.knowall.findots.Constants;
@@ -30,14 +25,12 @@ import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
-import com.knowall.findots.utils.GeneralUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.WeekView;
 import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import org.joda.time.DateTime;
@@ -46,7 +39,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,13 +46,12 @@ import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
-/**
- * Created by parijathar on 7/4/2016.
- */
+
 public class DestinationsTabFragment extends Fragment implements IGetDestinations {
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
+    static String currnt_selected_dateTime="";
 
     MaterialCalendarView materialCalendarView = null;
 
@@ -72,6 +63,13 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         return destinationsTabFragment;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().register(this);
+    }
 
     @Nullable
     @Override
@@ -137,9 +135,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
-        String getTime = dateTime.toString(fmt1);
+        currnt_selected_dateTime = dateTime.toString(fmt1);
 
-        createScheduledUnscheduledListByDate(getTime);
+        createScheduledUnscheduledListByDate(currnt_selected_dateTime);
 
         DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPagerDestinations.setAdapter(pagerAdapter);
@@ -156,6 +154,26 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         Log.i(Constants.TAG, "onResume: DestinationsTabFragment");
         FinDotsApplication.getInstance().trackScreenView("Destination Map & List Fragment");
     }
+
+//    public void onEvent(AppEvents events) {
+//        Log.d("map","On Map event...");
+//        switch (events) {
+//
+//            case REFRESHTABVALUES:
+//                Log.d("map","refresh...");
+//                if (EventBus.getDefault().isRegistered(this))
+//                EventBus.getDefault().unregister(this);
+//                if(!(currnt_selected_dateTime.length()>0)) {
+//                    DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+//                    DateTime dateTime = new DateTime();
+//                    currnt_selected_dateTime = dateTime.toString(fmt1);
+//                }
+//                createScheduledUnscheduledListByDate(currnt_selected_dateTime);
+//                if (!EventBus.getDefault().isRegistered(this))
+//                EventBus.getDefault().register(this);
+//                break;
+//        }
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,7 +213,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         materialCalendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit();
         //materialCalendarView.goToNext();
         materialCalendarView.setSelectedDate(CalendarDay.today());
-
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -248,27 +265,26 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         // ------------------------------------
         SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
 
-        String dateTime = null;
+
         try{
-            dateTime = sdf4.format(d1);
+            currnt_selected_dateTime = sdf4.format(d1);
         }catch (Exception e){ e.printStackTrace(); }
 
-        createScheduledUnscheduledListByDate(dateTime);
+        createScheduledUnscheduledListByDate(currnt_selected_dateTime);
     }
 
-    public void createScheduledUnscheduledListByDate(String dateTime) {
+    public static void createScheduledUnscheduledListByDate(String dateTime) {
+
 
         String selectedDateFromCalendar = dateTime.substring(0, 10);
 
         String scheduleDate = null;
 
         int i = 0;
+
         for (DestinationData data: destinationDatas) {
             if (data.getScheduleDate().length() != 0) {
                 scheduleDate = data.getScheduleDate().substring(0, 10);
-
-                Log.i(Constants.TAG, scheduleDate+"\n"+selectedDateFromCalendar);
-
                 if (selectedDateFromCalendar.equals(scheduleDate)) {
                     destinationDatas[i].setScheduleDisplayStatus(true);
                 } else {
@@ -277,7 +293,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             } else {
                 destinationDatas[i].setScheduleDisplayStatus(true);
             }
-
             i++;
         }
 
@@ -285,7 +300,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
          *   pass event to MapFragment or DestinationFragment
          */
 
-        EventBus.getDefault().post(AppEvents.SCHEDULEDDATE);
+
+        EventBus.getDefault().post(AppEvents.SCHEDULEDDATEMAP);
+        EventBus.getDefault().post(AppEvents.SCHEDULEDDATELIST);
 
         //DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         //viewPagerDestinations.setAdapter(pagerAdapter);
@@ -293,6 +310,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     }
 
 
-
+    public void onDestroy() {
+        super.onDestroy();
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
+    }
 
 }

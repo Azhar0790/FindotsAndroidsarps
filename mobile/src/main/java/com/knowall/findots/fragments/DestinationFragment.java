@@ -87,18 +87,22 @@ public class DestinationFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
 //        EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
     @Nullable
@@ -124,6 +128,7 @@ public class DestinationFragment extends Fragment
 
         arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
         setAdapterForDestinations();
+
 
         return rootView;
     }
@@ -189,16 +194,20 @@ public class DestinationFragment extends Fragment
             DestinationData[] destinationDatas = destinationsModel.getDestinationData();
 
             DestinationsTabFragment.destinationDatas = destinationDatas;
-            EventBus.getDefault().post(AppEvents.REFRESHDESTINATIONS);
-
-            arrayListDestinations = sortDestinationsOnScheduleDate(destinationDatas);
-            setAdapterForDestinations();
+            DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.currnt_selected_dateTime);
+//            EventBus.getDefault().post(AppEvents.REFRESHTABVALUES);
+//            EventBus.getDefault().post(AppEvents.REFRESHDESTINATIONS);
+//
+//            arrayListDestinations = sortDestinationsOnScheduleDate(destinationDatas);
+//            Log.d("jomy","arrayListDestinations ss"+arrayListDestinations.size());
+//            setAdapterForDestinations();
         }
     }
 
     public void setAdapterForDestinations() {
         DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations, travelTime);
         destinationsAdapter.delegate = DestinationFragment.this;
+        Log.d("jomy","arrayListDestinations ssew"+arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
         destinationsAdapter.notifyDataSetChanged();
         layoutManager.onRestoreInstanceState(listViewState);
@@ -297,7 +306,7 @@ public class DestinationFragment extends Fragment
         });
 
         Collections.reverse(arrayListScheduleDate);
-
+        Log.d("jomy","arrayListUnScheduleDate Date size : "+arrayListScheduleDate.size());
         /**
          *    sorting of unscheduled arraylist
          *    based on Assign Destination Time
@@ -320,6 +329,8 @@ public class DestinationFragment extends Fragment
         });
 
         Collections.reverse(arrayListUnScheduleDate);
+
+        Log.d("jomy","arrayListUnScheduleDate Date size : "+arrayListUnScheduleDate.size());
 
         /**
          *   connect the google api client
@@ -346,6 +357,7 @@ public class DestinationFragment extends Fragment
          */
         arrayListScheduleDate.addAll(arrayListUnScheduleDate);
 
+        Log.d("jomy","Schedule Date size : "+arrayListScheduleDate.size());
         return arrayListScheduleDate;
     }
 
@@ -534,7 +546,6 @@ public class DestinationFragment extends Fragment
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
                 EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
-
                 Log.d("jomy", "callll checkout22...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
@@ -549,18 +560,20 @@ public class DestinationFragment extends Fragment
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
+
                 break;
 
-            case SCHEDULEDDATE:
-                EventBus.getDefault().cancelEventDelivery(event);
-                EventBus.getDefault().unregister(this);
-
+            case SCHEDULEDDATELIST:
+                Log.d("jomy","Change Date in event.");
+//                EventBus.getDefault().cancelEventDelivery(event);
+//              EventBus.getDefault().unregister(this);
+                Log.d("jomy","Change Date in event.");
                 Log.i(Constants.TAG, "REFRESHDESTINATIONS");
                 arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
                 setAdapterForDestinations();
 
-                if (!EventBus.getDefault().isRegistered(this))
-                    EventBus.getDefault().register(this);
+//                if (!EventBus.getDefault().isRegistered(this))
+//                    EventBus.getDefault().register(this);
                 break;
         }
     }

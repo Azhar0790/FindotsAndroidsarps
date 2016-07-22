@@ -22,10 +22,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.knowall.findots.R;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -300,7 +296,7 @@ public class GeneralUtils {
 
             if (date.length() != 0) {
 
-                SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd :mm:ss");
+                SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 sdfLocal.setTimeZone(TimeZone.getDefault());
                 Date mDate = sdfLocal.parse(date);
 
@@ -321,6 +317,7 @@ public class GeneralUtils {
             }
 
         } catch (Exception e) {
+            Log.d("jomy",e.getMessage());
             e.printStackTrace();
         }
         return checkedOutTime;

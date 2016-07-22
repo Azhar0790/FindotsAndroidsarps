@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
-import com.knowall.findots.fragments.DestinationFragment;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.AppStringConstants;
@@ -83,6 +82,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public int getItemCount() {
+        Log.d("jomy","destinationDatas ssew"+destinationDatas.size());
         return destinationDatas.size();
     }
 

@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,36 +36,25 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.knowall.findots.Constants;
-import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
-import com.knowall.findots.database.DataHelper;
-import com.knowall.findots.distancematrix.DistanceMatrixService;
-import com.knowall.findots.distancematrix.IDistanceMatrix;
-import com.knowall.findots.distancematrix.model.DistanceMatrix;
-import com.knowall.findots.distancematrix.model.Duration;
-import com.knowall.findots.distancematrix.model.Elements;
-import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
-import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
-import com.knowall.findots.restservice.RestClient;
 import com.knowall.findots.utils.GeneralUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import de.greenrobot.event.EventBus;
 
@@ -86,15 +74,22 @@ public class DestinationsMapFragment extends Fragment
 
     double currentLatitude, currentLongitude;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
+    ArrayList<DestinationData> arrayListDestinations = null;
 
     float mapKMTextSize = 24, kmTextSize = 15;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_map, null);
 
-        EventBus.getDefault().register(this);
 
         if (GeneralUtils.checkPlayServices(getActivity())) {
             // If this check succeeds, proceed with normal processing.
@@ -123,6 +118,7 @@ public class DestinationsMapFragment extends Fragment
     }
 
     ArrayList<DestinationData> arrayList = new ArrayList<>();
+
     /**
      * adding all the destinations to the map
      */
@@ -131,23 +127,26 @@ public class DestinationsMapFragment extends Fragment
         if (mGoogleMap != null)
             mGoogleMap.clear();
 
+        Log.d("map","Number ..");
         if (DestinationsTabFragment.destinationDatas != null) {
-
-            arrayList.clear();
-
-            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
-                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
-
+            if (arrayListDestinations != null)
+                arrayListDestinations.clear();
+            arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
+            Log.d("map","Number2 ..");
+                arrayList.clear();
+            for (DestinationData data : arrayListDestinations) {
+                Log.d("map","Number of Markers without if...");
+//                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
+                    Log.d("map","Number of Markers...");
                     arrayList.add(data);
                     LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
-
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.title(data.getDestinationName());
                     markerOptions.position(latLng);
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
 
                     mGoogleMap.addMarker(markerOptions).showInfoWindow();
-                }
+//                }
             }
         }
 
@@ -363,9 +362,10 @@ public class DestinationsMapFragment extends Fragment
 
 
     public void onEvent(AppEvents events) {
+        Log.d("map","On Map event...");
         switch (events) {
             case REFRESHDESTINATIONS:
-                EventBus.getDefault().cancelEventDelivery(events);
+//                EventBus.getDefault().cancelEventDelivery(events);
                 EventBus.getDefault().unregister(this);
 
                 Log.i(Constants.TAG, "REFRESHDESTINATIONS");
@@ -377,23 +377,23 @@ public class DestinationsMapFragment extends Fragment
                     EventBus.getDefault().register(this);
                 break;
 
-            case SCHEDULEDDATE:
-                EventBus.getDefault().cancelEventDelivery(events);
-                EventBus.getDefault().unregister(this);
-
-                Log.i(Constants.TAG, "REFRESHDESTINATIONS");
+            case SCHEDULEDDATEMAP:
+                Log.d("map","On Map event...");
+//                EventBus.getDefault().unregister(this);
+//                EventBus.getDefault().cancelEventDelivery(events);
                 fetchCurrentLocation();
                 addAllDestinationsOnMap();
                 showAllMarkers();
 
-                if (!EventBus.getDefault().isRegistered(this))
-                    EventBus.getDefault().register(this);
+//                if (!EventBus.getDefault().isRegistered(this))
+//                    EventBus.getDefault().register(this);
                 break;
         }
     }
 
     public Bitmap drawTravelTimeOnMapMarker(boolean isCheckIn, boolean isCheckOut, double destinationLatitude, double destinationLongitude) {
 
+        Log.d("jomy","Map...inside Data Draw...");
         float[] distance = new float[2];
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
 
@@ -412,11 +412,11 @@ public class DestinationsMapFragment extends Fragment
         } else if (!isCheckOut) {
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
+                    R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
         } else {
             // CheckOut
             bm = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
+                    R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
         }
 
         Canvas canvas = new Canvas(bm);
@@ -484,9 +484,11 @@ public class DestinationsMapFragment extends Fragment
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         DestinationsTabFragment.destinationDatas = destinationsModel.getDestinationData();
-        fetchCurrentLocation();
-        addAllDestinationsOnMap();
-        showAllMarkers();
+        DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.currnt_selected_dateTime);
+//        EventBus.getDefault().post(AppEvents.REFRESHTABVALUES);
+//        fetchCurrentLocation();
+//        addAllDestinationsOnMap();
+//        showAllMarkers();
     }
 
     @Override
@@ -507,4 +509,107 @@ public class DestinationsMapFragment extends Fragment
 
     }
 
+    public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
+        ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
+        arrayListScheduleDate.clear();
+
+        ArrayList<DestinationData> arrayListUnScheduleDate = new ArrayList<>();
+        arrayListUnScheduleDate.clear();
+
+        /**
+         *   dividing scheduled and unscheduled arraylist of destinations
+         */
+        for (DestinationData data : destinationDatas) {
+            if (data.getScheduleDate().length() != 0) {
+                if (data.isScheduleDisplayStatus())
+                    arrayListScheduleDate.add(data);
+            } else {
+                arrayListUnScheduleDate.add(data);
+            }
+        }
+
+
+        /**
+         *    sorting of scheduled arraylist
+         *    based on Schedule Date
+         */
+        Collections.sort(arrayListScheduleDate, new Comparator<DestinationData>() {
+            @Override
+            public int compare(DestinationData lhs, DestinationData rhs) {
+
+                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getScheduleDate());
+                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getScheduleDate());
+
+                if (d1 == null || d2 == null)
+                    return 0;
+
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.reverse(arrayListScheduleDate);
+        Log.d("jomy", "arrayListUnScheduleDate Date size : " + arrayListScheduleDate.size());
+        /**
+         *    sorting of unscheduled arraylist
+         *    based on Assign Destination Time
+         */
+        Collections.sort(arrayListUnScheduleDate, new Comparator<DestinationData>() {
+            @Override
+            public int compare(DestinationData lhs, DestinationData rhs) {
+
+                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
+                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
+                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
+
+                if (d1 == null || d2 == null)
+                    return 0;
+
+                return d1.compareTo(d2);
+            }
+        });
+
+        Collections.reverse(arrayListUnScheduleDate);
+
+        Log.d("jomy", "arrayListUnScheduleDate Date size : " + arrayListUnScheduleDate.size());
+
+        /**
+         *   connect the google api client
+         */
+        try {
+            mGoogleApiClient.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /**
+         *   setting schedule status
+         */
+        if (arrayListScheduleDate.size() > 0) {
+            arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
+        }
+
+        if (arrayListUnScheduleDate.size() > 0) {
+            arrayListUnScheduleDate.get(0).setScheduledStatus("unscheduled");
+        }
+
+        /**
+         *   adding all the arraylist
+         */
+        arrayListScheduleDate.addAll(arrayListUnScheduleDate);
+
+        Log.d("jomy", "Schedule Date size maap: " + arrayListScheduleDate.size());
+        return arrayListScheduleDate;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+    }
 }
