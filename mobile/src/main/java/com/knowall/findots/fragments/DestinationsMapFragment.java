@@ -79,7 +79,7 @@ public class DestinationsMapFragment extends Fragment
         IGetDestinations,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
-        LocationListener{
+        LocationListener {
 
     GoogleMap mGoogleMap = null;
     GoogleApiClient mGoogleApiClient = null;
@@ -122,20 +122,32 @@ public class DestinationsMapFragment extends Fragment
         showAllMarkers();
     }
 
+    ArrayList<DestinationData> arrayList = new ArrayList<>();
     /**
      * adding all the destinations to the map
      */
     public void addAllDestinationsOnMap() {
+
+        if (mGoogleMap != null)
+            mGoogleMap.clear();
+
         if (DestinationsTabFragment.destinationDatas != null) {
+
+            arrayList.clear();
+
             for (DestinationData data : DestinationsTabFragment.destinationDatas) {
-                LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
+                if (data.getScheduleDate().length() != 0) {
 
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.title(data.getDestinationName());
-                markerOptions.position(latLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
+                    arrayList.add(data);
+                    LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
 
-                mGoogleMap.addMarker(markerOptions).showInfoWindow();
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.title(data.getDestinationName());
+                    markerOptions.position(latLng);
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
+
+                    mGoogleMap.addMarker(markerOptions).showInfoWindow();
+                }
             }
         }
 
@@ -159,11 +171,14 @@ public class DestinationsMapFragment extends Fragment
                     int increment = 0;
                     boolean foundDestination = false;
                     for (DestinationData data : DestinationsTabFragment.destinationDatas) {
-                        if (data.getDestinationName().equals(marker.getTitle())) {
-                            if (data.getDestinationLatitude() == marker.getPosition().latitude &&
-                                    data.getDestinationLongitude() == marker.getPosition().longitude) {
-                                foundDestination = true;
-                                break;
+
+                        if (data.getScheduleDate().length() != 0) {
+                            if (data.getDestinationName().equals(marker.getTitle())) {
+                                if (data.getDestinationLatitude() == marker.getPosition().latitude &&
+                                        data.getDestinationLongitude() == marker.getPosition().longitude) {
+                                    foundDestination = true;
+                                    break;
+                                }
                             }
                         }
                         increment++;
@@ -183,20 +198,20 @@ public class DestinationsMapFragment extends Fragment
      * @param itemPosition position from the destination list
      */
     public void callDetailDestinationActivity(int itemPosition) {
-        String address = DestinationsTabFragment.destinationDatas[itemPosition].getAddress();
-        boolean checkedIn = DestinationsTabFragment.destinationDatas[itemPosition].isCheckedIn();
-        boolean checkedOut = DestinationsTabFragment.destinationDatas[itemPosition].isCheckedOut();
-        int checkInRadius = DestinationsTabFragment.destinationDatas[itemPosition].getCheckInRadius();
-        String destinationName = DestinationsTabFragment.destinationDatas[itemPosition].getDestinationName();
-        int assignDestinationID = DestinationsTabFragment.destinationDatas[itemPosition].getAssignDestinationID();
-        int destinationID = DestinationsTabFragment.destinationDatas[itemPosition].getDestinationID();
-        double destinationLatitude = DestinationsTabFragment.destinationDatas[itemPosition].getDestinationLatitude();
-        double destinationLongitude = DestinationsTabFragment.destinationDatas[itemPosition].getDestinationLongitude();
-        String checkedOutReportedDate = DestinationsTabFragment.destinationDatas[itemPosition].getCheckedOutReportedDate();
-        boolean isEditable = DestinationsTabFragment.destinationDatas[itemPosition].isEditable();
-        boolean isRequireApproval = DestinationsTabFragment.destinationDatas[itemPosition].isRequiresApproval();
+        String address = arrayList.get(itemPosition).getAddress();
+        boolean checkedIn = arrayList.get(itemPosition).isCheckedIn();
+        boolean checkedOut = arrayList.get(itemPosition).isCheckedOut();
+        int checkInRadius = arrayList.get(itemPosition).getCheckInRadius();
+        String destinationName = arrayList.get(itemPosition).getDestinationName();
+        int assignDestinationID = arrayList.get(itemPosition).getAssignDestinationID();
+        int destinationID = arrayList.get(itemPosition).getDestinationID();
+        double destinationLatitude = arrayList.get(itemPosition).getDestinationLatitude();
+        double destinationLongitude = arrayList.get(itemPosition).getDestinationLongitude();
+        String checkedOutReportedDate = arrayList.get(itemPosition).getCheckedOutReportedDate();
+        boolean isEditable = arrayList.get(itemPosition).isEditable();
+        boolean isRequireApproval = arrayList.get(itemPosition).isRequiresApproval();
 
-        String  scheduleDate = DestinationsTabFragment.destinationDatas[itemPosition].getScheduleDate();
+        String scheduleDate = arrayList.get(itemPosition).getScheduleDate();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
         intentDetailDestination.putExtra("address", address);
@@ -218,14 +233,14 @@ public class DestinationsMapFragment extends Fragment
 
     /**
      * creating bounds to zoomToFit all the destinations
-     *
      */
     public LatLngBounds getCenterCoordinates() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         if (DestinationsTabFragment.destinationDatas != null)
             for (DestinationData data : DestinationsTabFragment.destinationDatas)
-                builder.include(new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude()));
+                if (data.getScheduleDate().length() != 0)
+                    builder.include(new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude()));
 
         builder.include(new LatLng(currentLatitude, currentLongitude));
 
@@ -264,7 +279,7 @@ public class DestinationsMapFragment extends Fragment
         if (location != null) {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-            Log.i(Constants.TAG, "fetchCurrentLocation: location manager = "+currentLatitude+","+currentLongitude);
+            Log.i(Constants.TAG, "fetchCurrentLocation: location manager = " + currentLatitude + "," + currentLongitude);
         } else {
             /**
              *   call Google api client to fetch current location
@@ -280,7 +295,7 @@ public class DestinationsMapFragment extends Fragment
     }
 
     /**
-     *   builds Google Api client
+     * builds Google Api client
      */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -311,7 +326,7 @@ public class DestinationsMapFragment extends Fragment
         if (location != null) {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-            try{
+            try {
                 LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -412,19 +427,22 @@ public class DestinationsMapFragment extends Fragment
         Log.i(Constants.TAG, "onActivityResult..//");
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
-            if (resultCode == getActivity().RESULT_OK && data.getStringExtra("result").equals("success")) {
+
+            if (resultCode == getActivity().RESULT_OK && (data.getStringExtra("result").equals("success") ||
+                    data.getStringExtra("result").equals("renamedDestination") ||
+                    data.getStringExtra("result").equals("deletedDestination"))) {
+
                 Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall");
                 GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationsMapFragment.this;
                 destinationsRestCall.callGetDestinations();
-            } else if(resultCode == 3)
-            {
-                Log.d("jomy","check...");
+
+            } else if (resultCode == 3) {
+                Log.d("jomy", "check...");
                 GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationsMapFragment.this;
                 destinationsRestCall.callGetDestinations();
-            }
-            else {
+            } else {
                 Log.i(Constants.TAG, "onActivityResult..//  else block..");
             }
         } else {

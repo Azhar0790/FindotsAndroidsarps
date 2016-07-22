@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FinDots</string>
+    <string name="app_name">Findots</string>
 
     <!-- for distance matrix -->
     <string name="server_key">AIzaSyANsVoGajWyTt3nBxWw_6P5sAY-duYUO3E</string>

@@ -8,7 +8,7 @@ public class RestURLs {
     /**
      *   development url
      */
-//    public static final String BASE_URL = "http://182.73.82.185/Findots/API/";
+    //public static final String BASE_URL = "http://182.73.82.185/Findots/API/";
     /**
      *   production url
      */

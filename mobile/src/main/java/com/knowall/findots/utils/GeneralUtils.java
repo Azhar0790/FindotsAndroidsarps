@@ -276,11 +276,12 @@ public class GeneralUtils {
             DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
             DateTime startTime = fmt.parseDateTime(date);
 
+
             int hour = startTime.getHourOfDay();
             int minute = startTime.getMinuteOfHour();
             String meridian = (hour > 12)? POST_MERIDIAN : ANTE_MERIDIAN;
 
-            checkedOutTime = hour+"."+minute+meridian;
+            checkedOutTime = hour+"."+minute;
         } else {
             checkedOutTime = "";
         }

@@ -42,10 +42,20 @@ public class DestinationData {
 
     private String scheduleDate;
 
+    private boolean scheduleDisplayStatus = false;
+
     private String scheduledStatus = null;
 
     public String getScheduledStatus() {
         return scheduledStatus;
+    }
+
+    public boolean isScheduleDisplayStatus() {
+        return scheduleDisplayStatus;
+    }
+
+    public void setScheduleDisplayStatus(boolean scheduleDisplayStatus) {
+        this.scheduleDisplayStatus = scheduleDisplayStatus;
     }
 
     public void setScheduledStatus(String scheduledStatus) {

@@ -25,41 +25,44 @@ public class DistanceMatrixService {
     Context context = null;
     String units = "metric";
 
-    public DistanceMatrixService(Context context) {
-        this.context = context;
+    public DistanceMatrixService() {
+
     }
 
-    public void callDistanceMatrixService(String origins, String destinations) {
+    public void callDistanceMatrixService(Context context, String origins, String destinations) {
 
         //GeneralUtils.initialize_progressbar(context);
+        if (context == null) {
+            delegate.onDistanceMatrixFailure();
+        } else {
 
-        Call<DistanceMatrix> call = FinDotsApplication.getRestClient().getApiService()
-                .distanceMatrix(DistanceMatrixURL.MethodName_DISTANCEMATRIX, units,
-                        context.getString(R.string.server_key),
-                        origins,
-                        destinations);
+            Call<DistanceMatrix> call = FinDotsApplication.getRestClient().getApiService()
+                    .distanceMatrix(DistanceMatrixURL.MethodName_DISTANCEMATRIX, units,
+                            context.getString(R.string.server_key),
+                            origins,
+                            destinations);
 
-        call.enqueue(new Callback<DistanceMatrix>() {
-            @Override
-            public void onResponse(Response<DistanceMatrix> response, Retrofit retrofit) {
-                //GeneralUtils.stop_progressbar();
+            call.enqueue(new Callback<DistanceMatrix>() {
+                @Override
+                public void onResponse(Response<DistanceMatrix> response, Retrofit retrofit) {
+                    //GeneralUtils.stop_progressbar();
 
-                if (response.isSuccess()) {
-                    DistanceMatrix distanceMatrix = response.body();
-                    delegate.onDistanceMatrixSuccess(distanceMatrix);
-                } else {
+                    if (response.isSuccess()) {
+                        DistanceMatrix distanceMatrix = response.body();
+                        delegate.onDistanceMatrixSuccess(distanceMatrix);
+                    } else {
+                        delegate.onDistanceMatrixFailure();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    //GeneralUtils.stop_progressbar();
                     delegate.onDistanceMatrixFailure();
                 }
-            }
+            });
 
-            @Override
-            public void onFailure(Throwable t) {
-                //GeneralUtils.stop_progressbar();
-                delegate.onDistanceMatrixFailure();
-            }
-        });
-
-
+        }
     }
 
 }
