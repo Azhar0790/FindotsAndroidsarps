@@ -284,7 +284,7 @@ public class DestinationFragment extends Fragment
             public int compare(DestinationData lhs, DestinationData rhs) {
 
                 //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
                 DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getScheduleDate());
                 DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getScheduleDate());
@@ -307,7 +307,7 @@ public class DestinationFragment extends Fragment
             public int compare(DestinationData lhs, DestinationData rhs) {
 
                 //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
                 DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
                 DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
@@ -549,6 +549,18 @@ public class DestinationFragment extends Fragment
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
                 destinationsRestCall.delegate = DestinationFragment.this;
                 destinationsRestCall.callGetDestinations();
+                break;
+
+            case SCHEDULEDDATE:
+                EventBus.getDefault().cancelEventDelivery(event);
+                EventBus.getDefault().unregister(this);
+
+                Log.i(Constants.TAG, "REFRESHDESTINATIONS");
+                arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
+                setAdapterForDestinations();
+
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
                 break;
         }
     }

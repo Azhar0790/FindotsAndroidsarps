@@ -25,6 +25,7 @@ import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DestinationAddMapActivity;
 import com.knowall.findots.adapters.DestinationsPagerAdapter;
+import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
@@ -50,6 +51,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by parijathar on 7/4/2016.
@@ -278,8 +281,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             i++;
         }
 
-        DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
-        viewPagerDestinations.setAdapter(pagerAdapter);
+        /**
+         *   pass event to MapFragment or DestinationFragment
+         */
+
+        EventBus.getDefault().post(AppEvents.SCHEDULEDDATE);
+
+        //DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
+        //viewPagerDestinations.setAdapter(pagerAdapter);
 
     }
 

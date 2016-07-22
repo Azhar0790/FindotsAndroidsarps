@@ -136,7 +136,7 @@ public class DestinationsMapFragment extends Fragment
             arrayList.clear();
 
             for (DestinationData data : DestinationsTabFragment.destinationDatas) {
-                if (data.getScheduleDate().length() != 0) {
+                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
 
                     arrayList.add(data);
                     LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
@@ -159,20 +159,20 @@ public class DestinationsMapFragment extends Fragment
     public void showAllMarkers() {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = 50;
+        int padding = 150;
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
-                (width - 300), (height - 300), padding));
+                /*(width - 300), (height - 300),*/ padding));
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 if (DestinationsTabFragment.destinationDatas != null) {
-                    int increment = 0;
-                    boolean foundDestination = false;
-                    for (DestinationData data : DestinationsTabFragment.destinationDatas) {
 
-                        if (data.getScheduleDate().length() != 0) {
+                    boolean foundDestination = false;
+                    /*for (DestinationData data : DestinationsTabFragment.destinationDatas) {
+
+                        if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
                             if (data.getDestinationName().equals(marker.getTitle())) {
                                 if (data.getDestinationLatitude() == marker.getPosition().latitude &&
                                         data.getDestinationLongitude() == marker.getPosition().longitude) {
@@ -182,6 +182,20 @@ public class DestinationsMapFragment extends Fragment
                             }
                         }
                         increment++;
+                    }*/
+
+                    int increment = 0;
+                    if (arrayList != null) {
+                        for (DestinationData data : arrayList) {
+                            if (data.getDestinationName().equals(marker.getTitle())) {
+                                if (data.getDestinationLatitude() == marker.getPosition().latitude &&
+                                        data.getDestinationLongitude() == marker.getPosition().longitude) {
+                                    foundDestination = true;
+                                    break;
+                                }
+                            }
+                            increment++;
+                        }
                     }
 
                     if (foundDestination)
@@ -237,10 +251,13 @@ public class DestinationsMapFragment extends Fragment
     public LatLngBounds getCenterCoordinates() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        if (DestinationsTabFragment.destinationDatas != null)
-            for (DestinationData data : DestinationsTabFragment.destinationDatas)
-                if (data.getScheduleDate().length() != 0)
+        if (DestinationsTabFragment.destinationDatas != null) {
+            for (DestinationData data : DestinationsTabFragment.destinationDatas) {
+                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
                     builder.include(new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude()));
+                }
+            }
+        }
 
         builder.include(new LatLng(currentLatitude, currentLongitude));
 
@@ -356,7 +373,21 @@ public class DestinationsMapFragment extends Fragment
                 addAllDestinationsOnMap();
                 showAllMarkers();
 
-                EventBus.getDefault().register(this);
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
+                break;
+
+            case SCHEDULEDDATE:
+                EventBus.getDefault().cancelEventDelivery(events);
+                EventBus.getDefault().unregister(this);
+
+                Log.i(Constants.TAG, "REFRESHDESTINATIONS");
+                fetchCurrentLocation();
+                addAllDestinationsOnMap();
+                showAllMarkers();
+
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
                 break;
         }
     }

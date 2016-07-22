@@ -1,5 +1,7 @@
 package com.knowall.findots.restcalls.destinations;
 
+import com.knowall.findots.utils.GeneralUtils;
+
 import org.parceler.Parcel;
 
 /**
@@ -63,7 +65,7 @@ public class DestinationData {
     }
 
     public String getScheduleDate() {
-        return scheduleDate;
+        return GeneralUtils.dateTimeInUTCToLocal(scheduleDate);
     }
 
     public void setScheduleDate(String scheduleDate) {
@@ -119,7 +121,7 @@ public class DestinationData {
     }
 
     public String getCheckedOutReportedDate() {
-        return checkedOutReportedDate;
+        return GeneralUtils.dateTimeInUTCToLocal(checkedOutReportedDate);
     }
 
     public void setCheckedOutReportedDate(String checkedOutReportedDate) {
@@ -135,7 +137,7 @@ public class DestinationData {
     }
 
     public String getAssigndestinationTime() {
-        return assigndestinationTime;
+        return GeneralUtils.dateTimeInUTCToLocal(assigndestinationTime);
     }
 
     public void setAssigndestinationTime(String assigndestinationTime) {
