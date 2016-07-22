@@ -139,7 +139,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             String scheduledTime = null;
             String scheduleDate = destinationDatas.get(position).getScheduleDate();
             if (scheduleDate.length() != 0) {
-                scheduledTime = scheduledAt+ " " + GeneralUtils.getCheckedOutTime(scheduleDate);
+                scheduledTime = scheduledAt+ " " + GeneralUtils.getTimeOnly(scheduleDate);
             } else {
                 scheduledTime = "Not Scheduled";
             }
@@ -194,7 +194,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                 holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
                 holder.mLinearLayout_checkIncheckOut.setEnabled(false);
                 holder.mButton_checkIncheckOut.setEnabled(false);
-                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + GeneralUtils.getCheckedOutTime(checkedOutTime));
+                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + GeneralUtils.getTimeOnly(checkedOutTime));
                 holder.mButton_checkIncheckOut.setCompoundDrawables(
                         GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                         null, null, null);

@@ -6,5 +6,6 @@ package com.knowall.findots.events;
 public enum AppEvents {
     OFFLINECHECKIN,
     OFFLINECHECKOUT,
-    REFRESHDESTINATIONS
+    REFRESHDESTINATIONS,
+    SCHEDULEDDATE
 }

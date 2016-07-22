@@ -39,8 +39,7 @@ import java.util.regex.Pattern;
  */
 public class GeneralUtils {
 
-    public static String DateTimeInUTC()
-    {
+    public static String DateTimeInUTC() {
         SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -54,17 +53,15 @@ public class GeneralUtils {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = formatter.parse(strDate);
             SimpleDateFormat sdfUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdfUTC .setTimeZone(TimeZone.getTimeZone("UTC"));
-            String sDateInUTC = sdfUTC .format(date);
+            sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String sDateInUTC = sdfUTC.format(date);
             return sDateInUTC;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
         }
         return "";
     }
 
-    public static String dateTimeInGMT()
-    {
+    public static String dateTimeInGMT() {
         SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
@@ -80,16 +77,14 @@ public class GeneralUtils {
             Date date = formatter.parse(strDate);
             SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sdfLocal.setTimeZone(TimeZone.getDefault());
-            String sDateInLocal = sdfLocal .format(date);
+            String sDateInLocal = sdfLocal.format(date);
             return sDateInLocal;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
         }
         return "";
     }
 
-    public static String dateTimeUTC_toLocale(String utcTime)
-    {
+    public static String dateTimeUTC_toLocale(String utcTime) {
         try {
             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -100,45 +95,43 @@ public class GeneralUtils {
             destFormat.setTimeZone(tz);
 
             return destFormat.format(parsed);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 
         }
         return "";
     }
-    public static String LatLongToAddress(Double latitude,Double longitude,Context context)
-    {
+
+    public static String LatLongToAddress(Double latitude, Double longitude, Context context) {
         Geocoder geocoder;
         List<Address> addresses;
         geocoder = new Geocoder(context, Locale.getDefault());
-        String address="";
+        String address = "";
         Log.d("jomy", "addr111 : ");
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-            String addressLine1=addresses.get(0).getAddressLine(0);
-            if(addressLine1!=null)
-                address =address+" "+addressLine1;
-            String addressLine2=addresses.get(0).getAddressLine(1);
-            if(addressLine2!=null)
-                address =address+" "+addressLine2;
-            String Street=addresses.get(0).getLocality();
-            if(Street!=null)
-                address =address+" "+Street;
-            String state=addresses.get(0).getAdminArea();
-            if(state!=null)
-                address =address+" "+state;
-            String country=addresses.get(0).getCountryName();
-            if(country!=null)
-                address =address+" "+country;
-            String postalCode =addresses.get(0).getPostalCode();
-            if(postalCode!=null)
-                address =address+" "+postalCode;
+            String addressLine1 = addresses.get(0).getAddressLine(0);
+            if (addressLine1 != null)
+                address = address + " " + addressLine1;
+            String addressLine2 = addresses.get(0).getAddressLine(1);
+            if (addressLine2 != null)
+                address = address + " " + addressLine2;
+            String Street = addresses.get(0).getLocality();
+            if (Street != null)
+                address = address + " " + Street;
+            String state = addresses.get(0).getAdminArea();
+            if (state != null)
+                address = address + " " + state;
+            String country = addresses.get(0).getCountryName();
+            if (country != null)
+                address = address + " " + country;
+            String postalCode = addresses.get(0).getPostalCode();
+            if (postalCode != null)
+                address = address + " " + postalCode;
+        } catch (Exception e) {
         }
-        catch (Exception e){}
 
-        Log.d("jomy", "addr2 : "+address);
+        Log.d("jomy", "addr2 : " + address);
         return address;
     }
 
@@ -198,6 +191,7 @@ public class GeneralUtils {
 
         return matcherObj_email.matches();
     }
+
     public static String getUniqueDeviceId(Context context) {
         String myAndroidDeviceId = "";
         TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -220,7 +214,7 @@ public class GeneralUtils {
     }
 
     public static String getAppVersion(Context context) {
-        String  versionCode="" ;
+        String versionCode = "";
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             String versionName = packageInfo.versionName;
@@ -231,72 +225,49 @@ public class GeneralUtils {
         }
         return versionCode;
     }
-    public static String getSharedPreferenceString(Context context,String prefKey) {
+
+    public static String getSharedPreferenceString(Context context, String prefKey) {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String preferenceVal = pref.getString(prefKey,"");
+        String preferenceVal = pref.getString(prefKey, "");
         return preferenceVal;
     }
-    public static int getSharedPreferenceInt(Context context,String prefKey) {
+
+    public static int getSharedPreferenceInt(Context context, String prefKey) {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        int preferenceVal = pref.getInt(prefKey,-1);
+        int preferenceVal = pref.getInt(prefKey, -1);
         return preferenceVal;
     }
-    public static void setSharedPreferenceString(Context context,String prefKey,String prefVal) {
+
+    public static void setSharedPreferenceString(Context context, String prefKey, String prefVal) {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         pref.edit().putString(prefKey, prefVal).apply();
 
     }
-    public static void setSharedPreferenceInt(Context context,String prefKey,int prefVal) {
+
+    public static void setSharedPreferenceInt(Context context, String prefKey, int prefVal) {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         pref.edit().putInt(prefKey, prefVal).apply();
 
     }
 
-    public static void removeSharedPreference(Context context,String prefkey)
-    {
+    public static void removeSharedPreference(Context context, String prefkey) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         pref.edit().remove(prefkey).commit();
     }
 
-    /**
-     *  get Checked Out Time
-     * @param date
-     */
-    final static String ANTE_MERIDIAN = "am";
-    final static String POST_MERIDIAN = "pm";
-
-    public static String getCheckedOutTime(String date) {
-        String checkedOutTime = null;
-
-        if (date.length() != 0) {
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-            DateTime startTime = fmt.parseDateTime(date);
-
-
-            int hour = startTime.getHourOfDay();
-            int minute = startTime.getMinuteOfHour();
-            String meridian = (hour > 12)? POST_MERIDIAN : ANTE_MERIDIAN;
-
-            checkedOutTime = hour+"."+minute;
-        } else {
-            checkedOutTime = "";
-        }
-
-        return checkedOutTime;
-    }
 
     public static Drawable scaleDrawable(Drawable drawable, int width, int height) {
 
         int wi = drawable.getIntrinsicWidth();
         int hi = drawable.getIntrinsicHeight();
         int dimDiff = Math.abs(wi - width) - Math.abs(hi - height);
-        float scale = (dimDiff > 0) ? width / (float)wi : height /
-                (float)hi;
-        Rect bounds = new Rect(0, 0, (int)(scale * wi), (int)(scale * hi));
+        float scale = (dimDiff > 0) ? width / (float) wi : height /
+                (float) hi;
+        Rect bounds = new Rect(0, 0, (int) (scale * wi), (int) (scale * hi));
         drawable.setBounds(bounds);
         return drawable;
     }
@@ -316,6 +287,43 @@ public class GeneralUtils {
             return false;
         }
         return true;
+    }
+
+
+    public static String getTimeOnly(String date) {
+
+        String checkedOutTime = null;
+
+        try {
+            final String ANTE_MERIDIAN = "am";
+            final String POST_MERIDIAN = "pm";
+
+            if (date.length() != 0) {
+
+                SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd :mm:ss");
+                sdfLocal.setTimeZone(TimeZone.getDefault());
+                Date mDate = sdfLocal.parse(date);
+
+                SimpleDateFormat sdf12HourFormat = new SimpleDateFormat("hh:mm aa");
+                //sdf12HourFormat.setTimeZone(TimeZone.getDefault());
+                checkedOutTime = sdf12HourFormat.format(mDate);
+
+                //long time = mDate.getTime();
+                //checkedOutTime = String.valueOf(time);
+
+                //int hour = mDate.getHours();
+                //int minute = mDate.getMinutes();
+                //String meridian = (hour > 12) ? POST_MERIDIAN : ANTE_MERIDIAN;
+
+                //checkedOutTime = hour + "." + minute + meridian;
+            } else {
+                checkedOutTime = "";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return checkedOutTime;
     }
 
 }
