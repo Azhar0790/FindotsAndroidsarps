@@ -3,6 +3,8 @@ package com.knowall.findots.restcalls.checkInCheckOut;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
@@ -39,9 +41,9 @@ public class CheckInCheckOutRestCall {
         this.context = context;
     }
 
-    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID,double lattitude,double longitude) {
+    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID, double lattitude, double longitude) {
         this.assignedDestinationID = assignedDestinationID;
-        currentLatitude =lattitude;
+        currentLatitude = lattitude;
         currentLongitude = longitude;
         GeneralUtils.initialize_progressbar(context);
 
@@ -59,7 +61,7 @@ public class CheckInCheckOutRestCall {
             @Override
             public void onResponse(Response<CheckInCheckOutModel> response, Retrofit retrofit) {
                 GeneralUtils.stop_progressbar();
-                if(response.body()!=null) {
+                if (response.body() != null) {
                     if (response.isSuccess()) {
                         delegate.onCheckInSuccess();
                     } else {
@@ -69,8 +71,7 @@ public class CheckInCheckOutRestCall {
                             delegate.onCheckInFailure(context.getString(R.string.checkout_failed));
                         }
                     }
-                }
-                else
+                } else
                     delegate.onCheckInFailure(context.getString(R.string.data_error));
             }
 
@@ -78,11 +79,15 @@ public class CheckInCheckOutRestCall {
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
                 if (!NetworkChangeReceiver.isNetworkAvailable(context)) {
+                    Log.d("jomy","No inter");
                     checkIn checkInData = checkIn.getInstance(assignedDestinationID, reportedTime, currentLatitude, currentLongitude, isCheckIn);
                     DataHelper dataHelper = DataHelper.getInstance(context);
                     dataHelper.saveCheckInOut(checkInData);
+                    delegate.onCheckInFailure(context.getString(R.string.noInternet));
+                } else {
+                    Toast.makeText(context, context.getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+//                    delegate.onCheckInFailure(context.getString(R.string.data_error));
                 }
-                delegate.onCheckInFailure(context.getString(R.string.failed));
             }
         });
     }
@@ -97,9 +102,7 @@ public class CheckInCheckOutRestCall {
         try {
             currentLatitude = location.getLatitude();
             currentLongitude = location.getLongitude();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             currentLatitude = 12.777;
             currentLongitude = 77.896;
         }
