@@ -67,10 +67,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -219,7 +215,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         checkedOutReportedDate = bundle.getString("checkedOutReportedDate");
         checkInRadius = (double) bundle.getInt("checkInRadius");
         isEditable = bundle.getBoolean("editable");
-        isRequiresApproval = bundle.getBoolean("scheduleDate");
+        isRequiresApproval = bundle.getBoolean("requireApproval");
         scheduleDate = bundle.getString("scheduleDate");
 
         Log.d("jomy", "Schedule Date2 : " + scheduleDate);
@@ -260,7 +256,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
             mLinearLayout_checkIncheckOut.setEnabled(false);
             mButton_checkIncheckOut.setEnabled(false);
-            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at) + " " + GeneralUtils.getCheckedOutTime(checkedOutReportedDate));
+            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at) + " " + GeneralUtils.getTimeOnly(checkedOutReportedDate));
             mButton_checkIncheckOut.setCompoundDrawables(
                     GeneralUtils.scaleDrawable(getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
@@ -564,9 +560,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             checkedOut = true;
             //offlineCheckInCheckOutStatus = "checkedOut";
 
-            DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-            DateTime dateTime = new DateTime();
-            String getTime = dateTime.toString(fmt1);
+            String getTime=GeneralUtils.DateTimeInUTC();
+            getTime=GeneralUtils.dateTimeInUTCToLocal(getTime);
             checkedOutReportedDate = getTime;
             offlineCheckInCheckOutStatus = checkedOutReportedDate;
         }
@@ -648,8 +643,32 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     }
 
                     if (item.getItemId() == R.id.item3) {
-                        deleteAssigned_destinationRequest();
-                    }
+
+                        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
+                        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
+
+                        alertDialogBuilderUserInput.setMessage("" + getResources().getString(R.string.delete_destinationalert)+""+destinationName);
+
+
+                        alertDialogBuilderUserInput
+                                .setCancelable(false)
+                                .setPositiveButton("" + getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        deleteAssigned_destinationRequest();
+                                    }
+                                })
+
+                                .setNegativeButton("" + getResources().getString(R.string.cancel),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialogBox, int id) {
+                                                dialogBox.cancel();
+                                            }
+                                        });
+
+                        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                        alertDialogAndroid.show();
+
+                }
 
                     if (item.getItemId() == R.id.item1) {
 

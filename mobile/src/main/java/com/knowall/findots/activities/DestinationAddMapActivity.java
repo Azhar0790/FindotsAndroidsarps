@@ -52,6 +52,8 @@ import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.MaterialDatePickerDialogCustom;
+import com.knowall.findots.utils.MaterialTimePickerDialogCustom;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -72,7 +74,7 @@ import retrofit.Retrofit;
 /**
  * Created by jpaulose on 7/6/2016.
  */
-public class DestinationAddMapActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class DestinationAddMapActivity extends AppCompatActivity implements MaterialDatePickerDialogCustom.OnDateScheduledListener, MaterialTimePickerDialogCustom.OnTimeScheduledListener,OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
         TimePickerDialog.OnTimeSetListener,
@@ -146,8 +148,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
                 final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
                 TextView userInputDialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
                 userInputDialogTitle.setText(getResources().getString(R.string.add_destination));
-                if(mStateOutput!=null && mStateOutput.length()>0)
-                userInputDialogEditText.setText(""+mStateOutput.toString().trim());
+                if(mAreaOutput!=null && mAreaOutput.length()>0)
+                userInputDialogEditText.setText(""+mAreaOutput.toString().trim());
                 userInputDialogEditText.setHint(getResources().getString(R.string.destination_name));
                 alertDialogBuilderUserInput
                         .setCancelable(false)
@@ -194,18 +196,17 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
 
     public void scheduleDestination() {
         Calendar now = Calendar.getInstance();
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                DestinationAddMapActivity.this,
+
+        MaterialDatePickerDialogCustom dpd = MaterialDatePickerDialogCustom.newInstance();
+        dpd.initialize(DestinationAddMapActivity.this,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
-        );
+                now.get(Calendar.DAY_OF_MONTH));
         dpd.setMinDate(now);
+        dpd.setOnDateScheduledListener(DestinationAddMapActivity.this);
         dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                Log.d("jomy", "Dialog was cancelled");
-                addDestinationRequest(destinationName,"");
             }
         });
         dpd.setAccentColor(getResources().getColor(R.color.app_color));
@@ -225,19 +226,17 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         year = yearVal;
         month = (monthOfYear + 1);
         day = dayOfMonth;
-
-
-
-        TimePickerDialog tpd = TimePickerDialog.newInstance(
-                DestinationAddMapActivity.this,
+        MaterialTimePickerDialogCustom tpd =  MaterialTimePickerDialogCustom.newInstance();
+        tpd.initialize(DestinationAddMapActivity.this,
                 now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
-                false
-        );
+                now.get(Calendar.MINUTE),0,
+                false);
+        tpd.setOnTimeScheduledListener(DestinationAddMapActivity.this);
 //        tpd.setThemeDark(true);
 //        tpd.vibrate(true);
 //        tpd.dismissOnPause(true);
 //        tpd.enableSeconds(true);
+//        tpd.setCancelText(getString(R.string.schedule_later));
         if((now.get(Calendar.YEAR)==yearVal) && (now.get(Calendar.MONTH)==monthOfYear) && (now.get(Calendar.DAY_OF_MONTH)==dayOfMonth))
         {
             tpd.setMinTime(now.get(Calendar.HOUR_OF_DAY),now.get(Calendar.MINUTE),30);
@@ -250,7 +249,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                addDestinationRequest(destinationName,"");
+
             }
         });
         tpd.show(getFragmentManager(), "Timepickerdialog");
@@ -258,10 +257,21 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
     }
 
     @Override
+    public void onDateScheduled(MaterialDatePickerDialogCustom view) {
+        Log.d("jomy","schedule223...");
+        addDestinationRequest(destinationName,"");
+    }
+
+    @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         Log.d("jomy", "You picked the following Time: " + hourOfDay + "/" + (minute) + "/" + second);
         scheduleDate="" + year + "-" + month + "-" + day + " " + hourOfDay + ":" + minute + ":" + second + ".000";
         addDestinationRequest(destinationName,scheduleDate);
+    }
+
+    @Override
+    public void onTimeScheduled(MaterialTimePickerDialogCustom view) {
+        addDestinationRequest(destinationName,"");
     }
 
     @Override
@@ -541,6 +551,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements OnMa
         }
 
     }
+
+
 
 
     /**

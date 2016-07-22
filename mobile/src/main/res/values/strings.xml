@@ -83,7 +83,9 @@
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="destination_name">Enter Destination Name</string>
     <string name="not_the_right_destination">Please Check In when you reach the destination.</string>
-
+    <string name="schedule_later">No, I Will Schedule Later </string>
+    <string name="delete_destinationalert">Do you want to Delete Destination : </string>
+    <string name="delete">Delete </string>
     <!--Edit Destination popup items-->
 
     <string name="modify_destinationName">Rename Destination</string>
