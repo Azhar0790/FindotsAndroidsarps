@@ -213,7 +213,7 @@ public class DestinationFragment extends Fragment
      * @param destinationDatas
      * @return
      */
-    ArrayList<DestinationData> arrayList = new ArrayList<>();
+    /*ArrayList<DestinationData> arrayList = new ArrayList<>();
     public ArrayList<DestinationData> sortDestinationsOnDate(DestinationData[] destinationDatas) {
 
         arrayList = new ArrayList<>();
@@ -253,7 +253,7 @@ public class DestinationFragment extends Fragment
 
         return arrayList;
     }
-
+*/
 
     public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
         ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
@@ -267,7 +267,8 @@ public class DestinationFragment extends Fragment
          */
         for (DestinationData data : destinationDatas) {
             if(data.getScheduleDate().length() != 0) {
-                arrayListScheduleDate.add(data);
+                if (data.isScheduleDisplayStatus())
+                    arrayListScheduleDate.add(data);
             } else {
                 arrayListUnScheduleDate.add(data);
             }
@@ -584,14 +585,16 @@ public class DestinationFragment extends Fragment
             double originLatitude = location.getLatitude();
             double originLongitude = location.getLongitude();
 
-            String origin = originLatitude+","+originLongitude;
-            String destination = createDestinations();
+            if (arrayListDestinations.size() > 0) {
+                String origin = originLatitude+","+originLongitude;
+                String destination = createDestinations();
 
-            googleDistanceMatrixAPI(origin, destination);
-            try{
-                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            } catch (Exception e) {
-                e.printStackTrace();
+                googleDistanceMatrixAPI(origin, destination);
+                try {
+                    LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -612,9 +615,9 @@ public class DestinationFragment extends Fragment
      *   current location and destination locations on the map markers
      */
     public void googleDistanceMatrixAPI(String origin, String destination) {
-        DistanceMatrixService service = new DistanceMatrixService(getActivity());
+        DistanceMatrixService service = new DistanceMatrixService();
         service.delegate = DestinationFragment.this;
-        service.callDistanceMatrixService(origin, destination);
+        service.callDistanceMatrixService(getActivity(), origin, destination);
     }
 
 
@@ -638,7 +641,8 @@ public class DestinationFragment extends Fragment
 
     @Override
     public void onDistanceMatrixFailure() {
-        Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
+        onConnected(null);
+        //Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -648,8 +652,8 @@ public class DestinationFragment extends Fragment
 
     public String createDestinations() {
         String destinations = "";
-        if (arrayList.size() > 0) {
-            destinations = arrayList.get(0).getDestinationLatitude()+","+arrayList.get(0).getDestinationLongitude();
+        if (arrayListDestinations.size() > 0) {
+            destinations = arrayListDestinations.get(0).getDestinationLatitude()+","+arrayListDestinations.get(0).getDestinationLongitude();
         }
         return destinations;
     }
