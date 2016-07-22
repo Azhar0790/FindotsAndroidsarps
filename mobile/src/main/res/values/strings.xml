@@ -4,6 +4,7 @@
     <!-- for distance matrix -->
     <string name="server_key">AIzaSyANsVoGajWyTt3nBxWw_6P5sAY-duYUO3E</string>
 
+    <string name="noInternet">The Internet Connection Appears to be Offline</string>
     <string name="logout">Logout</string>
     <string name="openDrawer">open drawer</string>
     <string name="closeDrawer">close drawer</string>

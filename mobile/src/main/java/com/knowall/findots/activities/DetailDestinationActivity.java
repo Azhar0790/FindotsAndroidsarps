@@ -552,6 +552,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @Override
     public void onCheckInFailure(String status) {
+
+        Toast.makeText(DetailDestinationActivity.this, status, Toast.LENGTH_SHORT).show();
+
         FLAG_CHECKINCHECKOUT = false;
         FLAG_OFFLINECHECKINCHECKOUT = true;
         if (!checkedIn) {

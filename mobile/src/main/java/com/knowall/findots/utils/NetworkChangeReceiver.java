@@ -32,13 +32,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                         networkInfo.getExtraInfo() + " " + networkInfo.getTypeName();
                 callCheckInOffline(context);
             } else {
-                toastInfo = context.getString(R.string.network_not_available);
+                toastInfo = context.getString(R.string.noInternet);
             }
 
             Toast.makeText(context, toastInfo, Toast.LENGTH_SHORT).show();
         } else {
-            toastInfo = context.getString(R.string.network_not_available);
-
+            toastInfo = context.getString(R.string.noInternet);
             Toast.makeText(context, toastInfo,Toast.LENGTH_SHORT).show();
         }
     }
