@@ -49,7 +49,7 @@ public class FinDotsApplication extends MultiDexApplication {
         AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
 
         if (!retrieveLocationRequestData()) {
-            setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+            setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
         }
         initializeDB();
     }
@@ -88,7 +88,7 @@ public class FinDotsApplication extends MultiDexApplication {
     public LocationRequestData getLocationRequestData() {
         if (locationRequestData == null) {
             if (!retrieveLocationRequestData()) {
-                setLocationRequestData(LocationRequestData.FREQUENCY_HIGH);
+                setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
             }
         }
         return locationRequestData;

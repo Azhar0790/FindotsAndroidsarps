@@ -92,7 +92,8 @@
             android:text="Location Address"
             android:textColor="@color/colorPrimaryDark"
             android:paddingTop="5dp"
-            android:paddingBottom="2dp"/>
+            android:paddingBottom="4dp"
+            android:layout_marginRight="30dp"/>
 
         <TextView
             android:id="@+id/address"
@@ -105,10 +106,11 @@
             android:layout_toRightOf="@id/searchIcon"
             android:gravity="center_horizontal"
             android:enabled="false"
-            android:paddingRight="8dp"
+            android:layout_marginRight="30dp"
             android:hint="Move Map Location to Pin Point"
-            android:textColor="@color/grey"
-            android:textSize="14sp"/>
+            android:textColor="@color/light_grey"
+            android:textSize="14sp"
+            android:paddingBottom="3dp"/>
     </RelativeLayout>
 
     <Button

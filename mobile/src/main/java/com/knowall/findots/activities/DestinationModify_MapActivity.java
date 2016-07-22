@@ -101,9 +101,11 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     Button mUpdateDestination;
     @Bind(R.id.address)
     TextView mLocationAddress;
+    @Bind(R.id.lochead)
+    TextView mLochead;
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
-
+    Typeface typefaceRoboRegular;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
 
         getBundleData();
         actionBarSettings();
+        setUpFonts();
         mLocationAddress.setSelected(true);
 
         mUpdateDestination.setOnClickListener(new View.OnClickListener() {
@@ -151,21 +154,30 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
     }
 
 
+    public void setUpFonts()
+    {
+        Typeface typefaceroboLight= Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        mLocationAddress.setTypeface(typefaceroboLight);
+        mLochead.setTypeface(typefaceRoboRegular);
+    }
+
     public void actionBarSettings() {
 
         /* Assigning the toolbar object ot the view
          * and setting the the Action bar to our toolbar
          */
+        typefaceRoboRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+
+
         if (destinationName.length() > 0)
             mTextView_heading.setText("" + destinationName);
         else
             mTextView_heading.setText(getString(R.string.modifyDestination));
-        mTextView_heading.setTypeface(typefaceMyriadHebrew);
+        mTextView_heading.setTypeface(typefaceRoboRegular);
         imageView_back.setVisibility(View.VISIBLE);
         imageView_back.setOnClickListener(new View.OnClickListener() {
             @Override
