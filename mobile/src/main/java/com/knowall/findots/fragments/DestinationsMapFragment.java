@@ -136,7 +136,7 @@ public class DestinationsMapFragment extends Fragment
                 arrayList.clear();
             for (DestinationData data : arrayListDestinations) {
                 Log.d("map","Number of Markers without if...");
-//                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
+                if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
                     Log.d("map","Number of Markers...");
                     arrayList.add(data);
                     LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
@@ -146,7 +146,7 @@ public class DestinationsMapFragment extends Fragment
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
 
                     mGoogleMap.addMarker(markerOptions).showInfoWindow();
-//                }
+                }
             }
         }
 

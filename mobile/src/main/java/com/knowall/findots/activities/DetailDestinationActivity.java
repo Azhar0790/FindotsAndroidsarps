@@ -220,7 +220,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         Log.d("jomy", "Schedule Date2 : " + scheduleDate);
         if (scheduleDate.trim().length() > 0)
-            extractDateInfo(GeneralUtils.dateTimeInUTCToLocal(scheduleDate), false);
+            extractDateInfo(scheduleDate, false);
         else
             setSpannableScheduleString("" + getString(R.string.schedule));
     }
@@ -1057,14 +1057,15 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 SimpleDateFormat month_date = new SimpleDateFormat("MMM");
                 mdestScheduleText = "" + cal1.get(Calendar.DAY_OF_MONTH) + " " + month_date.format(cal1.getTime()) + " @ ";
             }
-            hour = cal1.get(Calendar.HOUR);
-            minute = cal1.get(Calendar.MINUTE);
-            int am = cal1.get(Calendar.AM_PM);
-            mdestScheduleText = mdestScheduleText + hour + "." + minute;
-            if (am == Calendar.AM)
-                mdestScheduleText = mdestScheduleText + "AM";
-            else
-                mdestScheduleText = mdestScheduleText + "PM";
+//            hour = cal1.get(Calendar.HOUR);
+//            minute = cal1.get(Calendar.MINUTE);
+//            int am = cal1.get(Calendar.AM_PM);
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            mdestScheduleText = mdestScheduleText + GeneralUtils.getTimeOnly(date_format.format(cal1.getTime()));
+//            if (am == Calendar.AM)
+//                mdestScheduleText = mdestScheduleText + "AM";
+//            else
+//                mdestScheduleText = mdestScheduleText + "PM";
 
             if (loadData)
                 addScheduleDestinationRequest(serverRequest_scheduleDate);

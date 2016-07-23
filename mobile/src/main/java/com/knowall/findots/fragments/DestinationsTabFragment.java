@@ -39,6 +39,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
-    static String currnt_selected_dateTime="";
+    static String currnt_selected_dateTime = "";
 
     MaterialCalendarView materialCalendarView = null;
 
@@ -85,11 +86,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FinDotsApplication.getInstance().trackEvent("Destination","Click","Clicked Add Destination Event");
+                FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
 
                 // Click action
                 Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_ADD_DESTINATION);
+                startActivityForResult(intent, REQUEST_CODE_ADD_DESTINATION);
             }
         });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -191,15 +192,23 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
 
-        } else if(resultCode == 3)
-        {
-            Log.d("jomy","check...");
+        } else if (resultCode == 3) {
+            Log.d("jomy", "check...");
             GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
+        } else {
         }
-        else {
-        }
+    }
+
+    public void daycalculation() {
+        Calendar cal = Calendar.getInstance();
+        int nuberOfWeek = ((cal.get(Calendar.DAY_OF_WEEK) + cal.getActualMaximum(Calendar.DAY_OF_MONTH)) / 7);
+
+        if (nuberOfWeek > 4)
+            nuberOfWeek = 3;
+        int addCount=((cal.getActualMaximum(Calendar.DAY_OF_MONTH)- cal.get(Calendar.DAY_OF_MONTH))/7);
+
     }
 
     public void initializeMaterialCalendarView(ViewGroup rootView) {
@@ -209,10 +218,17 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void materialCalendarViewSettings() {
         materialCalendarView.setTileHeightDp(26);
+//        daycalculation();
+        materialCalendarView.state().edit()
+                .setCalendarDisplayMode(CalendarMode.WEEKS)
+//                .setFirstDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
+                .commit();
+        materialCalendarView.goToNext();
 
-        materialCalendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit();
-        //materialCalendarView.goToNext();
+        materialCalendarView.getShowOtherDates();
         materialCalendarView.setSelectedDate(CalendarDay.today());
+//        materialCalendarView.goToNext();
+
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -257,18 +273,22 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         SimpleDateFormat sdf3 = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
         Date d1 = null;
-        try{
+        try {
             d1 = sdf3.parse(date.toString());
-        }catch (Exception e){ e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         // ------------------------------------
         SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
 
 
-        try{
+        try {
             currnt_selected_dateTime = sdf4.format(d1);
-        }catch (Exception e){ e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         createScheduledUnscheduledListByDate(currnt_selected_dateTime);
     }
@@ -282,7 +302,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         int i = 0;
 
-        for (DestinationData data: destinationDatas) {
+        for (DestinationData data : destinationDatas) {
             if (data.getScheduleDate().length() != 0) {
                 scheduleDate = data.getScheduleDate().substring(0, 10);
                 if (selectedDateFromCalendar.equals(scheduleDate)) {
