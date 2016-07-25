@@ -74,6 +74,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -135,7 +136,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     int assignDestinationID = 0, destinationID = 0;
     double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false, destRenamOnly = false;
+    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false, destRenamOnly = false,rescheduleFlag=false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
     public static String offlineCheckInCheckOutStatus = null;
@@ -198,6 +199,40 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         }
     }
 
+    public void scheduleTextUiCondition(Boolean checkedIn, Boolean checkedOut,String scheduleDate) {
+        Log.d("jomy", "Schedule Date2 : " + scheduleDate+" Schedule  : "+checkCurrentTimeGreater(scheduleDate));
+            if ((checkedIn || checkedOut) || checkCurrentTimeGreater(scheduleDate)) {
+                rescheduleFlag=true;
+                    setSpannableScheduleString(getString(R.string.reschedule));
+            }
+        else if (scheduleDate.trim().length() > 0 ) {
+                extractDateInfo(scheduleDate, false);
+            }
+                else
+                    setSpannableScheduleString("" + getString(R.string.schedule));
+
+    }
+
+    public boolean checkCurrentTimeGreater(String scheduleDate)
+    {
+        long difference = 0;
+        try {
+            Date currentDate = new Date();
+
+            SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfLocal.setTimeZone(TimeZone.getDefault());
+            Date scheduleTime = sdfLocal.parse(scheduleDate);
+
+            if((scheduleTime.getTime() - currentDate.getTime())<0)
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
     /**
      * get Bundle data
      */
@@ -217,12 +252,16 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         isEditable = bundle.getBoolean("editable");
         isRequiresApproval = bundle.getBoolean("requireApproval");
         scheduleDate = bundle.getString("scheduleDate");
-
-        Log.d("jomy", "Schedule Date2 : " + scheduleDate);
-        if (scheduleDate.trim().length() > 0)
+        if (scheduleDate.trim().length() > 0 )
             extractDateInfo(scheduleDate, false);
         else
             setSpannableScheduleString("" + getString(R.string.schedule));
+
+        scheduleTextUiCondition(checkedIn,checkedOut,scheduleDate);
+//        if (scheduleDate.trim().length() > 0)
+//            extractDateInfo(scheduleDate, false);
+//        else
+//            setSpannableScheduleString("" + getString(R.string.schedule));
     }
 
     /**
