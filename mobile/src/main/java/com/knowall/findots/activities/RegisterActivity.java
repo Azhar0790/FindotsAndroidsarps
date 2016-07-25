@@ -183,7 +183,7 @@ public class RegisterActivity extends AppCompatActivity
     @OnClick(R.id.TextView_termsCondition)
     public void openTermsandCondition() {
         Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse("https://findots.com"));
+        i.setData(Uri.parse("https://findots.com/terms-privacy.html"));
         startActivity(i);
     }
 
