@@ -17,6 +17,7 @@ import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -139,7 +140,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             String scheduledTime = null;
             String scheduleDate = destinationDatas.get(position).getScheduleDate();
             if (scheduleDate.length() != 0) {
-                scheduledTime = scheduledAt+ " " + GeneralUtils.getTimeOnly(scheduleDate);
+                scheduledTime = scheduledAt+ " " + TimeSettings.getTimeOnly(scheduleDate);
             } else {
                 scheduledTime = "Not Scheduled";
             }
@@ -194,7 +195,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                 holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
                 holder.mLinearLayout_checkIncheckOut.setEnabled(false);
                 holder.mButton_checkIncheckOut.setEnabled(false);
-                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + GeneralUtils.getTimeOnly(checkedOutTime));
+                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + TimeSettings.getTimeOnly(checkedOutTime));
                 holder.mButton_checkIncheckOut.setCompoundDrawables(
                         GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                         null, null, null);

@@ -14,6 +14,7 @@ import com.knowall.findots.database.dataModel.checkIn;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.NetworkChangeReceiver;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +112,7 @@ public class CheckInCheckOutRestCall {
          *   fetching current time in UTC format
          */
 
-        reportedTime = GeneralUtils.DateTimeInUTC();
+        reportedTime = TimeSettings.DateTimeInUTC();
 
         List<Map<String, Object>> list = new ArrayList<>();
 

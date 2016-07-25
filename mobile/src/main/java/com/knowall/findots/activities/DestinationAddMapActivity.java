@@ -56,6 +56,7 @@ import com.knowall.findots.utils.MaterialDatePickerDialogCustom;
 import com.knowall.findots.utils.MaterialTimePickerDialogCustom;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -746,7 +747,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
     private Map<String, Object> setAddDestinationRequest(String destinationName,String scheduleTime) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("destinationName", "" + destinationName);
-        postValues.put("ScheduleDate", "" + GeneralUtils.dateTimeInUTC(scheduleTime));
+        postValues.put("ScheduleDate", "" + TimeSettings.dateTimeInUTC(scheduleTime));
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + mLocationAddress.getText().toString().trim());

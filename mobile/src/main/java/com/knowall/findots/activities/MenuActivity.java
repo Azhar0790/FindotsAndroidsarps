@@ -46,6 +46,7 @@ import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -436,7 +437,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         LocationSyncData locationSyncData = new LocationSyncData();
         locationSyncData.setLatitude(currentLoc.getLatitude());
         locationSyncData.setLongitude(currentLoc.getLongitude());
-        locationSyncData.setReportedDate(GeneralUtils.DateTimeInUTC());
+        locationSyncData.setReportedDate(TimeSettings.DateTimeInUTC());
         locSyncList.add(locationSyncData);
 
 

@@ -35,68 +35,6 @@ import java.util.regex.Pattern;
  */
 public class GeneralUtils {
 
-    public static String DateTimeInUTC() {
-        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        //Time in GMT
-        return dateFormatGmt.format(new Date());
-    }
-
-    public static String dateTimeInUTC(String strDate) {
-        try {
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = formatter.parse(strDate);
-            SimpleDateFormat sdfUTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdfUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-            String sDateInUTC = sdfUTC.format(date);
-            return sDateInUTC;
-        } catch (Exception e) {
-        }
-        return "";
-    }
-
-    public static String dateTimeInGMT() {
-        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        //Time in GMT
-        return dateFormatGmt.format(new Date());
-    }
-
-    public static String dateTimeInUTCToLocal(String strDate) {
-        try {
-
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = formatter.parse(strDate);
-            SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdfLocal.setTimeZone(TimeZone.getDefault());
-            String sDateInLocal = sdfLocal.format(date);
-            return sDateInLocal;
-        } catch (Exception e) {
-        }
-        return "";
-    }
-
-    public static String dateTimeUTC_toLocale(String utcTime) {
-        try {
-            SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sourceFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date parsed = sourceFormat.parse(utcTime); // => Date is in UTC now
-
-            TimeZone tz = TimeZone.getDefault();
-            SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            destFormat.setTimeZone(tz);
-
-            return destFormat.format(parsed);
-        } catch (Exception e) {
-
-        }
-        return "";
-    }
-
     public static String LatLongToAddress(Double latitude, Double longitude, Context context) {
         Geocoder geocoder;
         List<Address> addresses;
@@ -285,42 +223,5 @@ public class GeneralUtils {
         return true;
     }
 
-
-    public static String getTimeOnly(String date) {
-
-        String checkedOutTime = null;
-
-        try {
-            final String ANTE_MERIDIAN = "am";
-            final String POST_MERIDIAN = "pm";
-
-            if (date.length() != 0) {
-
-                SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                sdfLocal.setTimeZone(TimeZone.getDefault());
-                Date mDate = sdfLocal.parse(date);
-
-                SimpleDateFormat sdf12HourFormat = new SimpleDateFormat("hh:mm aa");
-                //sdf12HourFormat.setTimeZone(TimeZone.getDefault());
-                checkedOutTime = sdf12HourFormat.format(mDate);
-
-                //long time = mDate.getTime();
-                //checkedOutTime = String.valueOf(time);
-
-                //int hour = mDate.getHours();
-                //int minute = mDate.getMinutes();
-                //String meridian = (hour > 12) ? POST_MERIDIAN : ANTE_MERIDIAN;
-
-                //checkedOutTime = hour + "." + minute + meridian;
-            } else {
-                checkedOutTime = "";
-            }
-
-        } catch (Exception e) {
-            Log.d("jomy",e.getMessage());
-            e.printStackTrace();
-        }
-        return checkedOutTime;
-    }
 
 }

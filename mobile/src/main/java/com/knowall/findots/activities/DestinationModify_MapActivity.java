@@ -47,6 +47,7 @@ import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -586,7 +587,7 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         postValues.put("newLatitude", mAdressLoc.getLatitude());
         postValues.put("newLongitude", mAdressLoc.getLongitude());
         postValues.put("address", "" + destinationAdress);
-        postValues.put("requestedDate", GeneralUtils.DateTimeInUTC());
+        postValues.put("requestedDate", TimeSettings.DateTimeInUTC());
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());

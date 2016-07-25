@@ -1,6 +1,7 @@
 package com.knowall.findots.restcalls.destinations;
 
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import org.parceler.Parcel;
 
@@ -48,6 +49,16 @@ public class DestinationData {
 
     private String scheduledStatus = null;
 
+    private long timeDifference;
+
+    public long getTimeDifference() {
+        return timeDifference;
+    }
+
+    public void setTimeDifference(long timeDifference) {
+        this.timeDifference = timeDifference;
+    }
+
     public String getScheduledStatus() {
         return scheduledStatus;
     }
@@ -65,7 +76,7 @@ public class DestinationData {
     }
 
     public String getScheduleDate() {
-        return GeneralUtils.dateTimeInUTCToLocal(scheduleDate);
+        return TimeSettings.dateTimeInUTCToLocal(scheduleDate);
     }
 
     public void setScheduleDate(String scheduleDate) {
@@ -121,7 +132,7 @@ public class DestinationData {
     }
 
     public String getCheckedOutReportedDate() {
-        return GeneralUtils.dateTimeInUTCToLocal(checkedOutReportedDate);
+        return TimeSettings.dateTimeInUTCToLocal(checkedOutReportedDate);
     }
 
     public void setCheckedOutReportedDate(String checkedOutReportedDate) {
@@ -137,7 +148,7 @@ public class DestinationData {
     }
 
     public String getAssigndestinationTime() {
-        return GeneralUtils.dateTimeInUTCToLocal(assigndestinationTime);
+        return TimeSettings.dateTimeInUTCToLocal(assigndestinationTime);
     }
 
     public void setAssigndestinationTime(String assigndestinationTime) {

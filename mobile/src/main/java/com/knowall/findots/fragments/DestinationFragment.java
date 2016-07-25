@@ -44,6 +44,7 @@ import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -209,61 +210,24 @@ public class DestinationFragment extends Fragment
         destinationsAdapter.delegate = DestinationFragment.this;
         Log.d("jomy","arrayListDestinations ssew"+arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
+
+        if (nextScheduledItemPosition >= 0) {
+            //mRecyclerView_destinations.scrollToPosition(nextScheduledItemPosition);
+            //mRecyclerView_destinations.smoothScrollToPosition(nextScheduledItemPosition);
+            layoutManager.scrollToPosition(nextScheduledItemPosition);
+        } else {
+            layoutManager.onRestoreInstanceState(listViewState);
+        }
+
         destinationsAdapter.notifyDataSetChanged();
-        layoutManager.onRestoreInstanceState(listViewState);
 
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
     }
 
-    /**
-     * sort destinations
-     *
-     * @param destinationDatas
-     * @return
-     */
-    /*ArrayList<DestinationData> arrayList = new ArrayList<>();
-    public ArrayList<DestinationData> sortDestinationsOnDate(DestinationData[] destinationDatas) {
 
-        arrayList = new ArrayList<>();
-        arrayList.clear();
 
-        for (DestinationData data : destinationDatas) {
-            arrayList.add(data);
-        }
-
-        Log.i(Constants.TAG, "before sorting --> " + arrayList.toString());
-
-        Collections.sort(arrayList, new Comparator<DestinationData>() {
-            @Override
-            public int compare(DestinationData lhs, DestinationData rhs) {
-
-                //DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeParser();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
-                DateTime d1 = dateTimeFormatter.parseDateTime(lhs.getAssigndestinationTime());
-                DateTime d2 = dateTimeFormatter.parseDateTime(rhs.getAssigndestinationTime());
-
-                if (d1 == null || d2 == null)
-                    return 0;
-
-                return d1.compareTo(d2);
-            }
-        });
-
-        Collections.reverse(arrayList);
-        Log.i(Constants.TAG, "after sorting --> " + arrayList.toString());
-
-        try {
-            mGoogleApiClient.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return arrayList;
-    }
-*/
-
+    int nextScheduledItemPosition = -1;
     public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
         ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
         arrayListScheduleDate.clear();
@@ -306,7 +270,41 @@ public class DestinationFragment extends Fragment
         });
 
         Collections.reverse(arrayListScheduleDate);
-        Log.d("jomy","arrayListUnScheduleDate Date size : "+arrayListScheduleDate.size());
+        Collections.reverse(arrayListScheduleDate);
+
+        /**
+         *  set time difference to the scheduled arraylist
+         */
+        int i = 0;
+        for (DestinationData data:arrayListScheduleDate) {
+            long timeDifference = TimeSettings.getTimeDifference(data.getScheduleDate());
+            arrayListScheduleDate.get(i).setTimeDifference(timeDifference);
+            i++;
+        }
+
+        /**
+         *   find out next scheduled position of list item
+         */
+        if (arrayListScheduleDate.size() > 0) {
+            nextScheduledItemPosition = 0;
+            for (DestinationData data : arrayListScheduleDate) {
+
+                if (data.getTimeDifference() > 0) {
+                    break;
+                }
+                nextScheduledItemPosition++;
+            }
+        }
+
+        if (nextScheduledItemPosition > arrayListScheduleDate.size()-1) {
+            nextScheduledItemPosition = -1;
+        }
+
+        if (arrayListScheduleDate.size() > 0) {
+            arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
+        }
+
+
         /**
          *    sorting of unscheduled arraylist
          *    based on Assign Destination Time
@@ -344,9 +342,6 @@ public class DestinationFragment extends Fragment
         /**
          *   setting schedule status
          */
-        if (arrayListScheduleDate.size() > 0) {
-            arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
-        }
 
         if (arrayListUnScheduleDate.size() > 0) {
             arrayListUnScheduleDate.get(0).setScheduledStatus("unscheduled");

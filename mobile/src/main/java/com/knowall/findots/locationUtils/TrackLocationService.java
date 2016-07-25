@@ -19,6 +19,7 @@ import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 
 public class TrackLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
@@ -166,7 +167,7 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         Location startLocation = app.getStartLocation();
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        String timeInGmt=GeneralUtils.DateTimeInUTC();
+        String timeInGmt= TimeSettings.DateTimeInUTC();
 //        float distance = Utils.distFromCoordinates((float) startLocation.getLatitude(),
 //                (float) startLocation.getLongitude(),
 //                (float) latitude,
