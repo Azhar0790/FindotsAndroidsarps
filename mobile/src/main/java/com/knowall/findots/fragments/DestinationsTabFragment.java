@@ -39,7 +39,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -156,26 +155,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         FinDotsApplication.getInstance().trackScreenView("Destination Map & List Fragment");
     }
 
-//    public void onEvent(AppEvents events) {
-//        Log.d("map","On Map event...");
-//        switch (events) {
-//
-//            case REFRESHTABVALUES:
-//                Log.d("map","refresh...");
-//                if (EventBus.getDefault().isRegistered(this))
-//                EventBus.getDefault().unregister(this);
-//                if(!(currnt_selected_dateTime.length()>0)) {
-//                    DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-//                    DateTime dateTime = new DateTime();
-//                    currnt_selected_dateTime = dateTime.toString(fmt1);
-//                }
-//                createScheduledUnscheduledListByDate(currnt_selected_dateTime);
-//                if (!EventBus.getDefault().isRegistered(this))
-//                EventBus.getDefault().register(this);
-//                break;
-//        }
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -201,16 +180,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         }
     }
 
-    public void daycalculation() {
-        Calendar cal = Calendar.getInstance();
-        int nuberOfWeek = ((cal.get(Calendar.DAY_OF_WEEK) + cal.getActualMaximum(Calendar.DAY_OF_MONTH)) / 7);
-
-        if (nuberOfWeek > 4)
-            nuberOfWeek = 3;
-        int addCount=((cal.getActualMaximum(Calendar.DAY_OF_MONTH)- cal.get(Calendar.DAY_OF_MONTH))/7);
-
-    }
-
     public void initializeMaterialCalendarView(ViewGroup rootView) {
         materialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.materialCalendarView);
         materialCalendarViewSettings();
@@ -218,17 +187,12 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void materialCalendarViewSettings() {
         materialCalendarView.setTileHeightDp(26);
-//        daycalculation();
         materialCalendarView.state().edit()
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
-//                .setFirstDayOfWeek(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
                 .commit();
-        materialCalendarView.goToNext();
-
         materialCalendarView.getShowOtherDates();
-        materialCalendarView.setSelectedDate(CalendarDay.today());
-//        materialCalendarView.goToNext();
 
+        setMaterialCalendarDate(CalendarDay.today().getYear(), CalendarDay.today().getMonth(), CalendarDay.today().getDay());
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -246,6 +210,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     }
 
+    public void setMaterialCalendarDate(int year, int month, int day) {
+        materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
+        materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
+        materialCalendarView.goToNext();
+    }
 
     class EventDecorator implements DayViewDecorator {
 
