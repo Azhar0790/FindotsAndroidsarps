@@ -63,6 +63,7 @@ import com.knowall.findots.restcalls.destinations.IGetDestinations;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.timeUtils.TimeSettings;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -257,7 +258,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         else
             setSpannableScheduleString("" + getString(R.string.schedule));
 
-        scheduleTextUiCondition(checkedIn,checkedOut,scheduleDate);
+
 //        if (scheduleDate.trim().length() > 0)
 //            extractDateInfo(scheduleDate, false);
 //        else
@@ -295,7 +296,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
             mLinearLayout_checkIncheckOut.setEnabled(false);
             mButton_checkIncheckOut.setEnabled(false);
-            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at) + " " + GeneralUtils.getTimeOnly(checkedOutReportedDate));
+            mButton_checkIncheckOut.setText(getString(R.string.checkedout_at) + " " + TimeSettings.getTimeOnly(checkedOutReportedDate));
             mButton_checkIncheckOut.setCompoundDrawables(
                     GeneralUtils.scaleDrawable(getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
@@ -322,6 +323,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     isDeviceEnteredWithinDestinationRadius(true, true);
             }
         });
+
+        scheduleTextUiCondition(checkedIn,checkedOut,scheduleDate);
     }
 
 
@@ -599,8 +602,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             checkedOut = true;
             //offlineCheckInCheckOutStatus = "checkedOut";
 
-            String getTime=GeneralUtils.DateTimeInUTC();
-            getTime=GeneralUtils.dateTimeInUTCToLocal(getTime);
+            String getTime=TimeSettings.DateTimeInUTC();
+            getTime=TimeSettings.dateTimeInUTCToLocal(getTime);
             checkedOutReportedDate = getTime;
             offlineCheckInCheckOutStatus = checkedOutReportedDate;
         }
@@ -1007,7 +1010,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     public void addScheduleDestinationRequest(String scheduletime) {
         GeneralUtils.initialize_progressbar(this);
-        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().scheduleDestinationVisit(setScheduleVisit_destinationRequest(GeneralUtils.dateTimeInUTC(scheduletime)));
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().scheduleDestinationVisit(setScheduleVisit_destinationRequest(TimeSettings.dateTimeInUTC(scheduletime)));
 
         addDestinationCall.enqueue(new Callback<ResponseModel>() {
 
@@ -1056,6 +1059,59 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         return postValues;
     }
 
+    public void reScheduleDestinationRequest(String reScheduletime) {
+        GeneralUtils.initialize_progressbar(this);
+        Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().reScheduleDestinationVisit(setRescheduleVisit_destinationRequest(TimeSettings.dateTimeInUTC(reScheduletime)));
+
+        addDestinationCall.enqueue(new Callback<ResponseModel>() {
+
+
+            @Override
+            public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
+                GeneralUtils.stop_progressbar();
+
+                if (response.body() != null) {
+                    if (response.isSuccess() && response.body().getErrorCode() == 0) {
+
+                        Toast.makeText(DetailDestinationActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("result", "renamedDestination");
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else
+                        Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast toast = Toast.makeText(DetailDestinationActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GeneralUtils.stop_progressbar();
+                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private Map<String, Object> setRescheduleVisit_destinationRequest(String reScheduletime) {
+        Map<String, Object> postValues = new HashMap<>();
+        postValues.put("destinationID", destinationID);
+        postValues.put("scheduleDate", "" + reScheduletime);
+        postValues.put("appVersion", GeneralUtils.getAppVersion(this));
+        postValues.put("deviceTypeID", Constants.DEVICETYPEID);
+        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
+        postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
+        postValues.put("ipAddress", "");
+
+        return postValues;
+    }
+
     public void extractDateInfo(String scheduleDate, boolean loadData) {
 
         try {
@@ -1067,6 +1123,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 Calendar cal1 = Calendar.getInstance();
                 cal1.setTime(date);
                 serverRequest_scheduleDate = scheduleDate;
+                if(rescheduleFlag && loadData)
+                    reScheduleDestinationRequest(serverRequest_scheduleDate);
+                else
                 checkDateToday(cal1, loadData);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1100,7 +1159,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 //            minute = cal1.get(Calendar.MINUTE);
 //            int am = cal1.get(Calendar.AM_PM);
             SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            mdestScheduleText = mdestScheduleText + GeneralUtils.getTimeOnly(date_format.format(cal1.getTime()));
+            mdestScheduleText = mdestScheduleText + TimeSettings.getTimeOnly(date_format.format(cal1.getTime()));
 //            if (am == Calendar.AM)
 //                mdestScheduleText = mdestScheduleText + "AM";
 //            else
