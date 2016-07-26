@@ -24,6 +24,8 @@
             android:layout_gravity="center"
             android:fontFamily="fonts/MyriadHebrew-Bold.otf"
             android:text="@string/app_name"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:textColor="@color/app_color"
             android:textSize="@dimen/textView_heading_textSize" />
 
