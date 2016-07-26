@@ -77,7 +77,6 @@ public class DestinationFragment extends Fragment
 
     GoogleApiClient mGoogleApiClient = null;
 
-    String travelTime = null;
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
@@ -206,7 +205,7 @@ public class DestinationFragment extends Fragment
     }
 
     public void setAdapterForDestinations() {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations, travelTime);
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations, elements);
         destinationsAdapter.delegate = DestinationFragment.this;
         Log.d("jomy","arrayListDestinations ssew"+arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
@@ -269,8 +268,8 @@ public class DestinationFragment extends Fragment
             }
         });
 
-        Collections.reverse(arrayListScheduleDate);
-        Collections.reverse(arrayListScheduleDate);
+        //Collections.reverse(arrayListScheduleDate);
+        //Collections.reverse(arrayListScheduleDate);
 
         /**
          *  set time difference to the scheduled arraylist
@@ -304,6 +303,7 @@ public class DestinationFragment extends Fragment
             arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
         }
 
+        createDestinations(arrayListScheduleDate);
 
         /**
          *    sorting of unscheduled arraylist
@@ -607,7 +607,11 @@ public class DestinationFragment extends Fragment
 
             if (arrayListDestinations.size() > 0) {
                 String origin = originLatitude+","+originLongitude;
-                String destination = createDestinations();
+                String destination = "";
+
+                if (destinations != null) {
+                    destination = destinations.toString();
+                }
 
                 googleDistanceMatrixAPI(origin, destination);
                 try {
@@ -641,19 +645,23 @@ public class DestinationFragment extends Fragment
     }
 
 
+    Elements[] elements = null;
     @Override
     public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
         if (distanceMatrix != null) {
             Rows[] rows = distanceMatrix.getRows();
             if (rows.length > 0) {
-                Elements[] elements = rows[0].getElements();
+                elements = rows[0].getElements();
                 if (elements.length > 0) {
-                    Duration duration = elements[0].getDuration();
+
+                    setAdapterForDestinations();
+
+                    /*Duration duration = elements[0].getDuration();
                     if(duration != null) {
                         travelTime = duration.getText();
                         setAdapterForDestinations();
                         Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
-                    }
+                    }*/
                 }
             }
         }
@@ -670,12 +678,14 @@ public class DestinationFragment extends Fragment
      * @return
      */
 
-    public String createDestinations() {
-        String destinations = "";
-        if (arrayListDestinations.size() > 0) {
-            destinations = arrayListDestinations.get(0).getDestinationLatitude()+","+arrayListDestinations.get(0).getDestinationLongitude();
+    StringBuilder destinations = null;
+    public void createDestinations(ArrayList<DestinationData> arrayListScheduleDate) {
+        if (arrayListScheduleDate.size() > 0) {
+            destinations = new StringBuilder();
+            for (DestinationData data:arrayListScheduleDate) {
+                destinations.append(data.getDestinationLatitude()+","+data.getDestinationLongitude()+"|");
+            }
         }
-        return destinations;
     }
 
 }

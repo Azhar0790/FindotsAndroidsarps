@@ -15,7 +15,7 @@
         android:text="Scheduled Destinations"
         android:textColor="@color/app_color"
         android:textSize="16sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/LinearLayout_destination"
@@ -29,20 +29,36 @@
         android:orientation="vertical"
         android:padding="@dimen/linearLayout_destination_padding">
 
-        <TextView
-            android:id="@+id/TextView_destinationAssignedBy"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/textView_assignedBy_height"
-            android:layout_gravity="center"
-            android:background="@color/transparent"
-            android:drawableLeft="@drawable/destination_timer"
-            android:drawablePadding="@dimen/textView_assignedBy_drawablePadding"
-            android:drawableStart="@drawable/destination_timer"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="Assigned by Sandra Jones 10 min ago"
-            android:textColor="@color/grey"
-            android:textSize="16sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textView_assignedBy_height">
+
+            <TextView
+                android:id="@+id/TextView_destinationScheduled"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/textView_assignedBy_height"
+                android:background="@color/transparent"
+                android:drawableLeft="@drawable/destination_timer"
+                android:drawablePadding="@dimen/textView_assignedBy_drawablePadding"
+                android:drawableStart="@drawable/destination_timer"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="Scheduled at 6.15pm"
+                android:textColor="@color/black_70"
+                android:textSize="16sp"
+                android:layout_alignParentLeft="true"/>
+
+            <TextView
+                android:id="@+id/TextView_destinationAssignedBy"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="Assigned by Sandra Jones"
+                android:textColor="@color/black_70"
+                android:textSize="12sp"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

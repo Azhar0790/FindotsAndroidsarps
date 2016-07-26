@@ -51,6 +51,26 @@ public class DestinationData {
 
     private long timeDifference;
 
+    private String travelTime;
+
+    private String travelDistance;
+
+    public String getTravelTime() {
+        return travelTime;
+    }
+
+    public void setTravelTime(String travelTime) {
+        this.travelTime = travelTime;
+    }
+
+    public String getTravelDistance() {
+        return travelDistance;
+    }
+
+    public void setTravelDistance(String travelDistance) {
+        this.travelDistance = travelDistance;
+    }
+
     public long getTimeDifference() {
         return timeDifference;
     }

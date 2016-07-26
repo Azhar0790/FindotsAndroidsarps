@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
+import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.AppStringConstants;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 /**
  * Created by parijathar on 6/14/2016.
  */
-public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapter.ViewHolder>{
+public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapter.ViewHolder> {
 
     public static IDestinations delegate = null;
 
@@ -37,14 +38,14 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     ArrayList<DestinationData> destinationDatas = null;
     final String scheduledAt = "Scheduled at ";
     String getTime = null;
-    String travelTime = null;
     int userID = 0;
     int assignedUserID = 0;
+    Elements[] elements = null;
 
-    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas, String travelTime) {
+    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas, Elements[] elements) {
         this.context = context;
         this.destinationDatas = destinationDatas;
-        this.travelTime = travelTime;
+        this.elements = elements;
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
@@ -61,6 +62,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         Button mButton_checkIncheckOut = null;
         TextView textViewTravelTime = null;
         TextView textViewSchedule = null;
+        TextView mTextView_destinationScheduled = null;
 
         public ViewHolder(View view) {
             super(view);
@@ -72,6 +74,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             mButton_checkIncheckOut = (Button) view.findViewById(R.id.Button_checkIncheckOut);
             textViewTravelTime = (TextView) view.findViewById(R.id.textViewTravelTime);
             textViewSchedule = (TextView) view.findViewById(R.id.textViewSchedule);
+            mTextView_destinationScheduled = (TextView) view.findViewById(R.id.TextView_destinationScheduled);
         }
 
         @Override
@@ -83,7 +86,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public int getItemCount() {
-        Log.d("jomy","destinationDatas ssew"+destinationDatas.size());
+        Log.d("jomy", "destinationDatas ssew" + destinationDatas.size());
         return destinationDatas.size();
     }
 
@@ -100,134 +103,138 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
 
-            /**
-             *   displaying travel time
-             */
-            if (position == 0) {
-                if (travelTime != null) {
-                    holder.textViewTravelTime.setText(travelTime);
-                    holder.textViewTravelTime.setVisibility(View.VISIBLE);
-                }
-            } else {
-                holder.textViewTravelTime.setVisibility(View.INVISIBLE);
-            }
+        /**
+         *   displaying travel time
+         */
+        if (elements != null && elements.length > position) {
+            String distance = elements[position].getDistance().getText();
+            String duration = elements[position].getDuration().getText();
 
-            Log.i("Schedule", "getScheduleDate = " + destinationDatas.get(position).getScheduleDate());
+            holder.textViewTravelTime.setText(distance+" "+duration);
+            holder.textViewTravelTime.setVisibility(View.VISIBLE);
+        } else {
+            holder.textViewTravelTime.setVisibility(View.INVISIBLE);
+        }
 
-            /**
-             *   to display scheduled and unscheduled textview
-             */
-            String scheduledStatus = destinationDatas.get(position).getScheduledStatus();
+        Log.i("Schedule", "getScheduleDate = " + destinationDatas.get(position).getScheduleDate());
 
-            if (scheduledStatus != null) {
-                if (scheduledStatus.equals("scheduled")) {
-                    holder.textViewSchedule.setVisibility(View.VISIBLE);
-                    holder.textViewSchedule.setText("Scheduled Destinations");
-                } else if (scheduledStatus.equals("unscheduled")) {
-                    holder.textViewSchedule.setVisibility(View.VISIBLE);
-                    holder.textViewSchedule.setText("Unscheduled Destinations");
-                } else {
-                    holder.textViewSchedule.setVisibility(View.GONE);
-                }
+        /**
+         *   to display scheduled and unscheduled textview
+         */
+        String scheduledStatus = destinationDatas.get(position).getScheduledStatus();
+
+        if (scheduledStatus != null) {
+            if (scheduledStatus.equals("scheduled")) {
+                holder.textViewSchedule.setVisibility(View.VISIBLE);
+                holder.textViewSchedule.setText("Scheduled Destinations");
+            } else if (scheduledStatus.equals("unscheduled")) {
+                holder.textViewSchedule.setVisibility(View.VISIBLE);
+                holder.textViewSchedule.setText("Unscheduled Destinations");
             } else {
                 holder.textViewSchedule.setVisibility(View.GONE);
             }
+        } else {
+            holder.textViewSchedule.setVisibility(View.GONE);
+        }
 
 
-            /**
-             *   to display assigned Destination Time, get the time difference
-             */
-            String scheduledTime = null;
-            String scheduleDate = destinationDatas.get(position).getScheduleDate();
-            if (scheduleDate.length() != 0) {
-                scheduledTime = scheduledAt+ " " + TimeSettings.getTimeOnly(scheduleDate);
-            } else {
-                scheduledTime = "Not Scheduled";
-            }
+        /**
+         *   to display assigned Destination Time, get the time difference
+         */
+        String scheduledTime = null;
+        String scheduleDate = destinationDatas.get(position).getScheduleDate();
+        if (scheduleDate.length() != 0) {
+            scheduledTime = scheduledAt + " " + TimeSettings.getTimeOnly(scheduleDate);
+        } else {
+            scheduledTime = "Not Scheduled";
+        }
 
-            /**
-             *   check userID and assignedUserID to display 'assigned by me'
-             */
-        /*String assignedUserName = null;
+        /**
+         *   check userID and assignedUserID to display 'assigned by me'
+         */
+        String assignedUserName = null;
         assignedUserID = destinationDatas.get(position).getAssignedUserID();
         if (userID == assignedUserID) {
-            assignedUserName = "Me";
+            assignedUserName = "Assigned by Self";
         } else {
-            assignedUserName = destinationDatas.get(position).getName();
-        }*/
+            assignedUserName = "Assigned by " + destinationDatas.get(position).getName();
+        }
 
-            holder.mTextView_destinationAssignedBy.setText(scheduledTime);
+        holder.mTextView_destinationAssignedBy.setText(assignedUserName);
 
-            /**
-             *   set drawable left icon and setting the size
-             */
-            holder.mTextView_destinationAssignedBy.setCompoundDrawables(
-                    GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
+        holder.mTextView_destinationScheduled.setText(scheduledTime);
+
+        /**
+         *   set drawable left icon and setting the size
+         */
+        holder.mTextView_destinationScheduled.setCompoundDrawables(
+                GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.destination_timer), 28, 28),
+                null, null, null);
+
+        /**
+         *   set Destination Name
+         */
+        holder.mTextView_destinationName.setText(destinationDatas.get(position).getDestinationName());
+
+        /**
+         *   based on CheckIn / CheckOut status
+         *   display the background and button name
+         *   set checked_out time if any.
+         */
+        boolean isCheckIn = destinationDatas.get(position).isCheckedIn();
+        boolean isCheckOut = destinationDatas.get(position).isCheckedOut();
+
+        if (!isCheckIn) {
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
+            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkin));
+            holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.green));
+        } else if (!isCheckOut) {
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkout);
+            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setEnabled(true);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
+            holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
+        } else {
+            String checkedOutTime = destinationDatas.get(position).getCheckedOutReportedDate();
+            holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
+            holder.mLinearLayout_checkIncheckOut.setEnabled(false);
+            holder.mButton_checkIncheckOut.setEnabled(false);
+            holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + TimeSettings.getTimeOnly(checkedOutTime));
+            holder.mButton_checkIncheckOut.setCompoundDrawables(
+                    GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
+            holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
+        }
 
-            /**
-             *   set Destination Name
-             */
-            holder.mTextView_destinationName.setText(destinationDatas.get(position).getDestinationName());
-
-            /**
-             *   based on CheckIn / CheckOut status
-             *   display the background and button name
-             *   set checked_out time if any.
-             */
-            boolean isCheckIn = destinationDatas.get(position).isCheckedIn();
-            boolean isCheckOut = destinationDatas.get(position).isCheckedOut();
-
-            if (!isCheckIn) {
-                holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
-                holder.mLinearLayout_checkIncheckOut.setEnabled(true);
-                holder.mButton_checkIncheckOut.setEnabled(true);
-                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkin));
-                holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.green));
-            } else if (!isCheckOut) {
-                holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkout);
-                holder.mLinearLayout_checkIncheckOut.setEnabled(true);
-                holder.mButton_checkIncheckOut.setEnabled(true);
-                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
-                holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
-            } else {
-                String checkedOutTime = destinationDatas.get(position).getCheckedOutReportedDate();
-                holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checked_at);
-                holder.mLinearLayout_checkIncheckOut.setEnabled(false);
-                holder.mButton_checkIncheckOut.setEnabled(false);
-                holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkedout_at) + " " + TimeSettings.getTimeOnly(checkedOutTime));
-                holder.mButton_checkIncheckOut.setCompoundDrawables(
-                        GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
-                        null, null, null);
-                holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
+        /**
+         *   on clicking below LinearLayout or Button , call CheckInCheckOut API
+         */
+        holder.mLinearLayout_checkIncheckOut.setTag(position);
+        holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int destinationPosition = (int) v.getTag();
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
             }
+        });
 
-            /**
-             *   on clicking below LinearLayout or Button , call CheckInCheckOut API
-             */
-            holder.mLinearLayout_checkIncheckOut.setTag(position);
-            holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int destinationPosition = (int) v.getTag();
-                    delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
-                }
-            });
-
-            holder.mButton_checkIncheckOut.setTag(position);
-            holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int destinationPosition = (int) v.getTag();
-                    delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
-                }
-            });
+        holder.mButton_checkIncheckOut.setTag(position);
+        holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int destinationPosition = (int) v.getTag();
+                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
+            }
+        });
 
     }
 
 
     /**
-     *   get Time difference
+     * get Time difference
+     *
      * @param date
      * @return
      */
@@ -235,7 +242,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         String timeDifference = null;
 
-        Log.i(Constants.TAG, "dateTimeDifference: getTime = "+getTime);
+        Log.i(Constants.TAG, "dateTimeDifference: getTime = " + getTime);
 
         DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime endTime = fmt.parseDateTime(getTime);
@@ -269,7 +276,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             } else {
                 timeDifference = weeks + " weeks ago";
             }
-        } else if(days != 0) {
+        } else if (days != 0) {
             if (days == 1) {
                 timeDifference = days + " day ago";
             } else {
@@ -287,7 +294,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             } else {
                 timeDifference = minutes + " mins ago";
             }
-        } else if (seconds != 0 ){
+        } else if (seconds != 0) {
             if (seconds == 1) {
                 timeDifference = "few secs ago";
             } else {
