@@ -126,28 +126,28 @@ public class DestinationsMapFragment extends Fragment
 
         if (mGoogleMap != null)
             mGoogleMap.clear();
-
-        Log.d("map","Number ..");
+        boolean scheduleCountFlag=true;
         if (DestinationsTabFragment.destinationDatas != null) {
             if (arrayListDestinations != null)
                 arrayListDestinations.clear();
             arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
-            Log.d("map","Number2 ..");
                 arrayList.clear();
             for (DestinationData data : arrayListDestinations) {
-                Log.d("map","Number of Markers without if...");
                 if (data.getScheduleDate().length() != 0 && data.isScheduleDisplayStatus()) {
-                    Log.d("map","Number of Markers...");
                     arrayList.add(data);
+                    scheduleCountFlag=false;
                     LatLng latLng = new LatLng(data.getDestinationLatitude(), data.getDestinationLongitude());
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.title(data.getDestinationName());
                     markerOptions.position(latLng);
                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawTravelTimeOnMapMarker(data.isCheckedIn(), data.isCheckedOut(), data.getDestinationLatitude(), data.getDestinationLongitude())));
-
                     mGoogleMap.addMarker(markerOptions).showInfoWindow();
                 }
             }
+        }
+        if(scheduleCountFlag)
+        {
+            Toast.makeText(getActivity(),""+getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
         }
 
     }
