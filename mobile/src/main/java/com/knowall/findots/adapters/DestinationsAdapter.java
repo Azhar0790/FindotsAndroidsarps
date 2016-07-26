@@ -2,6 +2,7 @@ package com.knowall.findots.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.widget.RecyclerView;
@@ -49,6 +50,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     Elements[] elements = null;
     double currentLatitude;
     double currentLongitude;
+    Typeface typefaceLight = null;
 
     public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas/*, Elements[] elements*/
     ) {
@@ -61,38 +63,44 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
 
+        typefaceLight = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+
         getCurrentLatitudeAndLongitude();
 
     }
 
     public void getCurrentLatitudeAndLongitude() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        List<String> providers = locationManager.getProviders(true);
-        Location location = null;
+            List<String> providers = locationManager.getProviders(true);
+            Location location = null;
 
-        for (String provider : providers) {
-            Location currentLocation = locationManager.getLastKnownLocation(provider);
-            if (currentLocation == null) {
-                continue;
-            }
-            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
-                location = currentLocation;
-            }
-        }
-
-        if (location != null) {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        } else {
-            DataHelper dataHelper = DataHelper.getInstance(context);
-            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
-            if (locationLatestData.size() > 0) {
-                for (LocationData locLastData : locationLatestData) {
-                    currentLatitude = locLastData.getLatitude();
-                    currentLongitude = locLastData.getLongitude();
+            for (String provider : providers) {
+                Location currentLocation = locationManager.getLastKnownLocation(provider);
+                if (currentLocation == null) {
+                    continue;
+                }
+                if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                    location = currentLocation;
                 }
             }
+
+            if (location != null) {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+            } else {
+                DataHelper dataHelper = DataHelper.getInstance(context);
+                List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+                if (locationLatestData.size() > 0) {
+                    for (LocationData locLastData : locationLatestData) {
+                        currentLatitude = locLastData.getLatitude();
+                        currentLongitude = locLastData.getLongitude();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -143,6 +151,16 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        /**
+         *   set typeface
+         */
+        holder.textViewSchedule.setTypeface(typefaceLight);
+        holder.textViewTravelTime.setTypeface(typefaceLight);
+        holder.mTextView_destinationAssignedBy.setTypeface(typefaceLight);
+        holder.mTextView_destinationName.setTypeface(typefaceLight);
+        holder.mTextView_destinationScheduled.setTypeface(typefaceLight);
+        holder.mButton_checkIncheckOut.setTypeface(typefaceLight);
 
         /**
          *   displaying travel time
