@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,11 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,12 +33,10 @@ import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.events.AppEvents;
-import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
-import com.knowall.findots.utils.GeneralUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -64,13 +56,9 @@ import de.greenrobot.event.EventBus;
 public class DestinationsMapFragment extends Fragment
         implements
         OnMapReadyCallback,
-        IGetDestinations,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        LocationListener {
+        IGetDestinations {
 
     GoogleMap mGoogleMap = null;
-    GoogleApiClient mGoogleApiClient = null;
 
     double currentLatitude, currentLongitude;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
@@ -89,18 +77,6 @@ public class DestinationsMapFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_map, null);
-
-
-        if (GeneralUtils.checkPlayServices(getActivity())) {
-            // If this check succeeds, proceed with normal processing.
-            // Otherwise, prompt user to get valid Play Services APK.
-            if (!(Utils.isLocationServiceEnabled(getActivity()))) {
-                Utils.createLocationServiceError(getActivity());
-            }
-            buildGoogleApiClient();
-        } else {
-            Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
-        }
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(DestinationsMapFragment.this);
@@ -145,7 +121,7 @@ public class DestinationsMapFragment extends Fragment
                 }
             }
         }
-        if(scheduleCountFlag)
+        if(scheduleCountFlag && DestinationsTabFragment.pagerCurrentItem==0)
         {
             Toast.makeText(getActivity(),""+getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
         }
@@ -300,65 +276,11 @@ public class DestinationsMapFragment extends Fragment
             /**
              *   call Google api client to fetch current location
              */
-            try {
-                mGoogleApiClient.connect();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
         }
         Log.i(Constants.TAG, "fetchCurrentLocation: lat and lng = " + currentLatitude + ", " + currentLongitude);
     }
 
-    /**
-     * builds Google Api client
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addConnectionCallbacks(DestinationsMapFragment.this)
-                .addOnConnectionFailedListener(DestinationsMapFragment.this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        try {
-            LocationRequest mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(10000);
-            mLocationRequest.setFastestInterval(5000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-            try {
-                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
 
 
     public void onEvent(AppEvents events) {
@@ -496,18 +418,7 @@ public class DestinationsMapFragment extends Fragment
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        try {
-            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.disconnect();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-    }
 
     public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
         ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
@@ -580,11 +491,7 @@ public class DestinationsMapFragment extends Fragment
         /**
          *   connect the google api client
          */
-        try {
-            mGoogleApiClient.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         /**
          *   setting schedule status
