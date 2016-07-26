@@ -569,7 +569,7 @@ public class DestinationFragment extends Fragment
 
                 break;
 
-            case SCHEDULEDDATEMAP:
+            case SCHEDULEDDATELIST:
                 Log.d("jomy", "Change Date in event.");
 //                EventBus.getDefault().cancelEventDelivery(event);
 //              EventBus.getDefault().unregister(this);
