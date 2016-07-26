@@ -202,7 +202,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     public void scheduleTextUiCondition(Boolean checkedIn, Boolean checkedOut,String scheduleDate) {
         Log.d("jomy", "Schedule Date2 : " + scheduleDate+" Schedule  : "+checkCurrentTimeGreater(scheduleDate));
-            if ((checkedIn || checkedOut) || checkCurrentTimeGreater(scheduleDate)) {
+            if ((checkedIn && checkedOut) || checkCurrentTimeGreater(scheduleDate)) {
                 rescheduleFlag=true;
                     setSpannableScheduleString(getString(R.string.reschedule));
             }
