@@ -2,6 +2,8 @@ package com.knowall.findots.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,8 +15,10 @@ import android.widget.TextView;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
+import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.interfaces.IDestinations;
+import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
@@ -25,7 +29,9 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -41,17 +47,53 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     int userID = 0;
     int assignedUserID = 0;
     Elements[] elements = null;
+    double currentLatitude;
+    double currentLongitude;
 
-    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas, Elements[] elements) {
+    public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas/*, Elements[] elements*/
+    ) {
         this.context = context;
         this.destinationDatas = destinationDatas;
-        this.elements = elements;
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
         getTime = dateTime.toString(fmt1);
 
         userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
+
+        getCurrentLatitudeAndLongitude();
+
+    }
+
+    public void getCurrentLatitudeAndLongitude() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        List<String> providers = locationManager.getProviders(true);
+        Location location = null;
+
+        for (String provider : providers) {
+            Location currentLocation = locationManager.getLastKnownLocation(provider);
+            if (currentLocation == null) {
+                continue;
+            }
+            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                location = currentLocation;
+            }
+        }
+
+        if (location != null) {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+        } else {
+            DataHelper dataHelper = DataHelper.getInstance(context);
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -102,11 +144,10 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-
         /**
          *   displaying travel time
          */
-        if (elements != null && elements.length > position) {
+        /*if (elements != null && elements.length > position) {
             String distance = elements[position].getDistance().getText();
             String duration = elements[position].getDuration().getText();
 
@@ -114,9 +155,21 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             holder.textViewTravelTime.setVisibility(View.VISIBLE);
         } else {
             holder.textViewTravelTime.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
-        Log.i("Schedule", "getScheduleDate = " + destinationDatas.get(position).getScheduleDate());
+        float[] distance = new float[2];
+
+        Location.distanceBetween(
+                currentLatitude,
+                currentLongitude,
+                destinationDatas.get(position).getDestinationLatitude(),
+                destinationDatas.get(position).getDestinationLongitude(), distance);
+
+        String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
+
+        holder.textViewTravelTime.setVisibility(View.VISIBLE);
+        holder.textViewTravelTime.setText(kilometers + " KM");
+
 
         /**
          *   to display scheduled and unscheduled textview
@@ -124,7 +177,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         String scheduledStatus = destinationDatas.get(position).getScheduledStatus();
 
         if (scheduledStatus != null) {
-            if (scheduledStatus.equals("scheduled")) {
+            if (scheduledStatus.equals("scheduled") && position == 0) {
                 holder.textViewSchedule.setVisibility(View.VISIBLE);
                 holder.textViewSchedule.setText("Scheduled Destinations");
             } else if (scheduledStatus.equals("unscheduled")) {
@@ -155,9 +208,9 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         String assignedUserName = null;
         assignedUserID = destinationDatas.get(position).getAssignedUserID();
         if (userID == assignedUserID) {
-            assignedUserName = "Assigned by Self";
+            assignedUserName = "Assigned by \nSelf";
         } else {
-            assignedUserName = "Assigned by " + destinationDatas.get(position).getName();
+            assignedUserName = "Assigned by \n" + destinationDatas.get(position).getName();
         }
 
         holder.mTextView_destinationAssignedBy.setText(assignedUserName);

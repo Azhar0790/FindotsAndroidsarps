@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -66,16 +67,20 @@ public class DestinationFragment extends Fragment
         implements
         IDestinations,
         IGetDestinations,
-        ICheckInCheckOut,
-        IDistanceMatrix,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        LocationListener {
+        ICheckInCheckOut
+        //IDistanceMatrix,
+        //GoogleApiClient.OnConnectionFailedListener,
+        //GoogleApiClient.ConnectionCallbacks,
+        //LocationListener
+{
 
     @Bind(R.id.RecyclerView_destinations)
     RecyclerView mRecyclerView_destinations;
 
-    GoogleApiClient mGoogleApiClient = null;
+    @Bind(R.id.textViewNoDestinations)
+    TextView textViewNoDestinations;
+
+    //GoogleApiClient mGoogleApiClient = null;
 
     LinearLayoutManager layoutManager = null;
     Parcelable listViewState = null;
@@ -116,7 +121,7 @@ public class DestinationFragment extends Fragment
             if (!(Utils.isLocationServiceEnabled(getActivity()))) {
                 Utils.createLocationServiceError(getActivity());
             }
-            buildGoogleApiClient();
+            //buildGoogleApiClient();
         } else {
             Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
@@ -127,14 +132,21 @@ public class DestinationFragment extends Fragment
         mRecyclerView_destinations.setLayoutManager(layoutManager);
 
         arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
-        setAdapterForDestinations();
 
+        if (arrayListDestinations == null || arrayListDestinations.size() == 0) {
+            textViewNoDestinations.setVisibility(View.VISIBLE);
+            mRecyclerView_destinations.setVisibility(View.INVISIBLE);
+        } else {
+            textViewNoDestinations.setVisibility(View.GONE);
+            mRecyclerView_destinations.setVisibility(View.VISIBLE);
+            setAdapterForDestinations();
+        }
 
         return rootView;
     }
 
 
-    @Override
+    /*@Override
     public void onStop() {
         super.onStop();
         try {
@@ -145,7 +157,7 @@ public class DestinationFragment extends Fragment
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     @Override
     public void onDestinationSelected(int itemPosition) {
@@ -164,7 +176,7 @@ public class DestinationFragment extends Fragment
         boolean isEditable = arrayListDestinations.get(itemPosition).isEditable();
         boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
 
-        String  scheduleDate=arrayListDestinations.get(itemPosition).getScheduleDate();
+        String scheduleDate = arrayListDestinations.get(itemPosition).getScheduleDate();
 
         listViewState = layoutManager.onSaveInstanceState();
 
@@ -205,9 +217,9 @@ public class DestinationFragment extends Fragment
     }
 
     public void setAdapterForDestinations() {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations, elements);
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
         destinationsAdapter.delegate = DestinationFragment.this;
-        Log.d("jomy","arrayListDestinations ssew"+arrayListDestinations.size());
+        Log.d("jomy", "arrayListDestinations ssew" + arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
 
         if (nextScheduledItemPosition >= 0) {
@@ -225,8 +237,8 @@ public class DestinationFragment extends Fragment
     }
 
 
-
     int nextScheduledItemPosition = -1;
+
     public ArrayList<DestinationData> sortDestinationsOnScheduleDate(DestinationData[] destinationDatas) {
         ArrayList<DestinationData> arrayListScheduleDate = new ArrayList<>();
         arrayListScheduleDate.clear();
@@ -238,7 +250,7 @@ public class DestinationFragment extends Fragment
          *   dividing scheduled and unscheduled arraylist of destinations
          */
         for (DestinationData data : destinationDatas) {
-            if(data.getScheduleDate().length() != 0) {
+            if (data.getScheduleDate().length() != 0) {
                 if (data.isScheduleDisplayStatus())
                     arrayListScheduleDate.add(data);
             } else {
@@ -275,7 +287,7 @@ public class DestinationFragment extends Fragment
          *  set time difference to the scheduled arraylist
          */
         int i = 0;
-        for (DestinationData data:arrayListScheduleDate) {
+        for (DestinationData data : arrayListScheduleDate) {
             long timeDifference = TimeSettings.getTimeDifference(data.getScheduleDate());
             arrayListScheduleDate.get(i).setTimeDifference(timeDifference);
             i++;
@@ -295,7 +307,7 @@ public class DestinationFragment extends Fragment
             }
         }
 
-        if (nextScheduledItemPosition > arrayListScheduleDate.size()-1) {
+        if (nextScheduledItemPosition > arrayListScheduleDate.size() - 1) {
             nextScheduledItemPosition = -1;
         }
 
@@ -303,7 +315,6 @@ public class DestinationFragment extends Fragment
             arrayListScheduleDate.get(0).setScheduledStatus("scheduled");
         }
 
-        createDestinations(arrayListScheduleDate);
 
         /**
          *    sorting of unscheduled arraylist
@@ -328,16 +339,16 @@ public class DestinationFragment extends Fragment
 
         Collections.reverse(arrayListUnScheduleDate);
 
-        Log.d("jomy","arrayListUnScheduleDate Date size : "+arrayListUnScheduleDate.size());
+        Log.d("jomy", "arrayListUnScheduleDate Date size : " + arrayListUnScheduleDate.size());
 
         /**
          *   connect the google api client
          */
-        try {
+       /* try {
             mGoogleApiClient.connect();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         /**
          *   setting schedule status
@@ -352,12 +363,13 @@ public class DestinationFragment extends Fragment
          */
         arrayListScheduleDate.addAll(arrayListUnScheduleDate);
 
-        Log.d("jomy","Schedule Date size : "+arrayListScheduleDate.size());
+        Log.d("jomy", "Schedule Date size : " + arrayListScheduleDate.size());
         return arrayListScheduleDate;
     }
 
 
     public static int destinationListPosition = 0;
+
     @Override
     public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn) {
         listViewState = layoutManager.onSaveInstanceState();
@@ -396,7 +408,7 @@ public class DestinationFragment extends Fragment
     public void offlineCheckInCheckOut(int position) {
         if (!arrayListDestinations.get(position).isCheckedIn()) {
             arrayListDestinations.get(position).setCheckedIn(true);
-        } else if(!arrayListDestinations.get(position).isCheckedOut()) {
+        } else if (!arrayListDestinations.get(position).isCheckedOut()) {
             arrayListDestinations.get(position).setCheckedOut(true);
 
             DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -490,7 +502,7 @@ public class DestinationFragment extends Fragment
         // Check that the result was from the autocomplete widget.
         try {
             if (requestCode == REQUEST_CODE_ACTIVITYDETAILS) {
-                Log.i(Constants.TAG, "onActivityResult..//"+requestCode +"result ");
+                Log.i(Constants.TAG, "onActivityResult..//" + requestCode + "result ");
                 if (resultCode == getActivity().RESULT_OK && (data.getStringExtra("result").equals("success") ||
                         data.getStringExtra("result").equals("renamedDestination") ||
                         data.getStringExtra("result").equals("deletedDestination"))) {
@@ -513,22 +525,21 @@ public class DestinationFragment extends Fragment
                         arrayListDestinations.get(destinationListPosition).setCheckedOutReportedDate(time);
                     }
                     setAdapterForDestinations();
-                } else if(resultCode == 3) {
-                    Log.d("jomy","check...");
+                } else if (resultCode == 3) {
+                    Log.d("jomy", "check...");
                     GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
                     destinationsRestCall.delegate = DestinationFragment.this;
                     destinationsRestCall.callGetDestinations();
-                }
-                else {
+                } else {
                     super.onActivityResult(requestCode, resultCode, data);
                     Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall - first else block");
                 }
-            }else {
+            } else {
                 super.onActivityResult(requestCode, resultCode, data);
                 Log.i(Constants.TAG, "onActivityResult.we.//  else block");
             }
+        } catch (Exception e) {
         }
-        catch (Exception e){}
     }
 
 
@@ -558,14 +569,22 @@ public class DestinationFragment extends Fragment
 
                 break;
 
-            case SCHEDULEDDATELIST:
-                Log.d("jomy","Change Date in event.");
+            case SCHEDULEDDATEMAP:
+                Log.d("jomy", "Change Date in event.");
 //                EventBus.getDefault().cancelEventDelivery(event);
 //              EventBus.getDefault().unregister(this);
-                Log.d("jomy","Change Date in event.");
+                Log.d("jomy", "Change Date in event.");
                 Log.i(Constants.TAG, "REFRESHDESTINATIONS");
                 arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
-                setAdapterForDestinations();
+
+                if (arrayListDestinations == null || arrayListDestinations.size() == 0) {
+                    textViewNoDestinations.setVisibility(View.VISIBLE);
+                    mRecyclerView_destinations.setVisibility(View.INVISIBLE);
+                } else {
+                    textViewNoDestinations.setVisibility(View.GONE);
+                    mRecyclerView_destinations.setVisibility(View.VISIBLE);
+                    setAdapterForDestinations();
+                }
 
 //                if (!EventBus.getDefault().isRegistered(this))
 //                    EventBus.getDefault().register(this);
@@ -576,15 +595,15 @@ public class DestinationFragment extends Fragment
     /**
      *   builds Google Api client
      */
-    protected synchronized void buildGoogleApiClient() {
+    /*protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(DestinationFragment.this)
                 .addOnConnectionFailedListener(DestinationFragment.this)
                 .addApi(LocationServices.API)
                 .build();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
             LocationRequest mLocationRequest = new LocationRequest();
@@ -597,9 +616,9 @@ public class DestinationFragment extends Fragment
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onLocationChanged(Location location) {
         if (location != null) {
             double originLatitude = location.getLatitude();
@@ -621,9 +640,9 @@ public class DestinationFragment extends Fragment
                 }
             }
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
@@ -631,14 +650,14 @@ public class DestinationFragment extends Fragment
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
-    }
+    }*/
 
     /**
      *   call DistanceMatrix API to display
      *   duration and distance of the
      *   current location and destination locations on the map markers
      */
-    public void googleDistanceMatrixAPI(String origin, String destination) {
+   /* public void googleDistanceMatrixAPI(String origin, String destination) {
         DistanceMatrixService service = new DistanceMatrixService();
         service.delegate = DestinationFragment.this;
         service.callDistanceMatrixService(getActivity(), origin, destination);
@@ -656,12 +675,12 @@ public class DestinationFragment extends Fragment
 
                     setAdapterForDestinations();
 
-                    /*Duration duration = elements[0].getDuration();
+                    *//*Duration duration = elements[0].getDuration();
                     if(duration != null) {
                         travelTime = duration.getText();
                         setAdapterForDestinations();
                         Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
-                    }*/
+                    }*//*
                 }
             }
         }
@@ -671,14 +690,14 @@ public class DestinationFragment extends Fragment
     public void onDistanceMatrixFailure() {
         onConnected(null);
         //Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
-    }
+    }*/
 
     /**
      *   create Origins request parameter for DistanceMatrix
      * @return
      */
 
-    StringBuilder destinations = null;
+    /*StringBuilder destinations = null;
     public void createDestinations(ArrayList<DestinationData> arrayListScheduleDate) {
         if (arrayListScheduleDate.size() > 0) {
             destinations = new StringBuilder();
@@ -686,6 +705,6 @@ public class DestinationFragment extends Fragment
                 destinations.append(data.getDestinationLatitude()+","+data.getDestinationLongitude()+"|");
             }
         }
-    }
+    }*/
 
 }

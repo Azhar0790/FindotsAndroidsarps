@@ -562,7 +562,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 /**
                  *   Outside the Radius
                  */
-                String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
+                String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
                 mTextView_map_km.setText(kilometers + " km");
 
@@ -574,7 +574,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 /**
                  *   Inside the Radius
                  */
-                String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
+                String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
                 mTextView_map_km.setText(kilometers + " km");
 

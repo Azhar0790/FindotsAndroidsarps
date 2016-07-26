@@ -397,7 +397,7 @@ public class DestinationsMapFragment extends Fragment
         float[] distance = new float[2];
         Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
 
-        String kilometers = new DecimalFormat("##.##").format(distance[0] / 1000);
+        String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
         Bitmap bm;
 

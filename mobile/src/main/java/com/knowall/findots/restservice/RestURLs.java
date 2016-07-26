@@ -32,5 +32,6 @@ public class RestURLs {
     public static final String METHOD_DELETE_ASSIGNED_DESTINATION  = "DeleteAssignedDestination";
     public static final String METHOD_RENAME_ASSIGNED_DESTINATION  = "RenameDestinationName";
     public static final String METHOD_SCHEDULE_DESTINATION_VISIT  = "UpdateScheduleForDestination";
+    public static final String METHOD_RESCHEDULE_DESTINATION_VISIT = "ReScheduleForDestination";
 
 }
