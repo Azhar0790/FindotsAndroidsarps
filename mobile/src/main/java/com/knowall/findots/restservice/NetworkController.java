@@ -53,6 +53,9 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_SCHEDULE_DESTINATION_VISIT)
     Call<ResponseModel> scheduleDestinationVisit(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_RESCHEDULE_DESTINATION_VISIT)
+    Call<ResponseModel> reScheduleDestinationVisit(@Body Map<String, Object> request);
+
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<ResponseModel> saveLocationPath(@Body BackgroundLocData bgData);
 

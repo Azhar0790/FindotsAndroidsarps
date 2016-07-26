@@ -54,7 +54,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     static String currnt_selected_dateTime = "";
 
     MaterialCalendarView materialCalendarView = null;
-
+    int pagerCurrentItem=0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
 
@@ -88,6 +88,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
 
                 // Click action
+                pagerCurrentItem=viewPagerDestinations.getCurrentItem();
+                Log.d("jomy","pagerCurrentItem : "+pagerCurrentItem);
                 Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_ADD_DESTINATION);
             }
@@ -113,6 +115,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
+                pagerCurrentItem=tab.getPosition();
             }
 
             @Override
@@ -141,6 +144,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPagerDestinations.setAdapter(pagerAdapter);
+        viewPagerDestinations.setCurrentItem(pagerCurrentItem);
     }
 
     @Override
@@ -163,10 +167,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_ADD_DESTINATION) {
 
-            if (viewPagerDestinations != null && viewPagerDestinations.getChildCount() > 0)
-                viewPagerDestinations.setCurrentItem(0);
-
-            Log.d("jomy", "onActivityResultwwffg..//");
+            if (viewPagerDestinations != null && viewPagerDestinations.getChildCount() >= pagerCurrentItem) {
+                viewPagerDestinations.setCurrentItem(pagerCurrentItem);
+                Log.d("jomy", "set pagerCurrentItem..//" + pagerCurrentItem);
+            }
             GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
