@@ -406,7 +406,7 @@ public class DestinationsMapFragment extends Fragment
     @Override
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         DestinationsTabFragment.destinationDatas = destinationsModel.getDestinationData();
-        DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.currnt_selected_dateTime);
+        DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.current_selected_dateTime);
 //        EventBus.getDefault().post(AppEvents.REFRESHTABVALUES);
 //        fetchCurrentLocation();
 //        addAllDestinationsOnMap();

@@ -51,10 +51,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
-    static String currnt_selected_dateTime = "";
+    public static String current_selected_dateTime = "";
 
     MaterialCalendarView materialCalendarView = null;
-    int pagerCurrentItem=0;
+    public static int pagerCurrentItem=0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
 
@@ -81,12 +81,12 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("List"));
+        tabLayout.addTab(tabLayout.newTab().setText("History"));
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
-
                 // Click action
                 pagerCurrentItem=viewPagerDestinations.getCurrentItem();
                 Log.d("jomy","pagerCurrentItem : "+pagerCurrentItem);
@@ -115,7 +115,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
-                pagerCurrentItem=tab.getPosition();
+                pagerCurrentItem = tab.getPosition();
+
+                if (pagerCurrentItem == 2) {
+                    EventBus.getDefault().post(AppEvents.HISTORY);
+                }
             }
 
             @Override
@@ -138,9 +142,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
-        currnt_selected_dateTime = dateTime.toString(fmt1);
+        current_selected_dateTime = dateTime.toString(fmt1);
 
-        createScheduledUnscheduledListByDate(currnt_selected_dateTime);
+        createScheduledUnscheduledListByDate(current_selected_dateTime);
 
         DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPagerDestinations.setAdapter(pagerAdapter);
@@ -201,6 +205,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 getSelectedDateFromCalendar(date.getDate());
+
             }
         });
 
@@ -256,14 +261,17 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         // ------------------------------------
         SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
 
-
         try {
-            currnt_selected_dateTime = sdf4.format(d1);
+            current_selected_dateTime = sdf4.format(d1);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        createScheduledUnscheduledListByDate(currnt_selected_dateTime);
+        if (pagerCurrentItem == 2) {
+            EventBus.getDefault().post(AppEvents.HISTORY);
+        }
+
+        createScheduledUnscheduledListByDate(current_selected_dateTime);
     }
 
     public static void createScheduledUnscheduledListByDate(String dateTime) {

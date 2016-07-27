@@ -84,13 +84,9 @@ public class TimeSettings {
 
 
     public static String getTimeOnly(String date) {
-
-        String checkedOutTime = null;
+        String checkedOutTime = "";
 
         try {
-            final String ANTE_MERIDIAN = "am";
-            final String POST_MERIDIAN = "pm";
-
             if (date.length() != 0) {
 
                 SimpleDateFormat sdfLocal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -98,23 +94,9 @@ public class TimeSettings {
                 Date mDate = sdfLocal.parse(date);
 
                 SimpleDateFormat sdf12HourFormat = new SimpleDateFormat("hh:mm aa");
-                //sdf12HourFormat.setTimeZone(TimeZone.getDefault());
                 checkedOutTime = sdf12HourFormat.format(mDate);
-
-                //long time = mDate.getTime();
-                //checkedOutTime = String.valueOf(time);
-
-                //int hour = mDate.getHours();
-                //int minute = mDate.getMinutes();
-                //String meridian = (hour > 12) ? POST_MERIDIAN : ANTE_MERIDIAN;
-
-                //checkedOutTime = hour + "." + minute + meridian;
-            } else {
-                checkedOutTime = "";
             }
-
         } catch (Exception e) {
-            Log.d("jomy", e.getMessage());
             e.printStackTrace();
         }
         return checkedOutTime;

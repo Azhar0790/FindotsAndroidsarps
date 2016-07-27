@@ -6,7 +6,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,22 +17,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.adapters.DestinationsAdapter;
 import com.knowall.findots.database.DataHelper;
-import com.knowall.findots.distancematrix.DistanceMatrixService;
-import com.knowall.findots.distancematrix.IDistanceMatrix;
-import com.knowall.findots.distancematrix.model.DistanceMatrix;
-import com.knowall.findots.distancematrix.model.Duration;
-import com.knowall.findots.distancematrix.model.Elements;
-import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
@@ -206,7 +194,7 @@ public class DestinationFragment extends Fragment
             DestinationData[] destinationDatas = destinationsModel.getDestinationData();
 
             DestinationsTabFragment.destinationDatas = destinationDatas;
-            DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.currnt_selected_dateTime);
+            DestinationsTabFragment.createScheduledUnscheduledListByDate(DestinationsTabFragment.current_selected_dateTime);
 //            EventBus.getDefault().post(AppEvents.REFRESHTABVALUES);
 //            EventBus.getDefault().post(AppEvents.REFRESHDESTINATIONS);
 //

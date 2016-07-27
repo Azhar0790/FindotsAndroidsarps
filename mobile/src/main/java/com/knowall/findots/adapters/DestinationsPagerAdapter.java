@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.knowall.findots.fragments.DestinationFragment;
 import com.knowall.findots.fragments.DestinationsMapFragment;
+import com.knowall.findots.fragments.HistoryFragment;
 
 /**
  * Created by parijathar on 7/4/2016.
@@ -14,6 +15,7 @@ public class DestinationsPagerAdapter extends FragmentStatePagerAdapter {
 
     final int List = 1;
     final int Map = 0;
+    final int History = 2;
 
     int numOfTabs;
 
@@ -37,6 +39,10 @@ public class DestinationsPagerAdapter extends FragmentStatePagerAdapter {
             case List:
                 DestinationFragment tabList = new DestinationFragment();
                 return tabList;
+
+            case History:
+                HistoryFragment tabHistory = new HistoryFragment();
+                return tabHistory;
         }
 
         return null;
