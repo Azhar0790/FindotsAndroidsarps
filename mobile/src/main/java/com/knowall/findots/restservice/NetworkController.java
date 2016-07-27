@@ -6,6 +6,7 @@ import com.knowall.findots.restcalls.accountSettings.GetAccountInfoModel;
 import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutModel;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.forgotPassword.ForgotPasswordModel;
+import com.knowall.findots.restcalls.history.HistoryModel;
 import com.knowall.findots.restcalls.login.LoginModel;
 import com.knowall.findots.restcalls.register.RegisterModel;
 import com.knowall.findots.restmodels.ResponseModel;
@@ -55,6 +56,9 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_RESCHEDULE_DESTINATION_VISIT)
     Call<ResponseModel> reScheduleDestinationVisit(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_GETREPORT)
+    Call<HistoryModel> getHistory(@Body Map<String, Object> request);
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
     Call<ResponseModel> saveLocationPath(@Body BackgroundLocData bgData);
