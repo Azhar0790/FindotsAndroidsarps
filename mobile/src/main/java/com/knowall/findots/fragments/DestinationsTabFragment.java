@@ -1,6 +1,7 @@
 package com.knowall.findots.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,7 +55,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     static String currnt_selected_dateTime = "";
 
     MaterialCalendarView materialCalendarView = null;
-    int pagerCurrentItem=0;
+    public static int pagerCurrentItem=0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
 
@@ -86,7 +87,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onClick(View view) {
                 FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
-
                 // Click action
                 pagerCurrentItem=viewPagerDestinations.getCurrentItem();
                 Log.d("jomy","pagerCurrentItem : "+pagerCurrentItem);
@@ -217,7 +217,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
-        materialCalendarView.goToNext();
+        Log.d("jo","Build version ..."+Build.VERSION.SDK_INT);
+        if (Build.VERSION.SDK_INT > 22) {
+            materialCalendarView.goToNext();
+        }
+
     }
 
     class EventDecorator implements DayViewDecorator {

@@ -186,7 +186,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
         holder.textViewTravelTime.setVisibility(View.VISIBLE);
-        holder.textViewTravelTime.setText(kilometers + " KM");
+        holder.textViewTravelTime.setText(kilometers + context.getResources().getString(R.string.km));
 
 
         /**

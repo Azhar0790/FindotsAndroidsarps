@@ -564,7 +564,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                  */
                 String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
-                mTextView_map_km.setText(kilometers + " km");
+                mTextView_map_km.setText(kilometers + getResources().getString(R.string.km));
 
                 if (requestForCheckInCheckOut) {
                     GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
