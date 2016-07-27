@@ -139,6 +139,8 @@
     <string name="password_same">confirm and new passwords should be same</string>
     <string name="password_updateInfoError">Unable to Update Password</string>
 
-
+    <!-- Store Screen Strings -->
+    <string name="in">IN</string>
+    <string name="out">OUT</string>
 
 </resources>

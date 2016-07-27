@@ -85,15 +85,28 @@
     <dimen name="top_loc_padding">14dp</dimen>
     <dimen name="top_loc_font">20sp</dimen>
 
-
-
-
-
     <!-- Account Settings -->
     <dimen name="firsttext_topMargin">60dp</dimen>
     <dimen name="button_saveAccount_marginTop">30dp</dimen>
     <dimen name="accntSetting_edtTextSize">20dp</dimen>
-
     <dimen name="button_height">60dp</dimen>
+
+    <!-- Store Inflater Layout -->
+    <dimen name="relativeLayoutCheckInOut_margin">10dp</dimen>
+    <dimen name="buttonCheckINOUT_width_height">32dp</dimen>
+    <dimen name="buttonCheckINOUT_textSize">15sp</dimen>
+    <dimen name="line_width">1dp</dimen>
+    <dimen name="line_height">25dp</dimen>
+    <dimen name="textViewCheckInOutStoreName_marginLeft">10dp</dimen>
+    <dimen name="textViewCheckInStoreName_marginTop">3dp</dimen>
+    <dimen name="textViewCheckOutStoreName_marginTop">28dp</dimen>
+    <dimen name="textViewCheckInOutStoreName_textSize">16sp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_textSize">14sp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_marginTop">8dp</dimen>
+    <dimen name="buttonCheckOutTime_marginTop">25dp</dimen>
+    <dimen name="buttonCheckInOutTime_width">100dp</dimen>
+    <dimen name="buttonCheckInOutTime_height">30dp</dimen>
+    <dimen name="buttonCheckInOutTime_textSize">18sp</dimen>
+
 
 </resources>

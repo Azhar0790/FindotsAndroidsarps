@@ -8,7 +8,8 @@
     <color name="transparent">#00000000</color>
     <color name="grey">#868686</color>
     <color name="blue">#66BAEA</color>
-    <color name="darkblue">#0080FF</color>
+    <color name="darkblue">#008DDB</color>
+    <color name="darkgreen">#00A328</color>
     <color name="green">#4dae23</color>
     <color name="light_grey">#acacac</color>
 
@@ -20,5 +21,6 @@
     <color name="black">#000000</color>
     <color name="black_70">#6C6868</color>
     <color name="black_25">#40000000</color>
+    <color name="black_50">#80000000</color>
 
 </resources>

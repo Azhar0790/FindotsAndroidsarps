@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutCheckIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/relativeLayoutCheckInOut_margin"
+        android:layout_marginRight="@dimen/relativeLayoutCheckInOut_margin"
+        android:layout_marginTop="@dimen/relativeLayoutCheckInOut_margin">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutCheckIn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonCheckIN"
+                android:layout_width="@dimen/buttonCheckINOUT_width_height"
+                android:layout_height="@dimen/buttonCheckINOUT_width_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/selector_checkin_round"
+                android:clickable="false"
+                android:text="@string/in"
+                android:textColor="@color/white"
+                android:textSize="@dimen/buttonCheckINOUT_textSize" />
+
+            <View
+                android:layout_width="@dimen/line_width"
+                android:layout_height="@dimen/line_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/grey" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewCheckInStoreName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/textViewCheckInOutStoreName_marginLeft"
+            android:layout_marginTop="@dimen/textViewCheckInStoreName_marginTop"
+            android:layout_toRightOf="@+id/linearLayoutCheckIn"
+            android:maxLines="1"
+            android:text="Store 123"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/textViewCheckInOutStoreName_textSize"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewCheckInStoreAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewCheckInStoreName"
+            android:layout_marginLeft="@dimen/textViewCheckInOutStoreName_marginLeft"
+            android:layout_marginTop="@dimen/textViewCheckInOutStoreAddress_marginTop"
+            android:layout_toRightOf="@+id/linearLayoutCheckIn"
+            android:maxLines="1"
+            android:text="101 Ching's street, Rajkumar rd, Bangalore"
+            android:textColor="@color/black_50"
+            android:textSize="@dimen/textViewCheckInOutStoreAddress_textSize"
+            android:textStyle="normal" />
+
+        <Button
+            android:id="@+id/buttonCheckInTime"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/buttonCheckInOutTime_width"
+            android:layout_height="@dimen/buttonCheckInOutTime_height"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_checkin_time_blue"
+            android:clickable="false"
+            android:elevation="0dp"
+            android:gravity="center"
+            android:shadowColor="@color/transparent"
+            android:text="6:30 PM"
+            android:textColor="@color/darkblue"
+            android:textSize="@dimen/buttonCheckInOutTime_textSize" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textViewTimeTaken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayoutCheckIn"
+        android:layout_marginLeft="10dp"
+        android:text="15 mins"
+        android:textColor="@color/black_50"
+        android:textSize="14sp"
+        android:textStyle="normal" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutCheckOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewTimeTaken"
+        android:layout_marginLeft="@dimen/relativeLayoutCheckInOut_margin"
+        android:layout_marginRight="@dimen/relativeLayoutCheckInOut_margin">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutCheckOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="@dimen/line_width"
+                android:layout_height="@dimen/line_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/grey" />
+
+            <Button
+                android:id="@+id/buttonCheckOUT"
+                android:layout_width="@dimen/buttonCheckINOUT_width_height"
+                android:layout_height="@dimen/buttonCheckINOUT_width_height"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/selector_checkout_round"
+                android:clickable="false"
+                android:text="@string/out"
+                android:textColor="@color/white"
+                android:textSize="@dimen/buttonCheckINOUT_textSize" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewCheckOutStoreName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/textViewCheckInOutStoreName_marginLeft"
+            android:layout_marginTop="@dimen/textViewCheckOutStoreName_marginTop"
+            android:layout_toRightOf="@+id/linearLayoutCheckOut"
+            android:maxLines="1"
+            android:text="Store 123"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/textViewCheckInOutStoreName_textSize"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewCheckOutStoreAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewCheckOutStoreName"
+            android:layout_marginLeft="@dimen/textViewCheckInOutStoreName_marginLeft"
+            android:layout_marginTop="@dimen/textViewCheckInOutStoreAddress_marginTop"
+            android:layout_toRightOf="@+id/linearLayoutCheckOut"
+            android:maxLines="1"
+            android:text="101 Ching's street, Rajkumar rd, Bangalore"
+            android:textColor="@color/black_50"
+            android:textSize="@dimen/textViewCheckInOutStoreAddress_textSize"
+            android:textStyle="normal" />
+
+        <Button
+            android:id="@+id/buttonCheckOutTime"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/buttonCheckInOutTime_width"
+            android:layout_height="@dimen/buttonCheckInOutTime_height"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/buttonCheckOutTime_marginTop"
+            android:background="@drawable/selector_checkout_time_green"
+            android:clickable="false"
+            android:gravity="center"
+            android:text="7:15 PM"
+            android:textColor="@color/darkgreen"
+            android:textSize="@dimen/buttonCheckInOutTime_textSize" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/relativeLayoutCheckOut"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="2dp"
+        android:background="@color/black_50" />
+</RelativeLayout>
