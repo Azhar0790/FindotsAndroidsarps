@@ -1,6 +1,7 @@
 package com.knowall.findots.fragments;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -222,7 +223,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
-        materialCalendarView.goToNext();
+        Log.d("jo","Build version ..."+Build.VERSION.SDK_INT);
+        if (Build.VERSION.SDK_INT > 22) {
+            materialCalendarView.goToNext();
+        }
+
     }
 
     class EventDecorator implements DayViewDecorator {
