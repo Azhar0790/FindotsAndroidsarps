@@ -94,19 +94,21 @@
     <!-- Store Inflater Layout -->
     <dimen name="relativeLayoutCheckInOut_margin">10dp</dimen>
     <dimen name="buttonCheckINOUT_width_height">32dp</dimen>
-    <dimen name="buttonCheckINOUT_textSize">15sp</dimen>
+    <dimen name="buttonCheckINOUT_textSize">13sp</dimen>
     <dimen name="line_width">1dp</dimen>
     <dimen name="line_height">25dp</dimen>
     <dimen name="textViewCheckInOutStoreName_marginLeft">10dp</dimen>
     <dimen name="textViewCheckInStoreName_marginTop">3dp</dimen>
-    <dimen name="textViewCheckOutStoreName_marginTop">28dp</dimen>
+    <dimen name="textViewCheckOutStoreName_marginTop">21dp</dimen>
     <dimen name="textViewCheckInOutStoreName_textSize">16sp</dimen>
     <dimen name="textViewCheckInOutStoreAddress_textSize">14sp</dimen>
-    <dimen name="textViewCheckInOutStoreAddress_marginTop">8dp</dimen>
-    <dimen name="buttonCheckOutTime_marginTop">25dp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_marginTop">2dp</dimen>
+    <dimen name="buttonCheckOutTime_marginTop">16dp</dimen>
     <dimen name="buttonCheckInOutTime_width">100dp</dimen>
-    <dimen name="buttonCheckInOutTime_height">30dp</dimen>
-    <dimen name="buttonCheckInOutTime_textSize">18sp</dimen>
-
+    <dimen name="buttonCheckInOutTime_height">28dp</dimen>
+    <dimen name="buttonCheckInOutTime_textSize">16sp</dimen>
+    <dimen name="linearLayoutCheckIn_marginTop">6dp</dimen>
+    <dimen name="textViewTimeTaken_marginLeft">10dp</dimen>
+    <dimen name="textViewTimeTaken_textSize">14sp</dimen>
 
 </resources>

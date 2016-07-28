@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <RelativeLayout
@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/linearLayoutCheckIn_marginTop">
 
             <Button
                 android:id="@+id/buttonCheckIN"
@@ -31,6 +32,7 @@
                 android:textSize="@dimen/buttonCheckINOUT_textSize" />
 
             <View
+                android:id="@+id/viewCheckInLine"
                 android:layout_width="@dimen/line_width"
                 android:layout_height="@dimen/line_height"
                 android:layout_gravity="center_horizontal"
@@ -78,7 +80,8 @@
             android:shadowColor="@color/transparent"
             android:text="6:30 PM"
             android:textColor="@color/darkblue"
-            android:textSize="@dimen/buttonCheckInOutTime_textSize" />
+            android:textSize="@dimen/buttonCheckInOutTime_textSize"
+            android:textAllCaps="false"/>
     </RelativeLayout>
 
     <TextView
@@ -86,10 +89,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/relativeLayoutCheckIn"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="@dimen/textViewTimeTaken_marginLeft"
         android:text="15 mins"
         android:textColor="@color/black_50"
-        android:textSize="14sp"
+        android:textSize="@dimen/textViewTimeTaken_textSize"
         android:textStyle="normal" />
 
     <RelativeLayout
@@ -173,9 +176,9 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@+id/relativeLayoutCheckOut"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="2dp"
-        android:background="@color/black_50" />
+        android:background="@color/black_25" />
 </RelativeLayout>
