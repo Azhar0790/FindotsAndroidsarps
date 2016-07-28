@@ -92,6 +92,7 @@
     <string name="modify_destinationName">Rename Destination</string>
     <string name="modify_destinationLoc">Modify Location</string>
     <string name="delete_destination">Delete Destination</string>
+    <string name="chat_watsapp">Chat on whatsapp</string>
     <string name="no_destination_assigned">No Destination Assigned for you</string>
     <string name="km">Km</string>
 
