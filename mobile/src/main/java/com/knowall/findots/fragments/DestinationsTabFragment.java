@@ -20,6 +20,7 @@ import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DestinationAddMapActivity;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.adapters.DestinationsPagerAdapter;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.restcalls.destinations.DestinationData;
@@ -40,6 +41,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -55,7 +57,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static String current_selected_dateTime = "";
 
     MaterialCalendarView materialCalendarView = null;
-    public static int pagerCurrentItem=0;
+    public static int pagerCurrentItem = 0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
 
@@ -89,9 +91,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onClick(View view) {
                 FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
                 // Click action
-                pagerCurrentItem=viewPagerDestinations.getCurrentItem();
-                Log.d("jomy","pagerCurrentItem : "+pagerCurrentItem);
-                Intent intent = new Intent(getActivity(), DestinationAddMapActivity.class);
+                pagerCurrentItem = viewPagerDestinations.getCurrentItem();
+                Log.d("jomy", "pagerCurrentItem : " + pagerCurrentItem);
+                Intent intent = new Intent(MenuActivity.ContextMenuActivity, DestinationAddMapActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_ADD_DESTINATION);
             }
         });
@@ -105,10 +107,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         viewPagerDestinations = (ViewPager) rootView.findViewById(R.id.viewPagerDestinations);
 
-        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
         destinationsRestCall.delegate = DestinationsTabFragment.this;
         destinationsRestCall.callGetDestinations();
-
 
         viewPagerDestinations.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
@@ -119,7 +120,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 pagerCurrentItem = tab.getPosition();
 
                 if (pagerCurrentItem == 2) {
-                    EventBus.getDefault().post(AppEvents.HISTORY);
+                    if (mCalendarDay.isAfter(CalendarDay.today()))
+                        EventBus.getDefault().post(AppEvents.NOHISTORY);
+                    else
+                        EventBus.getDefault().post(AppEvents.HISTORY);
                 }
             }
 
@@ -154,7 +158,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     @Override
     public void onGetDestinationFailure(String errorMessage) {
-        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MenuActivity.ContextMenuActivity, errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -176,13 +180,13 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 viewPagerDestinations.setCurrentItem(pagerCurrentItem);
                 Log.d("jomy", "set pagerCurrentItem..//" + pagerCurrentItem);
             }
-            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
 
         } else if (resultCode == 3) {
             Log.d("jomy", "check...");
-            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
         } else {
@@ -193,6 +197,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         materialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.materialCalendarView);
         materialCalendarViewSettings();
     }
+
+    CalendarDay mCalendarDay = null;
 
     public void materialCalendarViewSettings() {
         materialCalendarView.setTileHeightDp(26);
@@ -206,6 +212,16 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 getSelectedDateFromCalendar(date.getDate());
+
+                mCalendarDay = date;
+
+                if (date.isAfter(CalendarDay.today())) {
+                    EventBus.getDefault().post(AppEvents.NOHISTORY);
+                } else {
+                    if (pagerCurrentItem == 2) {
+                        EventBus.getDefault().post(AppEvents.HISTORY);
+                    }
+                }
 
             }
         });
@@ -223,7 +239,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
-        Log.d("jo","Build version ..."+Build.VERSION.SDK_INT);
+        Log.d("jo", "Build version ..." + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT > 22) {
             materialCalendarView.goToNext();
         }
@@ -270,10 +286,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             current_selected_dateTime = sdf4.format(d1);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (pagerCurrentItem == 2) {
-            EventBus.getDefault().post(AppEvents.HISTORY);
         }
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);

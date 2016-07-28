@@ -27,7 +27,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     private static final int TYPE_ITEM = 1;
 
     /*
-     *  String Array and int Array to store titles and icons
+     *  String Array and int Array to history titles and icons
      *  of DrawerLayout
      */
     private String TITLES[];

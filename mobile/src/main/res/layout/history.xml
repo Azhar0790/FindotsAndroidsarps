@@ -21,8 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/recyclerView_destinations_marginLeftRight"
-        android:layout_marginLeft="@dimen/recyclerView_destinations_marginLeftRight"
-        android:layout_marginRight="@dimen/recyclerView_destinations_marginLeftRight"
         android:background="@color/transparent"
         android:scrollbars="none" />
 

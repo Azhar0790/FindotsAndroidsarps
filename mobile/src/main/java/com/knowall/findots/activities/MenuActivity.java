@@ -112,10 +112,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
     private static final int REQUEST_PERMISSIONS = 20;
 
+    public static Context ContextMenuActivity = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
+
+        ContextMenuActivity = MenuActivity.this;
 
         ButterKnife.bind(this);
 

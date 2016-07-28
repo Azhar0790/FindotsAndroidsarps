@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
@@ -123,7 +124,8 @@ public class DestinationsMapFragment extends Fragment
         }
         if(scheduleCountFlag && DestinationsTabFragment.pagerCurrentItem==0)
         {
-            Toast.makeText(getActivity(),""+getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
+            Toast.makeText(MenuActivity.ContextMenuActivity,
+                    ""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
         }
 
     }
@@ -132,8 +134,8 @@ public class DestinationsMapFragment extends Fragment
      * shows all the markers on map
      */
     public void showAllMarkers() {
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
+        int width = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().widthPixels;
+        int height = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().heightPixels;
         int padding = 150;
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
@@ -254,7 +256,8 @@ public class DestinationsMapFragment extends Fragment
      * fetches current location
      */
     public void fetchCurrentLocation() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager)
+                MenuActivity.ContextMenuActivity.getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location location = null;
 
@@ -300,7 +303,6 @@ public class DestinationsMapFragment extends Fragment
                 break;
 
             case SCHEDULEDDATEMAP:
-                Log.d("map","On Map event...");
 //                EventBus.getDefault().unregister(this);
 //                EventBus.getDefault().cancelEventDelivery(events);
                 fetchCurrentLocation();
@@ -329,15 +331,15 @@ public class DestinationsMapFragment extends Fragment
          */
         if (!isCheckIn) {
             // CheckIn
-            bm = BitmapFactory.decodeResource(getResources(),
+            bm = BitmapFactory.decodeResource(MenuActivity.ContextMenuActivity.getResources(),
                     R.drawable.map_marker_plain).copy(Bitmap.Config.ARGB_8888, true);
         } else if (!isCheckOut) {
             // CheckOut
-            bm = BitmapFactory.decodeResource(getResources(),
+            bm = BitmapFactory.decodeResource(MenuActivity.ContextMenuActivity.getResources(),
                     R.drawable.map_marker_blue).copy(Bitmap.Config.ARGB_8888, true);
         } else {
             // CheckOut
-            bm = BitmapFactory.decodeResource(getResources(),
+            bm = BitmapFactory.decodeResource(MenuActivity.ContextMenuActivity.getResources(),
                     R.drawable.map_marker_green).copy(Bitmap.Config.ARGB_8888, true);
         }
 
@@ -345,7 +347,8 @@ public class DestinationsMapFragment extends Fragment
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
-        paint.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf"));
+        paint.setTypeface(Typeface.createFromAsset(
+                MenuActivity.ContextMenuActivity.getAssets(), "fonts/Roboto-Bold.ttf"));
         paint.setTextAlign(Paint.Align.CENTER);
 
         if (kilometers.length() <= 4) {
@@ -365,7 +368,8 @@ public class DestinationsMapFragment extends Fragment
             canvas.drawText("KM", (bm.getWidth() / 2), (bm.getHeight() / 2) + 10, paint);
         }
 
-        BitmapDrawable draw = new BitmapDrawable(getResources(), bm);
+        BitmapDrawable draw = new BitmapDrawable(MenuActivity.ContextMenuActivity.getResources(), bm);
+
         return draw.getBitmap();
     }
 
@@ -386,13 +390,13 @@ public class DestinationsMapFragment extends Fragment
                     data.getStringExtra("result").equals("deletedDestination"))) {
 
                 Log.i(Constants.TAG, "onActivityResult..//  GetDestinationsRestCall");
-                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
                 destinationsRestCall.delegate = DestinationsMapFragment.this;
                 destinationsRestCall.callGetDestinations();
 
             } else if (resultCode == 3) {
                 Log.d("jomy", "check...");
-                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
+                GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
                 destinationsRestCall.delegate = DestinationsMapFragment.this;
                 destinationsRestCall.callGetDestinations();
             } else {
@@ -415,7 +419,7 @@ public class DestinationsMapFragment extends Fragment
 
     @Override
     public void onGetDestinationFailure(String errorMessage) {
-        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MenuActivity.ContextMenuActivity, errorMessage, Toast.LENGTH_SHORT).show();
     }
 
 
