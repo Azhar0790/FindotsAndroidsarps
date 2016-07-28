@@ -143,6 +143,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
+
+        if(current_selected_dateTime==null || current_selected_dateTime.length()<1)
         current_selected_dateTime = dateTime.toString(fmt1);
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);

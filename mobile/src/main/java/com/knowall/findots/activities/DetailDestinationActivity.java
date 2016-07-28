@@ -418,14 +418,14 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public void scheduleDestination() {
 
         Calendar calendarDate = Calendar.getInstance();
-        if (serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0 &&  (((TimeSettings.getTimeDifference(serverRequest_scheduleDate))/60000)>0)) {
-                Date date = new Date();
-                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    date = date_format.parse(serverRequest_scheduleDate);
-                    calendarDate.setTime(date);
-                } catch (Exception e) {
-                }
+        if (serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0 && (((TimeSettings.getTimeDifference(serverRequest_scheduleDate)) / 60000) > 0)) {
+            Date date = new Date();
+            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date = date_format.parse(serverRequest_scheduleDate);
+                calendarDate.setTime(date);
+            } catch (Exception e) {
+            }
         }
 
 
@@ -436,8 +436,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 calendarDate.get(Calendar.DAY_OF_MONTH)
         );
 
-            Calendar calendarnow = Calendar.getInstance();
-            dpd.setMinDate(calendarnow);
+        Calendar calendarnow = Calendar.getInstance();
+        dpd.setMinDate(calendarnow);
 
         dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -450,20 +450,22 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
 
-
     boolean isToday = false;
 
     @Override
     public void onDateSet(DatePickerDialog view, int yearVal, int monthOfYear, int dayOfMonth) {
         Log.d("jomy", "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
         Calendar calendarDate = Calendar.getInstance();
-        if (serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0 && serverRequest_scheduleDate.trim().length() > 0) {
-            Date date = new Date();
-            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                date = date_format.parse(serverRequest_scheduleDate);
-                calendarDate.setTime(date);
-            } catch (Exception e) {
+        boolean cureentDateSelected=((calendarDate.get(Calendar.YEAR) == yearVal) && (calendarDate.get(Calendar.MONTH) == monthOfYear) && (calendarDate.get(Calendar.DAY_OF_MONTH) == dayOfMonth));
+        if ((serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0) ) {
+            if (!cureentDateSelected) {
+                Date date = new Date();
+                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    date = date_format.parse(serverRequest_scheduleDate);
+                    calendarDate.setTime(date);
+                } catch (Exception e) {
+                }
             }
         }
 
@@ -484,7 +486,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 //        tpd.dismissOnPause(true);
 //        tpd.enableSeconds(true);
         Calendar calendarnow = Calendar.getInstance();
-        if ((calendarnow.get(Calendar.YEAR) == yearVal) && (calendarnow.get(Calendar.MONTH) == monthOfYear) && (calendarnow.get(Calendar.DAY_OF_MONTH) == dayOfMonth)) {
+        if (cureentDateSelected) {
             tpd.setMinTime(calendarnow.get(Calendar.HOUR_OF_DAY), calendarnow.get(Calendar.MINUTE), 30);
         }
         tpd.enableMinutes(true);
@@ -494,7 +496,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                Log.d("jomy", "Dialog was cancelled");
             }
         });
         tpd.show(getFragmentManager(), "Timepickerdialog");
