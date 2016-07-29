@@ -107,11 +107,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
     @Bind(R.id.RecyclerView_menu_items)
     RecyclerView mRecyclerView_menu_items;
-
-    String userName = null;
-
     private static final int REQUEST_PERMISSIONS = 20;
-
     public static Context ContextMenuActivity = null;
 
     @Override
@@ -122,8 +118,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         ContextMenuActivity = MenuActivity.this;
 
         ButterKnife.bind(this);
-
-
         actionBarSettings();
         setViewForDashboard();
 
@@ -178,18 +172,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 //        Log.d("jomy","Distance "+Utils.distFromCoordinates(12.987793094478766,77.55964301526546,12.988561489532328,77.5592011213302));
     }
 
-    protected synchronized void buildGoogleApiClient() {
-
-        if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(this)
-                    .enableAutoManage(this, 34992, this)
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-        }
-        Utils.createLocationServiceChecker(googleApiClient, MenuActivity.this);
-    }
 
     @Override
     protected void onResume() {
@@ -261,12 +243,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
             case Constants.TRACKLOCATION:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 locationReport = true;
-
-                if(!Utils.isLocationServiceEnabled(MenuActivity.this)) {
-                    buildGoogleApiClient();
-                }
-                else
-                    connectGoogleApiClient();
+                connectGoogleApiClient();
 
                 break;
 
@@ -314,7 +291,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
     @Override
     public void onPermissionsGranted(int requestCode) {
-
     }
 
     public void logoutConfirmation() {
@@ -356,7 +332,6 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     }
 
     private void startTrackLocationService() {
-        Log.d("jomy", "onStartLocation...");
         startService(new Intent(this, TrackLocationService.class));
     }
 
@@ -390,7 +365,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         switch (status) {
             case ConnectionResult.SUCCESS:
-                googleApiClient =  new GoogleApiClient.Builder(this)
+                googleApiClient = new GoogleApiClient.Builder(this)
                         .enableAutoManage(this, 34992, this)
                         .addApi(LocationServices.API)
                         .addConnectionCallbacks(this)
@@ -413,15 +388,20 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 return;
             }
         }
-
+        Utils.createLocationServiceChecker(googleApiClient, MenuActivity.this);
         if (!(googleApiClient.isConnected() || googleApiClient.isConnecting())) {
             googleApiClient.connect();
         } else {
             Log.d("jomy", "Client is connected");
             if (locationReport) {
-                ReportMyLocation(LocationServices.FusedLocationApi
-                        .getLastLocation(googleApiClient));
-                locationReport = false;
+                Location lastKnownLoc = LocationServices.FusedLocationApi
+                        .getLastLocation(googleApiClient);
+                if (lastKnownLoc != null) {
+                    ReportMyLocation(lastKnownLoc);
+                    locationReport = false;
+                } else {
+                    Toast.makeText(this, getResources().getString(R.string.no_loc_avail), Toast.LENGTH_SHORT).show();
+                }
             } else {
                 startTrackLocationService();
             }
@@ -468,7 +448,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                         Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast toast = Toast.makeText(MenuActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(MenuActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM, 0, 0);
                     toast.show();
                 }

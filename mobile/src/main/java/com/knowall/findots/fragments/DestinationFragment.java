@@ -25,7 +25,6 @@ import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
-import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import com.knowall.findots.restcalls.checkInCheckOut.ICheckInCheckOut;
 import com.knowall.findots.restcalls.destinations.DestinationData;
@@ -103,14 +102,7 @@ public class DestinationFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations, null);
 
-        if (GeneralUtils.checkPlayServices(getActivity())) {
-            // If this check succeeds, proceed with normal processing.
-            // Otherwise, prompt user to get valid Play Services APK.
-            if (!(Utils.isLocationServiceEnabled(getActivity()))) {
-                Utils.createLocationServiceError(getActivity());
-            }
-            //buildGoogleApiClient();
-        } else {
+        if (!GeneralUtils.checkPlayServices(getActivity())) {
             Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
 

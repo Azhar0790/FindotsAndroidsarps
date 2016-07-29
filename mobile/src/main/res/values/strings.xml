@@ -57,6 +57,7 @@
     <string name="create_account">Create Account</string>
     <string name="please_agree">Please agree the terms and conditions.</string>
 
+    <string name="no_loc_avail">Unable to fetch your location data</string>
     <!-- Destinations -->
     <string name="checkin">Check In</string>
     <string name="checkout">Check Out</string>

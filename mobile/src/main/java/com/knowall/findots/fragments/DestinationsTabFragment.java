@@ -301,20 +301,21 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         int i = 0;
 
-        for (DestinationData data : destinationDatas) {
-            if (data.getScheduleDate()!=null && data.getScheduleDate().length() != 0) {
-                scheduleDate = data.getScheduleDate().substring(0, 10);
-                if (selectedDateFromCalendar.equals(scheduleDate)) {
-                    destinationDatas[i].setScheduleDisplayStatus(true);
+        if(destinationDatas!=null) {
+            for (DestinationData data : destinationDatas) {
+                if (data.getScheduleDate() != null && data.getScheduleDate().length() != 0) {
+                    scheduleDate = data.getScheduleDate().substring(0, 10);
+                    if (selectedDateFromCalendar.equals(scheduleDate)) {
+                        destinationDatas[i].setScheduleDisplayStatus(true);
+                    } else {
+                        destinationDatas[i].setScheduleDisplayStatus(false);
+                    }
                 } else {
-                    destinationDatas[i].setScheduleDisplayStatus(false);
+                    destinationDatas[i].setScheduleDisplayStatus(true);
                 }
-            } else {
-                destinationDatas[i].setScheduleDisplayStatus(true);
+                i++;
             }
-            i++;
         }
-
         /**
          *   pass event to MapFragment or DestinationFragment
          */

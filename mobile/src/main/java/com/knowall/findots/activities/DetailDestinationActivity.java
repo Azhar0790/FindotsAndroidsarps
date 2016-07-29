@@ -335,9 +335,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.10);
+        int padding = 150;
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), (width - 300), (height - 300), padding));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),  padding));
         googleMapSettings();
     }
 
