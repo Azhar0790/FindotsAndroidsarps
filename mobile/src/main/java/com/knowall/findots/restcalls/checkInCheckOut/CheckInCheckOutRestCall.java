@@ -62,12 +62,12 @@ public class CheckInCheckOutRestCall {
                 GeneralUtils.stop_progressbar();
                 if (response.body() != null) {
                     if (response.isSuccess()) {
-                        delegate.onCheckInSuccess();
+                        delegate.onCheckInSuccess(response.body().getMessage());
                     } else {
                         if (!isCheckIn) {
                             delegate.onCheckInFailure(context.getString(R.string.checkin_failed));
                         } else {
-                            delegate.onCheckInFailure(context.getString(R.string.checkout_failed));
+                            delegate.onCheckInFailure(context.getString(R.string.data_error));
                         }
                     }
                 } else

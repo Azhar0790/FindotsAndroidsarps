@@ -368,7 +368,8 @@ public class DestinationFragment extends Fragment
     }
 
     @Override
-    public void onCheckInSuccess() {
+    public void onCheckInSuccess(String status) {
+        Toast.makeText(getActivity(), status, Toast.LENGTH_SHORT).show();
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(getActivity());
         destinationsRestCall.delegate = DestinationFragment.this;
         destinationsRestCall.callGetDestinations();

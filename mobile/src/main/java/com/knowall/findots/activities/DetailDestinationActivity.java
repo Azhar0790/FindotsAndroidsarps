@@ -37,6 +37,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -332,12 +333,19 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
 
         mGoogleMap.addMarker(markerOptions);
+        final int padding = 150;
 
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = 150;
+        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),  padding));
+            @Override
+            public void onCameraChange(CameraPosition arg0) {
+                // Move camera.
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), padding));
+                // Remove listener to prevent position reset on camera move.
+                mGoogleMap.setOnCameraChangeListener(null);
+            }
+        });
+//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),  padding));
         googleMapSettings();
     }
 
@@ -588,8 +596,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCheckInSuccess() {
-        FLAG_CHECKINCHECKOUT = true;
+    public void onCheckInSuccess(String status) {
+        FLAG_CHECKINCHECKOUT = true; Toast.makeText(DetailDestinationActivity.this, status, Toast.LENGTH_SHORT).show();
+
         /**
          *   the data should be refreshed after the checkin or checkout
          */
@@ -821,6 +830,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         } else {
             currentLatitude = currentLocation.getLatitude();
             currentLongitude = currentLocation.getLongitude();
+
             setLocationDistanceText(false, currentLatitude, currentLongitude);
             Log.d("jomy", "Cureent Lat : " + currentLatitude);
         }

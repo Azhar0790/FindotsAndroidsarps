@@ -211,6 +211,8 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     public void initalizeLocationService() {
         if (!(isMyServiceRunning(TrackLocationService.class)))
             startTracking();
+        else
+            connectGoogleApiClient();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

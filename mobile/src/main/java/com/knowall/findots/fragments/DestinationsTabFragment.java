@@ -332,6 +332,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void onDestroy() {
         super.onDestroy();
+       pagerCurrentItem = 0;
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().unregister(this);
 //        EventBus.getDefault().unregister(this);

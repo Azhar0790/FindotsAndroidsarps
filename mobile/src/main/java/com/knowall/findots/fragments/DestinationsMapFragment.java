@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -136,10 +137,20 @@ public class DestinationsMapFragment extends Fragment
     public void showAllMarkers() {
         int width = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().widthPixels;
         int height = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().heightPixels;
-        int padding = 150;
+        final int padding = 150;
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
-                /*(width - 300), (height - 300),*/ padding));
+        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+
+            @Override
+            public void onCameraChange(CameraPosition arg0) {
+                // Move camera.
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), padding));
+                // Remove listener to prevent position reset on camera move.
+                mGoogleMap.setOnCameraChangeListener(null);
+            }
+        });
+//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
+//                /*(width - 300), (height - 300),*/ padding));
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
