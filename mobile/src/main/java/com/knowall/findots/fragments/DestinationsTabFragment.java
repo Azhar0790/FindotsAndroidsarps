@@ -41,7 +41,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -119,7 +118,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
                 pagerCurrentItem = tab.getPosition();
 
-                if (pagerCurrentItem == 2) {
+                if (pagerCurrentItem == 2 && mCalendarDay!=null) {
                     if (mCalendarDay.isAfter(CalendarDay.today()))
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     else
@@ -303,7 +302,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         int i = 0;
 
         for (DestinationData data : destinationDatas) {
-            if (data.getScheduleDate().length() != 0) {
+            if (data.getScheduleDate()!=null && data.getScheduleDate().length() != 0) {
                 scheduleDate = data.getScheduleDate().substring(0, 10);
                 if (selectedDateFromCalendar.equals(scheduleDate)) {
                     destinationDatas[i].setScheduleDisplayStatus(true);

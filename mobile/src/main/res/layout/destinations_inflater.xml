@@ -72,9 +72,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="4dp"
-                android:text="25 mins"
+                android:text=""
                 android:textColor="@color/black_70"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/TextView_destinationName"

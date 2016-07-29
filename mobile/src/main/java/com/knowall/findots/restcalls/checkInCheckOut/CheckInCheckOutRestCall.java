@@ -33,9 +33,9 @@ public class CheckInCheckOutRestCall {
 
     public ICheckInCheckOut delegate = null;
     Context context = null;
-    double currentLatitude = 0, currentLongitude = 0;
     String reportedTime;
     int assignedDestinationID;
+    double currentLatitude, currentLongitude;
 
 
     public CheckInCheckOutRestCall(Context context) {
@@ -44,11 +44,9 @@ public class CheckInCheckOutRestCall {
 
     public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID, double lattitude, double longitude) {
         this.assignedDestinationID = assignedDestinationID;
-        currentLatitude = lattitude;
-        currentLongitude = longitude;
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID);
+        Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID,lattitude,longitude);
 
         Call<CheckInCheckOutModel> call = null;
 
@@ -93,20 +91,26 @@ public class CheckInCheckOutRestCall {
         });
     }
 
-    private Map<String, Object> getDestinationsRequest(int assignedDestinationID) {
+    private Map<String, Object> getDestinationsRequest(int assignedDestinationID,double latitude,double longitude) {
 
+        currentLatitude = latitude;
+        currentLongitude = longitude;
         /**
          *   fetch current lat and lng
          */
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        try {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        } catch (Exception e) {
-            currentLatitude = 12.777;
-            currentLongitude = 77.896;
-        }
+
+        if (currentLatitude == 0 || currentLongitude == 0)
+        {
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location==null)
+                location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            try {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+            } catch (Exception e) {
+            }
+    }
 
         /**
          *   fetching current time in UTC format

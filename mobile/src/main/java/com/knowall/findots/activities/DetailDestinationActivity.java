@@ -1,20 +1,15 @@
 package com.knowall.findots.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -50,9 +45,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
-import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.events.AppEvents;
-import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutRestCall;
 import com.knowall.findots.restcalls.checkInCheckOut.ICheckInCheckOut;
@@ -73,7 +66,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -146,7 +138,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public boolean mFlag_Scheduled = false;
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
-    double currentLatitude = 0.0, currentLongitude = 0.0;
+    double currentLatitude = 0, currentLongitude = 0;
     String scheduleDate = "", serverRequest_scheduleDate = "";
     int day, month, year;
 
@@ -157,13 +149,14 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        buildGoogleApiClient();
         getBundleData();
         actionBarSettings();
 
 
         setData();
 
-        checkLocationData();
+//        checkLocationData();
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -314,6 +307,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!checkedIn)
                     isDeviceEnteredWithinDestinationRadius(true, false);
                 else
@@ -368,7 +362,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
         mCircle = mGoogleMap.addCircle(drawCircleOnMap());
-        isDeviceEnteredWithinDestinationRadius(false, false);
     }
 
     public CircleOptions drawCircleOnMap() {
@@ -456,8 +449,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public void onDateSet(DatePickerDialog view, int yearVal, int monthOfYear, int dayOfMonth) {
         Log.d("jomy", "You picked the following date: " + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
         Calendar calendarDate = Calendar.getInstance();
-        boolean cureentDateSelected=((calendarDate.get(Calendar.YEAR) == yearVal) && (calendarDate.get(Calendar.MONTH) == monthOfYear) && (calendarDate.get(Calendar.DAY_OF_MONTH) == dayOfMonth));
-        if ((serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0) ) {
+        boolean cureentDateSelected = ((calendarDate.get(Calendar.YEAR) == yearVal) && (calendarDate.get(Calendar.MONTH) == monthOfYear) && (calendarDate.get(Calendar.DAY_OF_MONTH) == dayOfMonth));
+        if ((serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0)) {
             if (!cureentDateSelected) {
                 Date date = new Date();
                 SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -511,8 +504,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-
-
         if (FLAG_CHECKINCHECKOUT) {
             Log.i(Constants.TAG, "onBackPressed: FLAG_CHECKINCHECKOUT " + offlineCheckInCheckOutStatus);
             Intent returnIntent = new Intent();
@@ -534,76 +525,36 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     }
 
     public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut, boolean isCheckOut) {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location mLastLoc;
+        if (mGoogleApiClient != null && ((mLastLoc = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient)) != null)) {
+            if (isCheckOut) {
+                CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
+                restCall.delegate = DetailDestinationActivity.this;
+                restCall.callCheckInService(checkedIn, assignDestinationID, mLastLoc.getLatitude(), mLastLoc.getLongitude());
 
-        List<String> providers = locationManager.getProviders(true);
-        //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location location = null;
+            } else if (requestForCheckInCheckOut)
+                setLocationDistanceText(requestForCheckInCheckOut, mLastLoc.getLatitude(), mLastLoc.getLongitude());
 
-        for (String provider : providers) {
+        } else
+            buildGoogleApiClient();
+    }
 
-            Location currentLocation = locationManager.getLastKnownLocation(provider);
-            if (currentLocation == null) {
-                continue;
-            }
-            if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
-                location = currentLocation;
-            }
+    public void setLocationDistanceText(boolean requestForCheckInCheckOut, double mCurrentlatitude, double mCurrentlongitude) {
+        float[] distance = new float[2];
 
-        }
+        Location.distanceBetween(mCurrentlatitude, mCurrentlongitude, destinationLatitude, destinationLongitude, distance);
+        String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
-        if (location != null) {
+        mTextView_map_km.setText(kilometers + getResources().getString(R.string.km));
+        if (requestForCheckInCheckOut) {
 
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        } else {
-            DataHelper dataHelper = DataHelper.getInstance(DetailDestinationActivity.this);
-            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
-            if (locationLatestData.size() > 0) {
-                for (LocationData locLastData : locationLatestData) {
-                    currentLatitude = locLastData.getLatitude();
-                    currentLongitude = locLastData.getLongitude();
-                }
-            }
-        }
-
-        if (isCheckOut) {
-
-            CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
-            restCall.delegate = DetailDestinationActivity.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
-
-        } else {
-
-            float[] distance = new float[2];
-
-            Location.distanceBetween(currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, distance);
-
-            if (distance[0] > mCircle.getRadius()) {
-                /**
-                 *   Outside the Radius
-                 */
-                String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
-
-                mTextView_map_km.setText(kilometers + getResources().getString(R.string.km));
-
-                if (requestForCheckInCheckOut) {
-                    GeneralUtils.createAlertDialog(DetailDestinationActivity.this,
-                            getString(R.string.not_the_right_destination));
-                }
+            if (distance[0] <= mCircle.getRadius()) {
+                CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
+                restCall.delegate = DetailDestinationActivity.this;
+                restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
             } else {
-                /**
-                 *   Inside the Radius
-                 */
-                String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
-
-                mTextView_map_km.setText(kilometers + getResources().getString(R.string.km));
-
-                if (requestForCheckInCheckOut) {
-                    CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
-                    restCall.delegate = DetailDestinationActivity.this;
-                    restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
-                }
+                Toast.makeText(this, getResources().getString(R.string.not_the_right_destination), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -826,64 +777,29 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         }
     }
 
-    public void checkLocationData() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        if (location != null) {
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-        } else {
-
-            DataHelper dataHelper = DataHelper.getInstance(this);
-            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
-            if (locationLatestData.size() > 0) {
-                for (LocationData locLastData : locationLatestData) {
-                    currentLatitude = locLastData.getLatitude();
-                    currentLongitude = locLastData.getLongitude();
-                }
-            } else {
-
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                    return;
-                }
-                if (!(Utils.isLocationServiceEnabled(this))) {
-                    Utils.createLocationServiceError(this);
-                }
-
-                buildGoogleApiClient();
-            }
-        }
-
-    }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(mGoogleApiClient, DetailDestinationActivity.this);
     }
+
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
 
-            currentLatitude = mLastLocation.getLatitude();
-            currentLongitude = mLastLocation.getLongitude();
-        } else
+
+        Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (currentLocation == null) {
             try {
                 LocationServices.FusedLocationApi.removeLocationUpdates(
                         mGoogleApiClient, this);
@@ -891,18 +807,23 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        try {
-            LocationRequest mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(10000);
-            mLocationRequest.setFastestInterval(5000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
+            try {
+                LocationRequest mLocationRequest = new LocationRequest();
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(5000);
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest, this);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            currentLatitude = currentLocation.getLatitude();
+            currentLongitude = currentLocation.getLongitude();
+            setLocationDistanceText(false, currentLatitude, currentLongitude);
+            Log.d("jomy", "Cureent Lat : " + currentLatitude);
         }
-
     }
 
     @Override
@@ -916,8 +837,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             if (location != null) {
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
+                setLocationDistanceText(false, currentLatitude, currentLongitude);
             }
-
+            Log.d("jomy", "Cureent Lat22 : " + currentLatitude);
             LocationServices.FusedLocationApi.removeLocationUpdates(
                     mGoogleApiClient, this);
 
@@ -926,17 +848,15 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     public void deleteAssigned_destinationRequest() {
         GeneralUtils.initialize_progressbar(this);
         Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().deleteAssignedDestination(deleteAssigned_DestinationRequest());
-
         addDestinationCall.enqueue(new Callback<ResponseModel>() {
-
 
             @Override
             public void onResponse(Response<ResponseModel> response, Retrofit retrofit) {
@@ -965,7 +885,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
                 Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
-
             }
         });
     }
