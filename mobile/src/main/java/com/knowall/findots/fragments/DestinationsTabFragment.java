@@ -55,7 +55,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     TabLayout tabLayout = null;
     public static String current_selected_dateTime = "";
 
-    MaterialCalendarView materialCalendarView = null;
+    public static MaterialCalendarView materialCalendarView = null;
     public static int pagerCurrentItem = 0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
@@ -84,6 +84,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("List"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
+
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,8 +118,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
                 pagerCurrentItem = tab.getPosition();
+                Log.i("Tab", "pagerCurrentItem --> "+pagerCurrentItem);
 
-                if (pagerCurrentItem == 2 && mCalendarDay!=null) {
+                if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     else
@@ -144,7 +146,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void onGetDestinationSuccess(DestinationsModel destinationsModel) {
         destinationDatas = destinationsModel.getDestinationData();
 
-        DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         DateTime dateTime = new DateTime();
 
         if(current_selected_dateTime==null || current_selected_dateTime.length()<1)
@@ -152,9 +154,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);
 
+        /**
+         *   Tabs adapter
+         */
         DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPagerDestinations.setAdapter(pagerAdapter);
         viewPagerDestinations.setCurrentItem(pagerCurrentItem);
+
+        viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
     }
 
     @Override
@@ -199,7 +206,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         materialCalendarViewSettings();
     }
 
-    CalendarDay mCalendarDay = null;
+    public static CalendarDay mCalendarDay = null;
 
     public void materialCalendarViewSettings() {
         materialCalendarView.setTileHeightDp(26);
