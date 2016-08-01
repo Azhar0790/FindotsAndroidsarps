@@ -21,7 +21,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ import com.knowall.findots.locationUtils.LocationRequestData;
 import com.knowall.findots.locationUtils.TrackLocationService;
 import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restmodels.ResponseModel;
+import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -71,6 +74,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
      */
     int ICONS[] = {
             R.drawable.destinations,
+            R.drawable.menu_report_loc,
             R.drawable.menu_report_loc,
             R.drawable.settings,
             R.drawable.help,
@@ -249,6 +253,10 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
 
                 break;
 
+            case Constants.JOIN_A_TEAM:
+                showJoinATeamDialog();
+                break;
+
 
             case Constants.USERINFO:
             case Constants.ACCOUNT_SETTINGS:
@@ -312,6 +320,46 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                         dialog.dismiss();
                     }
                 }).show();
+    }
+
+    private void showJoinATeamDialog() {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(MenuActivity.this);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.this);
+        alertDialogBuilderUserInput.setView(mView);
+
+        final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
+
+        TextView dialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+        dialogTitle.setText(getResources().getString(R.string.join_team));
+        dialogTitle.setVisibility(View.VISIBLE);
+
+        mEditText.setHint(getResources().getString(R.string.redeemcode));
+
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.done), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogBox, int id) {
+                        if (mEditText.getText().toString().length() > 0) {
+                            dialogBox.dismiss();
+                            /**
+                             *   redeem code service call
+                             */
+
+                        }
+                    }
+                })
+
+                .setNegativeButton(getResources().getString(R.string.skip),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
     }
 
     private void showErrorDialog(int errorCode) {

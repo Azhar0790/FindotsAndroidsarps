@@ -28,12 +28,12 @@ public class RegisterRestCall {
     }
 
     public void callRegisterUserService(String email, String password, String mobile,
-                                        String name, String redeemCode, String company,
+                                        String name, String company,
                                         double lat, double lng) {
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getRegisterUserRequest(email, password, mobile,
-                name, redeemCode, company, lat, lng);
+                name, company, lat, lng);
 
         Call<RegisterModel> call = FinDotsApplication.getRestClient().getApiService().registerUser(postValues);
         call.enqueue(new Callback<RegisterModel>() {
@@ -63,14 +63,13 @@ public class RegisterRestCall {
     }
 
     private Map<String, Object> getRegisterUserRequest(String email, String password, String mobile,
-                                                       String name, String redeemCode, String company,
+                                                       String name, String company,
                                                        double lat, double lng) {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", email);
         postValues.put("password", password);
         postValues.put("mobileNumber", mobile);
         postValues.put("name", name);
-        postValues.put("redeemCode", redeemCode);
         postValues.put("company", "");
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));

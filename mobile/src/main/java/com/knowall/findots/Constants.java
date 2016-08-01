@@ -11,9 +11,10 @@ public class Constants {
     public static final int USERINFO = 0;
     public static final int DESTINATIONS = 1;
     public static final int TRACKLOCATION = 2;
-    public static final int ACCOUNT_SETTINGS = 3;
-    public static final int HELP = 4;
-    public static final int LOGOUT = 5;
+    public static final int JOIN_A_TEAM = 3;
+    public static final int ACCOUNT_SETTINGS = 4;
+    public static final int HELP = 5;
+    public static final int LOGOUT = 6;
     public static final int DEVICETYPEID = 2;
 
     public static final int SUCCESS_RESULT = 0;

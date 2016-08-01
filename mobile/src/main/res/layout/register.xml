@@ -17,13 +17,12 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="fonts/MyriadHebrew-Bold.otf"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/signup_text_hedding_padding"
+            android:paddingTop="@dimen/signup_text_hedding_padding"
             android:text="@string/create_accnt"
             android:textColor="@color/app_color"
-            android:maxLines="1"
-            android:paddingTop="@dimen/signup_text_hedding_padding"
-            android:paddingBottom="@dimen/signup_text_hedding_padding"
             android:textSize="@dimen/textView_heading_textSize" />
-
 
 
     </RelativeLayout>
@@ -31,127 +30,116 @@
 
     <ScrollView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/headerlay"
-        android:layout_height="match_parent"
         android:background="@drawable/login_bg">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/signup_text_marginTopBottom"
-        android:orientation="vertical">
-
-
-        <EditText
-            android:id="@+id/EditText_name"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/name"
-            android:inputType="textPersonName|textCapSentences"/>
-
-        <EditText
-            android:id="@+id/EditText_company"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/company"
-            android:inputType="text"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/EditText_emailID"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/emailid"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/EditText_mobileNo"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/mobileno"
-            android:inputType="number"
-            android:maxLength="12"/>
-
-        <EditText
-            android:id="@+id/EditText_password"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/EditText_redeemCode"
-            style="@style/edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_edittext_height"
-            android:layout_marginTop="@dimen/register_edittexts_marginTop"
-            android:hint="@string/redeemcode"
-            android:inputType="textCapWords"/>
-
-
-
-        <Button
-            android:id="@+id/Button_createAccount"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/login_button_height"
-            android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
-            android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
-            android:layout_marginTop="@dimen/button_createAccount_marginTop"
-            android:background="@drawable/selector_login"
-            android:text="@string/create_account"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/login_button_textSize" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/linearLayout_termsCondition_height"
-            android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/signup_text_marginTopBottom"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ImageView_onOff"
-                android:layout_width="20dp"
-                android:layout_height="@dimen/imageView_onOff_height"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/ic_switch_on"
-                android:gravity="center_horizontal"
-                android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/TextView_agree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/agree"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/termsCondition_textSize"
-                android:textStyle="normal" />
+            <EditText
+                android:id="@+id/EditText_name"
+                style="@style/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_edittext_height"
+                android:layout_marginTop="@dimen/register_edittexts_marginTop"
+                android:hint="@string/name"
+                android:inputType="textPersonName|textCapSentences" />
 
-            <TextView
-                android:id="@+id/TextView_termsCondition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/textView_termsCondition_marginLeft"
-                android:text="@string/termsCondition"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/termsCondition_textSize"
-                android:textStyle="normal" />
+            <EditText
+                android:id="@+id/EditText_company"
+                style="@style/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_edittext_height"
+                android:layout_marginTop="@dimen/register_edittexts_marginTop"
+                android:hint="@string/company"
+                android:inputType="text"
+                android:visibility="gone" />
 
+            <EditText
+                android:id="@+id/EditText_emailID"
+                style="@style/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_edittext_height"
+                android:layout_marginTop="@dimen/register_edittexts_marginTop"
+                android:hint="@string/emailid"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/EditText_mobileNo"
+                style="@style/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_edittext_height"
+                android:layout_marginTop="@dimen/register_edittexts_marginTop"
+                android:hint="@string/mobileno"
+                android:inputType="number"
+                android:maxLength="12" />
+
+            <EditText
+                android:id="@+id/EditText_password"
+                style="@style/edittext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_edittext_height"
+                android:layout_marginTop="@dimen/register_edittexts_marginTop"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/Button_createAccount"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/login_button_height"
+                android:layout_marginLeft="@dimen/login_button_marginLeftAndRight"
+                android:layout_marginRight="@dimen/login_button_marginLeftAndRight"
+                android:layout_marginTop="@dimen/button_createAccount_marginTop"
+                android:background="@drawable/selector_login"
+                android:text="@string/create_account"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/login_button_textSize" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/linearLayout_termsCondition_height"
+                android:layout_marginTop="@dimen/linearLayout_termsCondition_marginTop"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ImageView_onOff"
+                    android:layout_width="20dp"
+                    android:layout_height="@dimen/imageView_onOff_height"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/ic_switch_on"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/TextView_agree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/agree"
+                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/termsCondition_textSize"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/TextView_termsCondition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/textView_termsCondition_marginLeft"
+                    android:text="@string/termsCondition"
+                    android:textColor="@color/app_color"
+                    android:textSize="@dimen/termsCondition_textSize"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
     </ScrollView>
 </RelativeLayout>
