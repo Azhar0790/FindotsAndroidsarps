@@ -81,6 +81,7 @@ public class DestinationFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+        Log.d("paul","Oncreate");
     }
 
     @Override
@@ -102,6 +103,7 @@ public class DestinationFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations, null);
 
+        Log.d("paul","Oncreateview");
         if (!GeneralUtils.checkPlayServices(getActivity())) {
             Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
@@ -552,6 +554,7 @@ public class DestinationFragment extends Fragment
 
             case SCHEDULEDDATELIST:
                 Log.d("jomy", "Change Date in event.");
+                Log.d("paul","event");
 //                EventBus.getDefault().cancelEventDelivery(event);
 //              EventBus.getDefault().unregister(this);
                 Log.d("jomy", "Change Date in event.");
@@ -566,9 +569,6 @@ public class DestinationFragment extends Fragment
                     mRecyclerView_destinations.setVisibility(View.VISIBLE);
                     setAdapterForDestinations();
                 }
-
-//                if (!EventBus.getDefault().isRegistered(this))
-//                    EventBus.getDefault().register(this);
                 break;
         }
     }

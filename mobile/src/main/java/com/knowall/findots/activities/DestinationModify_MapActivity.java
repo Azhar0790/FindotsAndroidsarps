@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -29,6 +28,9 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
@@ -48,6 +50,7 @@ import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +65,10 @@ import retrofit.Retrofit;
 /**
  * Created by jpaulose on 6/27/2016.
  */
-public class DestinationModify_MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DestinationModify_MapActivity extends AppCompatActivity implements OnMapReadyCallback ,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener
+{
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -138,13 +144,12 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
         if (checkPlayServices()) {
             // If this check succeeds, proceed with normal processing.
             // Otherwise, prompt user to get valid Play Services APK.
-            if (!(Utils.isLocationServiceEnabled(this))) {
-                Utils.createLocationServiceError(this);
-            }
+//            if (!(Utils.isLocationServiceEnabled(this))) {
+//                Utils.createLocationServiceError(this);
+//            }
+            buildGoogleApiClient();
         } else {
-            Toast.makeText(mContext, "Location not suppoif(!(Utils.isLocationServiceEnabled(this))) {\n" +
-                    "//            Utils.createLocationServiceError(this);\n" +
-                    "//        }rted in this device", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -272,6 +277,83 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             return;
         }
     }
+
+
+    protected synchronized void buildGoogleApiClient() {
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, 34992, this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        Utils.createLocationServiceChecker(mGoogleApiClient, DestinationModify_MapActivity.this);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("jomy", "onConnected243445... ");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            Log.d("jomy", "onConnected... ");
+            changeMap(mLastLocation);
+            Log.d(TAG, "ON connected");
+
+        } else
+            try {
+                LocationServices.FusedLocationApi.removeLocationUpdates(
+                        mGoogleApiClient, this);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        try {
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        try {
+            if (location != null)
+                changeMap(location);
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+
+
+
+
 
     public void getBundleData() {
         bundle = getIntent().getExtras();
