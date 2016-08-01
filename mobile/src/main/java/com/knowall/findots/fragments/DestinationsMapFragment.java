@@ -25,7 +25,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -61,7 +60,7 @@ public class DestinationsMapFragment extends Fragment
         IGetDestinations {
 
     GoogleMap mGoogleMap = null;
-
+    SupportMapFragment supportMapFragment;
     double currentLatitude, currentLongitude;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
     ArrayList<DestinationData> arrayListDestinations = null;
@@ -80,7 +79,7 @@ public class DestinationsMapFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_map, null);
 
-        SupportMapFragment supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(DestinationsMapFragment.this);
 
         return rootView;
@@ -91,8 +90,14 @@ public class DestinationsMapFragment extends Fragment
         mGoogleMap = googleMap;
         googleMapSettings();
         fetchCurrentLocation();
-        addAllDestinationsOnMap();
-        showAllMarkers();
+        mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                addAllDestinationsOnMap();
+                showAllMarkers();
+            }
+        });
+
     }
 
     ArrayList<DestinationData> arrayList = new ArrayList<>();
@@ -135,22 +140,10 @@ public class DestinationsMapFragment extends Fragment
      * shows all the markers on map
      */
     public void showAllMarkers() {
-        int width = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().widthPixels;
-        int height = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().heightPixels;
-        final int padding = 150;
-
-        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-
-            @Override
-            public void onCameraChange(CameraPosition arg0) {
-                // Move camera.
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), padding));
-                // Remove listener to prevent position reset on camera move.
-                mGoogleMap.setOnCameraChangeListener(null);
-            }
-        });
-//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),
-//                /*(width - 300), (height - 300),*/ padding));
+//        int width = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().widthPixels;
+//        int height = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().heightPixels;
+//        final int padding = 150;
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 150));
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override

@@ -37,7 +37,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -130,7 +129,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     int assignDestinationID = 0, destinationID = 0;
     double destinationLatitude = 0, destinationLongitude = 0, checkInRadius = 0;
-    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false, destRenamOnly = false, rescheduleFlag = false;
+    boolean checkedIn = false, checkedOut = false, isEditable = false, isRequiresApproval = false, destRenamOnly = false, rescheduleFlag = false,mMapLoaded=false;
     String address = null, destinationName = null, checkedOutReportedDate = null;
 
     public static String offlineCheckInCheckOutStatus = null;
@@ -143,18 +142,16 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     String scheduleDate = "", serverRequest_scheduleDate = "";
     int day, month, year;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_destination);
 
         ButterKnife.bind(this);
-
         buildGoogleApiClient();
         getBundleData();
         actionBarSettings();
-
-
         setData();
 
 //        checkLocationData();
@@ -323,30 +320,39 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+        googleMapSettings();
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         latLng = new LatLng(destinationLatitude, destinationLongitude);
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.title(destinationName);
         markerOptions.position(latLng);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
-
         mGoogleMap.addMarker(markerOptions);
-        final int padding = 150;
-
-        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-
+        mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
-            public void onCameraChange(CameraPosition arg0) {
-                // Move camera.
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), padding));
-                // Remove listener to prevent position reset on camera move.
-                mGoogleMap.setOnCameraChangeListener(null);
+            public void onMapLoaded() {
+                mMapLoaded=true;
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 200));
+                mCircle = mGoogleMap.addCircle(drawCircleOnMap());
+
+//            }
+//                addAllDestinationsOnMap();
+//                showAllMarkers();
             }
         });
+
+
+//        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+//
+//            @Override
+//            public void onCameraChange(CameraPosition arg0) {
+//                // Move camera.
+//                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 150));
+//            }
+//        });
 //        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(),  padding));
-        googleMapSettings();
+
     }
 
 
@@ -369,7 +375,6 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
-        mCircle = mGoogleMap.addCircle(drawCircleOnMap());
     }
 
     public CircleOptions drawCircleOnMap() {
@@ -830,9 +835,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         } else {
             currentLatitude = currentLocation.getLatitude();
             currentLongitude = currentLocation.getLongitude();
-
             setLocationDistanceText(false, currentLatitude, currentLongitude);
-            Log.d("jomy", "Cureent Lat : " + currentLatitude);
+            if(mMapLoaded)
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 200));
         }
     }
 
@@ -848,6 +853,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
                 setLocationDistanceText(false, currentLatitude, currentLongitude);
+                if(mMapLoaded)
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 200));
             }
             Log.d("jomy", "Cureent Lat22 : " + currentLatitude);
             LocationServices.FusedLocationApi.removeLocationUpdates(
