@@ -2,7 +2,7 @@
     <string name="app_name">Findots</string>
 
     <!-- for distance matrix -->
-    <string name="server_key">AIzaSyANsVoGajWyTt3nBxWw_6P5sAY-duYUO3E</string>
+    <string name="server_key">AIzaSyCRX0qWezw-DjshmhwMa65TrVoRyd9I48A</string>
 
     <string name="noInternet">The Internet Connection Appears to be Offline</string>
     <string name="logout">Logout</string>
@@ -61,6 +61,7 @@
     <string name="create_account">Create Account</string>
     <string name="please_agree">Please agree the terms and conditions.</string>
 
+    <string name="no_loc_avail">Unable to fetch your location data</string>
     <!-- Destinations -->
     <string name="checkin">Check In</string>
     <string name="checkout">Check Out</string>
@@ -86,7 +87,7 @@
     <string name="checkin_offline">Reloading Data After Offline ChekIn</string>
     <string name="checkout_offline">Reloading Data After Offline ChekOut</string>
     <string name="destination_name">Enter Destination Name</string>
-    <string name="not_the_right_destination">Please Check In when you reach the destination.</string>
+    <string name="not_the_right_destination">Please Check In when you reach the destination</string>
 
     <string name="delete_destinationalert">Do you want to Delete Destination : </string>
     <string name="delete">Delete </string>

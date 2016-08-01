@@ -63,7 +63,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="4dp"
             android:drawableTop="@drawable/map_km"
-            android:text="24 km"
+            android:text=""
             android:textColor="@color/black_70"
             android:textSize="15sp" />
 

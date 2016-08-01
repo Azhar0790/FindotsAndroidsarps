@@ -41,7 +41,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -119,7 +118,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
                 pagerCurrentItem = tab.getPosition();
 
-                if (pagerCurrentItem == 2) {
+                if (pagerCurrentItem == 2 && mCalendarDay!=null) {
                     if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     else
@@ -147,6 +146,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
         DateTime dateTime = new DateTime();
+
+        if(current_selected_dateTime==null || current_selected_dateTime.length()<1)
         current_selected_dateTime = dateTime.toString(fmt1);
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);
@@ -300,20 +301,21 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         int i = 0;
 
-        for (DestinationData data : destinationDatas) {
-            if (data.getScheduleDate().length() != 0) {
-                scheduleDate = data.getScheduleDate().substring(0, 10);
-                if (selectedDateFromCalendar.equals(scheduleDate)) {
-                    destinationDatas[i].setScheduleDisplayStatus(true);
+        if(destinationDatas!=null) {
+            for (DestinationData data : destinationDatas) {
+                if (data.getScheduleDate() != null && data.getScheduleDate().length() != 0) {
+                    scheduleDate = data.getScheduleDate().substring(0, 10);
+                    if (selectedDateFromCalendar.equals(scheduleDate)) {
+                        destinationDatas[i].setScheduleDisplayStatus(true);
+                    } else {
+                        destinationDatas[i].setScheduleDisplayStatus(false);
+                    }
                 } else {
-                    destinationDatas[i].setScheduleDisplayStatus(false);
+                    destinationDatas[i].setScheduleDisplayStatus(true);
                 }
-            } else {
-                destinationDatas[i].setScheduleDisplayStatus(true);
+                i++;
             }
-            i++;
         }
-
         /**
          *   pass event to MapFragment or DestinationFragment
          */
@@ -330,6 +332,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void onDestroy() {
         super.onDestroy();
+       pagerCurrentItem = 0;
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().unregister(this);
 //        EventBus.getDefault().unregister(this);

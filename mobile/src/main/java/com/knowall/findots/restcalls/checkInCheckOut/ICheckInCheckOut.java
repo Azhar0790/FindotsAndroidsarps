@@ -5,6 +5,6 @@ package com.knowall.findots.restcalls.checkInCheckOut;
  */
 public interface ICheckInCheckOut {
 
-    public void onCheckInSuccess();
+    public void onCheckInSuccess(String status);
     public void onCheckInFailure(String status);
 }
