@@ -141,9 +141,6 @@ public class HistoryFragment extends Fragment implements IHistory {
             historyAdapter.notifyDataSetChanged();
         }
 
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-
     }
 
     @Override
@@ -169,6 +166,9 @@ public class HistoryFragment extends Fragment implements IHistory {
                     endDate = date.substring(0, 10) + " " + "23:59:59";
                     callHistoryRestCall(startDate, endDate);
                 }
+
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
 
                 break;
 

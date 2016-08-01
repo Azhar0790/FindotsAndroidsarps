@@ -95,6 +95,8 @@ public class DestinationsMapFragment extends Fragment
         showAllMarkers();
     }
 
+
+
     ArrayList<DestinationData> arrayList = new ArrayList<>();
 
     /**
