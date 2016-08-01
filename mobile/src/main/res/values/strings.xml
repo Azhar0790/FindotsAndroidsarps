@@ -32,6 +32,10 @@
          1022/33, Dr Rajkumar Road, 4th Block, Rajaji Nagar,Bangalore, Karnataka 560010.</string>
     <string name="no_address">No Address</string>
     <string name="logout_confirmation">Are you sure you want to logout?</string>
+    <string name="join_team">If you have a coupon code, please enter it here to join a team.</string>
+    <string name="skip">Skip</string>
+    <string name="done">Done</string>
+
 
     <!-- Login -->
     <string name="username">Username</string>
@@ -118,6 +122,7 @@
     <string-array name="menu_items">
         <item>Destinations</item>
         <item>Report My Location</item>
+        <item>Join a Team</item>
         <item>Account Settings</item>
         <item>Help</item>
         <item>Logout</item>

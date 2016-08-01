@@ -21,7 +21,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ import com.knowall.findots.locationUtils.LocationRequestData;
 import com.knowall.findots.locationUtils.TrackLocationService;
 import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restmodels.ResponseModel;
+import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -71,6 +74,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
      */
     int ICONS[] = {
             R.drawable.destinations,
+            R.drawable.menu_report_loc,
             R.drawable.menu_report_loc,
             R.drawable.settings,
             R.drawable.help,
@@ -262,12 +266,15 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 locationReport = true;
 
-                if(!Utils.isLocationServiceEnabled(MenuActivity.this)) {
+                if (!Utils.isLocationServiceEnabled(MenuActivity.this)) {
                     buildGoogleApiClient();
-                }
-                else
+                } else
                     connectGoogleApiClient();
 
+                break;
+
+            case Constants.JOIN_A_TEAM:
+                showJoinATeamDialog();
                 break;
 
 
@@ -336,6 +343,46 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 }).show();
     }
 
+    private void showJoinATeamDialog() {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(MenuActivity.this);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.this);
+        alertDialogBuilderUserInput.setView(mView);
+
+        final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
+
+        TextView dialogTitle = (TextView) mView.findViewById(R.id.dialogTitle);
+        dialogTitle.setText(getResources().getString(R.string.join_team));
+        dialogTitle.setVisibility(View.VISIBLE);
+
+        mEditText.setHint(getResources().getString(R.string.redeemcode));
+
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.done), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogBox, int id) {
+                        if (mEditText.getText().toString().length() > 0) {
+                            dialogBox.dismiss();
+                            /**
+                             *   redeem code service call
+                             */
+
+                        }
+                    }
+                })
+
+                .setNegativeButton(getResources().getString(R.string.skip),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+        alertDialogAndroid.show();
+    }
+
     private void showErrorDialog(int errorCode) {
         //TODO add errors handling
         // Create a fragment for the error dialog
@@ -390,7 +437,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         switch (status) {
             case ConnectionResult.SUCCESS:
-                googleApiClient =  new GoogleApiClient.Builder(this)
+                googleApiClient = new GoogleApiClient.Builder(this)
                         .enableAutoManage(this, 34992, this)
                         .addApi(LocationServices.API)
                         .addConnectionCallbacks(this)
@@ -468,7 +515,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                         Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast toast = Toast.makeText(MenuActivity.this,getString(R.string.data_error), Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(MenuActivity.this, getString(R.string.data_error), Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM, 0, 0);
                     toast.show();
                 }

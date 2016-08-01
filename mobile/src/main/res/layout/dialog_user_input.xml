@@ -10,12 +10,18 @@
         android:id="@+id/dialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/join_team"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="gone"/>
+        android:textColor="@color/black_70"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:layout_marginBottom="20dp"/>
 
     <EditText
         android:id="@+id/userInputDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
+        android:inputType="text"
+        />
 </LinearLayout>

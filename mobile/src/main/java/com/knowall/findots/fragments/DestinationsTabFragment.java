@@ -120,7 +120,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 pagerCurrentItem = tab.getPosition();
 
                 if (pagerCurrentItem == 2) {
-                    if (mCalendarDay.isAfter(CalendarDay.today()))
+                    if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     else
                         EventBus.getDefault().post(AppEvents.HISTORY);
