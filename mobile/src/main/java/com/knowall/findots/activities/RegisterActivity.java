@@ -69,9 +69,6 @@ public class RegisterActivity extends AppCompatActivity
     @Bind(R.id.EditText_password)
     EditText mEditText_password;
 
-    @Bind(R.id.EditText_redeemCode)
-    EditText mEditText_redeemCode;
-
     @Bind(R.id.ImageView_onOff)
     ImageView mImageView_onOff;
 
@@ -82,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity
     Button mButton_createAccount;
 
     String name = null, company = null, emailID = null;
-    String mobileNo = null, password = null, redeemCode = null;
+    String mobileNo = null, password = null;
 
     private GoogleApiClient mGoogleApiClient = null;
     Location currentLocation = null;
@@ -123,8 +120,6 @@ public class RegisterActivity extends AppCompatActivity
         mEditText_emailID.setTypeface(typefaceLight);
         mEditText_mobileNo.setTypeface(typefaceLight);
         mEditText_password.setTypeface(typefaceLight);
-        mEditText_redeemCode.setTypeface(typefaceLight);
-//        mEditText_redeemCode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         mTextView_agree.setTypeface(typefaceLight);
         mButton_createAccount.setTypeface(typefaceLight);
 
@@ -166,7 +161,7 @@ public class RegisterActivity extends AppCompatActivity
                 RegisterRestCall registerRestCall = new RegisterRestCall(RegisterActivity.this);
                 registerRestCall.delegate = RegisterActivity.this;
                 registerRestCall.callRegisterUserService(emailID, password, mobileNo,
-                        name, redeemCode, company, currentLocation.getLatitude(), currentLocation.getLongitude());
+                        name, company, currentLocation.getLatitude(), currentLocation.getLongitude());
 
 //            } else if (mImageView_onOff.getTag() == false) {
 //                GeneralUtils.createAlertDialog(RegisterActivity.this, getString(R.string.please_agree));
@@ -227,7 +222,6 @@ public class RegisterActivity extends AppCompatActivity
         emailID = mEditText_emailID.getText().toString();
         mobileNo = mEditText_mobileNo.getText().toString();
         password = mEditText_password.getText().toString();
-        redeemCode = mEditText_redeemCode.getText().toString();
 
         if (name == null || name.length() == 0) {
             mEditText_name.setError(getString(R.string.prompt_required));
@@ -244,9 +238,6 @@ public class RegisterActivity extends AppCompatActivity
             return false;
         } else if (password == null || password.length() == 0) {
             mEditText_password.setError(getString(R.string.prompt_password));
-            return false;
-        } else if (redeemCode == null || redeemCode.length() == 0) {
-            mEditText_redeemCode.setError(getString(R.string.prompt_required));
             return false;
         } else if (!GeneralUtils.isvalid_email(emailID)) {
             mEditText_emailID.setError(getString(R.string.validate_email));
@@ -265,7 +256,6 @@ public class RegisterActivity extends AppCompatActivity
         mEditText_emailID.addTextChangedListener(new AddTextWatcher(mEditText_emailID));
         mEditText_mobileNo.addTextChangedListener(new AddTextWatcher(mEditText_mobileNo));
         mEditText_password.addTextChangedListener(new AddTextWatcher(mEditText_password));
-        mEditText_redeemCode.addTextChangedListener(new AddTextWatcher(mEditText_redeemCode));
         mImageView_onOff.setOnClickListener(this);
     }
 
