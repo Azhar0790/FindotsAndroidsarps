@@ -750,7 +750,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
         postValues.put("ScheduleDate", "" + TimeSettings.dateTimeInUTC(scheduleTime));
         postValues.put("latitude", mAdressLoc.getLatitude());
         postValues.put("longitude", mAdressLoc.getLongitude());
-        postValues.put("address", "" + mLocationAddress.getText().toString().trim());
+        postValues.put("address", "" + mAddressOutput);
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(this));
