@@ -75,7 +75,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         } else {
             holder.buttonCheckIN.setBackgroundResource(R.drawable.selector_checkin_round_strike);
             holder.buttonCheckIN.setText("");
-            holder.buttonCheckInTime.setText("Not CheckedIn");
+            holder.buttonCheckInTime.setText("Not Checked In");
             holder.buttonCheckInTime.setTextSize(12f);
         }
 

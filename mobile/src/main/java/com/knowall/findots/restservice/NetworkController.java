@@ -7,6 +7,7 @@ import com.knowall.findots.restcalls.checkInCheckOut.CheckInCheckOutModel;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.forgotPassword.ForgotPasswordModel;
 import com.knowall.findots.restcalls.history.HistoryModel;
+import com.knowall.findots.restcalls.joinTeam.JoinTeamModel;
 import com.knowall.findots.restcalls.login.LoginModel;
 import com.knowall.findots.restcalls.register.RegisterModel;
 import com.knowall.findots.restmodels.ResponseModel;
@@ -80,6 +81,9 @@ public interface NetworkController {
 
     @POST(RestURLs.METHOD_CHANGEPASSWORD)
     Call<ResponseModel> changePassword(@Body Map<String, Object> request);
+
+    @POST(RestURLs.METHOD_JOINATEAM)
+    Call<JoinTeamModel> joinTeam(@Body Map<String, Object> request);
 
     @GET
     Call<DistanceMatrix> distanceMatrix(@Url String url, @Query("units") String units,
