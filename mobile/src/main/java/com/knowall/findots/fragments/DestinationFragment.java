@@ -205,8 +205,6 @@ public class DestinationFragment extends Fragment
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
 
         if (nextScheduledItemPosition >= 0) {
-            //mRecyclerView_destinations.scrollToPosition(nextScheduledItemPosition);
-            //mRecyclerView_destinations.smoothScrollToPosition(nextScheduledItemPosition);
             layoutManager.scrollToPosition(nextScheduledItemPosition);
         } else {
             layoutManager.onRestoreInstanceState(listViewState);

@@ -45,6 +45,8 @@ import com.knowall.findots.locationUtils.LocationModel.LocationSyncData;
 import com.knowall.findots.locationUtils.LocationRequestData;
 import com.knowall.findots.locationUtils.TrackLocationService;
 import com.knowall.findots.locationUtils.Utils;
+import com.knowall.findots.restcalls.joinTeam.IJoinTeam;
+import com.knowall.findots.restcalls.joinTeam.JoinTeamRestCall;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
@@ -62,8 +64,13 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class MenuActivity extends RuntimePermissionActivity implements IMenuItems, GoogleApiClient.ConnectionCallbacks,
+public class MenuActivity extends RuntimePermissionActivity
+        implements
+        IMenuItems,
+        IJoinTeam,
+        GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+
     private GoogleApiClient googleApiClient;
     private static final int REQUEST_RESOLVE_ERROR = 9999;
     protected FinDotsApplication app;
@@ -113,11 +120,19 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
     RecyclerView mRecyclerView_menu_items;
     private static final int REQUEST_PERMISSIONS = 20;
     public static Context ContextMenuActivity = null;
+    Bundle bundle = null;
+    boolean fromRegister = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
+
+        bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            fromRegister = bundle.getBoolean("fromRegister");
+        }
 
         ContextMenuActivity = MenuActivity.this;
 
@@ -169,9 +184,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
          */
 
         mToggle.setDrawerIndicatorEnabled(true);
-        FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-        destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
-        destinationTransaction.commit();
+
+        if (fromRegister) {
+            showJoinATeamDialog();
+        } else {
+            FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+            destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+            destinationTransaction.commit();
+        }
 
 //        Log.d("jomy","Distance "+Utils.distFromCoordinates(12.987793094478766,77.55964301526546,12.988561489532328,77.5592011213302));
     }
@@ -254,6 +274,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                 break;
 
             case Constants.JOIN_A_TEAM:
+                mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
                 showJoinATeamDialog();
                 break;
 
@@ -336,6 +357,7 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
         dialogTitle.setVisibility(View.VISIBLE);
 
         mEditText.setHint(getResources().getString(R.string.redeemcode));
+        mEditText.requestFocus();
 
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -346,6 +368,14 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                             /**
                              *   redeem code service call
                              */
+                            String redeemCode = mEditText.getText().toString().trim();
+
+                            JoinTeamRestCall joinTeamRestCall = new JoinTeamRestCall(MenuActivity.this);
+                            joinTeamRestCall.delegate = MenuActivity.this;
+                            joinTeamRestCall.callJoinTeam(redeemCode);
+
+                        } else if (mEditText.getText().toString().length() == 0) {
+                            mEditText.setError("Please enter the Redeem Code");
 
                         }
                     }
@@ -355,11 +385,25 @@ public class MenuActivity extends RuntimePermissionActivity implements IMenuItem
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
+
+                                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+                                destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+                                destinationTransaction.commit();
                             }
                         });
 
         AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
         alertDialogAndroid.show();
+    }
+
+    @Override
+    public void joinTeamFinish(String message) {
+        //GeneralUtils.createAlertDialog(MenuActivity.this, message);
+        Toast.makeText(MenuActivity.this, message, Toast.LENGTH_SHORT).show();
+
+        FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+        destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+        destinationTransaction.commit();
     }
 
     private void showErrorDialog(int errorCode) {
