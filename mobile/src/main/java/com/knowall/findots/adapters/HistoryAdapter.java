@@ -3,6 +3,7 @@ package com.knowall.findots.adapters;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,6 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-
 /**
  * Created by parijathar on 7/27/2016.
  */
@@ -35,12 +34,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     public HistoryAdapter(Context context, HistoryData[] historyDatas) {
         this.context = context;
         this.historyDatas = historyDatas;
+        Log.d("paul","historyAdapter..."+historyDatas.length);
         typefaceLight = Typeface.createFromAsset(MenuActivity.ContextMenuActivity.getAssets(), "fonts/Roboto-Light.ttf");
         typefaceMedium = Typeface.createFromAsset(MenuActivity.ContextMenuActivity.getAssets(), "fonts/Roboto-Medium.ttf");
     }
 
     @Override
     public int getItemCount() {
+        Log.d("paul","Count..."+historyDatas.length);
         return historyDatas.length;
     }
 
@@ -49,6 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.history_inflater, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+        Log.d("paul","CreateAdapter...");
         return viewHolder;
     }
 
@@ -68,7 +70,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         holder.textViewCheckInStoreName.setText(destinationName);
         holder.textViewCheckInStoreAddress.setText(address);
-
+        Log.d("paul","BindAdapter...");
         if (isCheckIn) {
             String checkInTime = TimeSettings.getTimeOnly(historyDatas[position].getCheckInDate());
             holder.buttonCheckInTime.setText(checkInTime);
@@ -172,30 +174,71 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             } else {
                 timeDifference = years + " years";
             }
+            if(months >0) {
+                if (months == 1) {
+                    timeDifference = timeDifference +" and "+ months + " month";
+                } else {
+                    timeDifference = timeDifference +" and "+ months + " months";
+                }
+            }
+
         } else if (months != 0) {
             if (months == 1) {
                 timeDifference = months + " month";
             } else {
                 timeDifference = months + " months";
             }
+            if(weeks >0) {
+                if (weeks == 1) {
+                    timeDifference = timeDifference +" and "+ weeks + " week";
+                } else {
+                    timeDifference = timeDifference +" and "+ weeks + " weeks";
+                }
+            }
+
         } else if (weeks != 0) {
             if (weeks == 1) {
                 timeDifference = weeks + " week";
             } else {
                 timeDifference = weeks + " weeks";
             }
+
+            if(days >0) {
+                if (days == 1) {
+                    timeDifference = timeDifference +" and "+ days + " day";
+                } else {
+                    timeDifference = timeDifference +" and "+ days + " days";
+                }
+            }
+
         } else if (days != 0) {
             if (days == 1) {
                 timeDifference = days + " day";
             } else {
                 timeDifference = days + " days";
             }
+            if(hours >0) {
+                if (hours == 1) {
+                    timeDifference = timeDifference +" and "+ hours + " hr";
+                } else {
+                    timeDifference = timeDifference +" and "+ hours + " hrs";
+                }
+            }
+
         } else if (hours != 0) {
             if (hours == 1) {
                 timeDifference = hours + " hr";
             } else {
                 timeDifference = hours + " hrs";
             }
+            if(minutes >0) {
+                if (minutes == 1) {
+                    timeDifference = timeDifference +" and "+ minutes + " min";
+                } else {
+                    timeDifference = timeDifference +" and "+minutes + " mins";
+                }
+            }
+
         } else if (minutes != 0) {
             if (minutes == 1) {
                 timeDifference = minutes + " min";
@@ -204,9 +247,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
         } else if (seconds != 0) {
             if (seconds == 1) {
-                timeDifference = seconds +" sec";
+                timeDifference = seconds+" sec";
             } else {
-                timeDifference = seconds + " secs";
+                timeDifference = seconds+" secs";
             }
         }
 

@@ -141,8 +141,10 @@ public class FetchAddressIntentService extends IntentService {
     private void deliverResultToReceiver(int resultCode, String message, Address address) {
         try {
             Bundle bundle = new Bundle();
-            bundle.putString(Constants.RESULT_DATA_KEY, message);
-
+            String addressData="";
+            if(message!=null && message.length()>0)
+            addressData=message.replace("\n", " ");
+            bundle.putString(Constants.RESULT_DATA_KEY, addressData);
             bundle.putString(Constants.LOCATION_DATA_AREA, address.getSubLocality());
             bundle.putString(Constants.LOCATION_DATA_CITY, address.getLocality());
             bundle.putString(Constants.LOCATION_DATA_STREET, address.getAddressLine(0));

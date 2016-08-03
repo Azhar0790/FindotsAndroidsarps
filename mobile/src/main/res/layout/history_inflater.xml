@@ -156,7 +156,8 @@
             android:layout_marginTop="@dimen/textViewCheckInOutStoreAddress_marginTop"
             android:layout_toRightOf="@+id/linearLayoutCheckOut"
             android:maxLines="1"
-            android:text="101 Ching's street, Rajkumar rd, Bangalore"
+            android:text=""
+            android:ellipsize="end"
             android:textColor="@color/black_50"
             android:textSize="@dimen/textViewCheckInOutStoreAddress_textSize"
             android:textStyle="normal" />

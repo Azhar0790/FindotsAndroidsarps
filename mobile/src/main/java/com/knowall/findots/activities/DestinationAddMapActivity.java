@@ -574,8 +574,8 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
             // Display the address string or an error message sent from the intent service.
             mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
 
+            Log.d("jomy","adree"+mAreaOutput);
             mAreaOutput = resultData.getString(Constants.LOCATION_DATA_AREA);
-
             mCityOutput = resultData.getString(Constants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(Constants.LOCATION_DATA_STREET);
 
