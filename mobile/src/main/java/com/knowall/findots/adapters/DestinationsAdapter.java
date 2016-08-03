@@ -48,8 +48,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     int userID = 0;
     int assignedUserID = 0;
     Elements[] elements = null;
-    double currentLatitude;
-    double currentLongitude;
+    //double currentLatitude;
+    //double currentLongitude;
     Typeface typefaceLight = null;
 
     public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas/*, Elements[] elements*/
@@ -65,11 +65,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         typefaceLight = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
 
-        getCurrentLatitudeAndLongitude();
+        //getCurrentLatitudeAndLongitude();
 
     }
 
-    public void getCurrentLatitudeAndLongitude() {
+    /*public void getCurrentLatitudeAndLongitude() {
         try {
             LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -102,7 +102,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -175,7 +175,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             holder.textViewTravelTime.setVisibility(View.INVISIBLE);
         }*/
 
-        float[] distance = new float[2];
+        /*float[] distance = new float[2];
 
         Location.distanceBetween(
                 currentLatitude,
@@ -187,8 +187,17 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         if(currentLatitude!=0)
         holder.textViewTravelTime.setVisibility(View.VISIBLE);
-        holder.textViewTravelTime.setText(kilometers + context.getResources().getString(R.string.km));
+        holder.textViewTravelTime.setText(kilometers + context.getResources().getString(R.string.km));*/
 
+
+        String travelTime = destinationDatas.get(position).getTravelTime();
+
+        if (travelTime.equals("-1")) {
+            holder.textViewTravelTime.setVisibility(View.INVISIBLE);
+        } else {
+            holder.textViewTravelTime.setVisibility(View.VISIBLE);
+            holder.textViewTravelTime.setText(travelTime);
+        }
 
         /**
          *   to display scheduled and unscheduled textview
