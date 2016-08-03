@@ -82,7 +82,7 @@ public class MenuActivity extends RuntimePermissionActivity
     int ICONS[] = {
             R.drawable.destinations,
             R.drawable.menu_report_loc,
-            R.drawable.menu_report_loc,
+            R.drawable.join_team,
             R.drawable.settings,
             R.drawable.help,
             R.drawable.logout};
