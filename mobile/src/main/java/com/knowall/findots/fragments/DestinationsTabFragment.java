@@ -160,8 +160,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPagerDestinations.setAdapter(pagerAdapter);
         viewPagerDestinations.setCurrentItem(pagerCurrentItem);
-
         viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
+        if (pagerCurrentItem == 2) {
+            Log.d("paul","history22...");
+            if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
+                EventBus.getDefault().post(AppEvents.NOHISTORY);
+            else
+                EventBus.getDefault().post(AppEvents.HISTORY);
+        }
     }
 
     @Override
@@ -188,6 +194,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 viewPagerDestinations.setCurrentItem(pagerCurrentItem);
                 Log.d("jomy", "set pagerCurrentItem..//" + pagerCurrentItem);
             }
+
             GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
             destinationsRestCall.delegate = DestinationsTabFragment.this;
             destinationsRestCall.callGetDestinations();
