@@ -132,8 +132,24 @@ public class DestinationsMapFragment extends Fragment
         }
         if(scheduleCountFlag && DestinationsTabFragment.pagerCurrentItem==0)
         {
-            Toast.makeText(MenuActivity.ContextMenuActivity,
-                    ""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
+//            Toast.makeText(MenuActivity.ContextMenuActivity,
+//                    ""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
+
+//            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
+//            alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
+//
+//            alertDialogBuilderUserInput.setMessage(""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned));
+//
+//
+//            alertDialogBuilderUserInput
+//                    .setCancelable(true)
+//                    .setPositiveButton("" + getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialogBox, int id) {
+//                            dialogBox.cancel();
+//                        }
+//                    });
+//            AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+//            alertDialogAndroid.show();
         }
 
     }

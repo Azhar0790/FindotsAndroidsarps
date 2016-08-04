@@ -160,8 +160,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         DateTime dateTime = new DateTime();
 
-        if(current_selected_dateTime==null || current_selected_dateTime.length()<1)
-        current_selected_dateTime = dateTime.toString(fmt1);
+        if(current_selected_dateTime==null || current_selected_dateTime.length()<1) {
+            current_selected_dateTime = dateTime.toString(fmt1);
+            Log.d("paul","current_selected_dateTime22"+current_selected_dateTime);
+        }
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);
 
@@ -268,10 +270,31 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
-        mCalendarDay=materialCalendarView.getCurrentDate();
+        mCalendarDay=materialCalendarView.getSelectedDate();
         Log.d("jo", "Build version ..." + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT > 22) {
             materialCalendarView.goToNext();
+        }
+
+//        SimpleDateFormat sdf3 = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+//
+//        Date d1 = null;
+//        try {
+//            d1 = sdf3.parse(mCalendarDay.toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
+        // ------------------------------------
+        SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
+
+        try {
+            current_selected_dateTime = sdf4.format(mCalendarDay.getDate());
+            Log.d("paul","current_selected_dateTime1"+current_selected_dateTime);
+        } catch (Exception e) {
+            Log.d("paul","err : "+e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -316,7 +339,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         try {
             current_selected_dateTime = sdf4.format(d1);
+            Log.d("paul","current_selected_dateTimekali"+current_selected_dateTime);
         } catch (Exception e) {
+            Log.d("paul","err : "+e.getMessage());
             e.printStackTrace();
         }
 
