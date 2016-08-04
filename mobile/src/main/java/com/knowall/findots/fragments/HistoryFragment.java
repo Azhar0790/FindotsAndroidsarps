@@ -102,6 +102,7 @@ public class HistoryFragment extends Fragment {
                 EventBus.getDefault().unregister(this);
                 textViewNoHistory.setVisibility(View.GONE);
                 recyclerViewHistories.setVisibility(View.VISIBLE);
+                recyclerViewHistories.removeAllViews();
                 Log.d("paul","historySize..."+DestinationsTabFragment.historyDatas.size());
                 historyDataList.clear();
                 historyDataList.addAll(DestinationsTabFragment.historyDatas);
@@ -120,6 +121,7 @@ public class HistoryFragment extends Fragment {
                 Log.d("paul","history44...");
                 EventBus.getDefault().cancelEventDelivery(events);
                 EventBus.getDefault().unregister(this);
+                recyclerViewHistories.removeAllViews();
                 historyDataList.clear();
                 DestinationsTabFragment.historyDatas.clear();
                 textViewNoHistory.setVisibility(View.VISIBLE);
