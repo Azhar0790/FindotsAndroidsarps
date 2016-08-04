@@ -77,25 +77,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 
         setUIElementsProperty();
         setListeners();
-//       if(!(Utils.isLocationServiceEnabled(LoginActivity.this))) {
-//           Utils.createLocationServiceError(LoginActivity.this);
-//       }
+
         buildGoogleApiClient();
 
         //mEditText_userName.setText("vanithaergam405@gmail.com");
         //mEditText_password.setText("1234");
 
-//        mEditText_userName.setText("pnelapati@bridgetree.com");
-//        mEditText_password.setText("12345");
+        //mEditText_userName.setText("pnelapati@bridgetree.com");
+        //mEditText_password.setText("12345");
 
-       // mEditText_userName.setText("sravan@gmail.com");
-       // mEditText_password.setText("12345");
+        mEditText_userName.setText("pari@gmail.com");
+        mEditText_password.setText("test1234");
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
 
-        mEditText_userName.setText("mahi@bridgetree.com");
-        mEditText_password.setText("Test1234");
+        //mEditText_userName.setText("mahi@bridgetree.com");
+        //mEditText_password.setText("Test1234");
     }
 
     @Override
