@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.UnderlineSpan;
@@ -336,7 +337,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
         final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
         mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
-
+        mEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         mEditText.setHint("Check Out Note");
         mEditText.requestFocus();
 

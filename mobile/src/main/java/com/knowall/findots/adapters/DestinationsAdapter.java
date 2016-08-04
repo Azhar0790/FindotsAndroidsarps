@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -341,7 +342,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
         mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
-
+        mEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         mEditText.setHint("Check Out Note");
         mEditText.requestFocus();
 
