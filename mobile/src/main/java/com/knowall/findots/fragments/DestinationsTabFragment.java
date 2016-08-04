@@ -64,6 +64,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
     public static ArrayList<HistoryData> historyDatas=new ArrayList<HistoryData>();
+    boolean resetViewPager=false;
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -76,6 +77,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         super.onCreate(savedInstanceState);
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().register(this);
+        resetViewPager=true;
     }
 
     @Nullable
@@ -110,6 +112,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         ViewCompat.setElevation(tabLayout, 5f);
 
+        if(viewPagerDestinations==null)
         viewPagerDestinations = (ViewPager) rootView.findViewById(R.id.viewPagerDestinations);
 
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
@@ -126,8 +129,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 Log.i("Tab", "pagerCurrentItem --> "+pagerCurrentItem);
 
                 if (pagerCurrentItem == 2) {
-                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
+                    }
+                    else
+                    {
+                        historyDatas.clear();
+                        EventBus.getDefault().post(AppEvents.NOHISTORY);
+                    }
                 }
             }
 
@@ -159,10 +168,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         /**
          *   Tabs adapter
          */
-        DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
-        viewPagerDestinations.setAdapter(pagerAdapter);
+        if(viewPagerDestinations!=null && resetViewPager==true) {
+            DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
+            viewPagerDestinations.setAdapter(pagerAdapter);
+            viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
+            resetViewPager=false;
+        }
         viewPagerDestinations.setCurrentItem(pagerCurrentItem);
-        viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
+
         if (pagerCurrentItem == 2) {
             if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
                 callHistoryRestCall();
@@ -229,8 +242,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 mCalendarDay = date;
 
                 if (pagerCurrentItem == 2) {
-                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
+                    }
+                    else
+                    {
+                        historyDatas.clear();
+                        EventBus.getDefault().post(AppEvents.NOHISTORY);
+                    }
                 }
 
             }
@@ -378,6 +397,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     @Override
     public void onHistoryFailure(String errorMessage) {
+        historyDatas.clear();
         EventBus.getDefault().post(AppEvents.NOHISTORY);
     }
 

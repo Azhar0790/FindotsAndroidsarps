@@ -15,6 +15,9 @@ import com.knowall.findots.R;
 import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.adapters.HistoryAdapter;
 import com.knowall.findots.events.AppEvents;
+import com.knowall.findots.restcalls.history.HistoryData;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,6 +37,7 @@ public class HistoryFragment extends Fragment {
 
     ViewGroup rootView = null;
     LayoutInflater inflater = null;
+    ArrayList<HistoryData> historyDataList=new ArrayList<HistoryData>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +51,6 @@ public class HistoryFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(R.layout.history, null);
         ButterKnife.bind(this, rootView);
 //        initializeEmptyAdapter();
-
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         Log.d("paul", "onCreateView");
@@ -78,10 +81,8 @@ public class HistoryFragment extends Fragment {
 
     public void initializeEmptyAdapter() {
         Log.d("paul","initalize Item...");
-
-
         HistoryAdapter historyAdapter = new HistoryAdapter(
-                getActivity(), DestinationsTabFragment.historyDatas);
+                getActivity(), historyDataList);
         recyclerViewHistories.setLayoutManager(new LinearLayoutManager(MenuActivity.ContextMenuActivity));
         recyclerViewHistories.setAdapter(historyAdapter);
         historyAdapter.notifyDataSetChanged();
@@ -102,15 +103,16 @@ public class HistoryFragment extends Fragment {
                 textViewNoHistory.setVisibility(View.GONE);
                 recyclerViewHistories.setVisibility(View.VISIBLE);
                 Log.d("paul","historySize..."+DestinationsTabFragment.historyDatas.size());
+                historyDataList.clear();
+                historyDataList.addAll(DestinationsTabFragment.historyDatas);
                 HistoryAdapter historyAdapter = new HistoryAdapter(
-                        MenuActivity.ContextMenuActivity, DestinationsTabFragment.historyDatas);
-
-                recyclerViewHistories.setAdapter(historyAdapter);
+                        MenuActivity.ContextMenuActivity, historyDataList);
                 recyclerViewHistories.setLayoutManager(new LinearLayoutManager(MenuActivity.ContextMenuActivity));
+                recyclerViewHistories.setAdapter(historyAdapter);
                 historyAdapter.notifyDataSetChanged();
 
-//                if (!EventBus.getDefault().isRegistered(this))
-//                    EventBus.getDefault().register(this);
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
 
                 break;
 
@@ -118,7 +120,8 @@ public class HistoryFragment extends Fragment {
                 Log.d("paul","history44...");
                 EventBus.getDefault().cancelEventDelivery(events);
                 EventBus.getDefault().unregister(this);
-
+                historyDataList.clear();
+                DestinationsTabFragment.historyDatas.clear();
                 textViewNoHistory.setVisibility(View.VISIBLE);
                 recyclerViewHistories.setVisibility(View.GONE);
 
