@@ -53,7 +53,7 @@ import java.util.Locale;
 import de.greenrobot.event.EventBus;
 
 
-public class DestinationsTabFragment extends Fragment implements IGetDestinations,IHistory {
+public class DestinationsTabFragment extends Fragment implements IGetDestinations, IHistory {
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
@@ -63,8 +63,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static int pagerCurrentItem = 0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
-    public static ArrayList<HistoryData> historyDatas=new ArrayList<HistoryData>();
-    boolean resetViewPager=false;
+    public static ArrayList<HistoryData> historyDatas = new ArrayList<HistoryData>();
+    boolean resetViewPager = false;
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -77,7 +77,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         super.onCreate(savedInstanceState);
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().register(this);
-        resetViewPager=true;
+        resetViewPager = true;
+        Log.d("paul", "oncreateTab..");
     }
 
     @Nullable
@@ -86,7 +87,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_tab_layout, null);
 
         initializeMaterialCalendarView(rootView);
-
+        Log.d("paul", "oncreateViewTab..");
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("List"));
@@ -112,8 +113,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         ViewCompat.setElevation(tabLayout, 5f);
 
-        if(viewPagerDestinations==null)
-        viewPagerDestinations = (ViewPager) rootView.findViewById(R.id.viewPagerDestinations);
+        if (viewPagerDestinations == null)
+            viewPagerDestinations = (ViewPager) rootView.findViewById(R.id.viewPagerDestinations);
 
         GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
         destinationsRestCall.delegate = DestinationsTabFragment.this;
@@ -126,14 +127,12 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
                 pagerCurrentItem = tab.getPosition();
-                Log.i("Tab", "pagerCurrentItem --> "+pagerCurrentItem);
+                Log.i("Tab", "pagerCurrentItem --> " + pagerCurrentItem);
 
                 if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
-                    }
-                    else
-                    {
+                    } else {
                         historyDatas.clear();
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
@@ -160,9 +159,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         DateTimeFormatter fmt1 = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         DateTime dateTime = new DateTime();
 
-        if(current_selected_dateTime==null || current_selected_dateTime.length()<1) {
+        if (current_selected_dateTime == null || current_selected_dateTime.length() < 1) {
             current_selected_dateTime = dateTime.toString(fmt1);
-            Log.d("paul","current_selected_dateTime22"+current_selected_dateTime);
+            Log.d("paul", "current_selected_dateTime22" + current_selected_dateTime);
         }
 
         createScheduledUnscheduledListByDate(current_selected_dateTime);
@@ -170,11 +169,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         /**
          *   Tabs adapter
          */
-        if(viewPagerDestinations!=null && resetViewPager==true) {
+        if (viewPagerDestinations != null && resetViewPager == true) {
             DestinationsPagerAdapter pagerAdapter = new DestinationsPagerAdapter(getFragmentManager(), tabLayout.getTabCount());
             viewPagerDestinations.setAdapter(pagerAdapter);
             viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
-            resetViewPager=false;
+            resetViewPager = false;
         }
         viewPagerDestinations.setCurrentItem(pagerCurrentItem);
 
@@ -246,9 +245,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
-                    }
-                    else
-                    {
+                    } else {
                         historyDatas.clear();
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
@@ -270,7 +267,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
-        mCalendarDay=materialCalendarView.getSelectedDate();
+        mCalendarDay = materialCalendarView.getSelectedDate();
         Log.d("jo", "Build version ..." + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT > 22) {
             materialCalendarView.goToNext();
@@ -291,14 +288,13 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         try {
             current_selected_dateTime = sdf4.format(mCalendarDay.getDate());
-            Log.d("paul","current_selected_dateTime1"+current_selected_dateTime);
+            Log.d("paul", "current_selected_dateTime1" + current_selected_dateTime);
         } catch (Exception e) {
-            Log.d("paul","err : "+e.getMessage());
+            Log.d("paul", "err : " + e.getMessage());
             e.printStackTrace();
         }
 
     }
-
 
 
     class EventDecorator implements DayViewDecorator {
@@ -339,9 +335,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         try {
             current_selected_dateTime = sdf4.format(d1);
-            Log.d("paul","current_selected_dateTimekali"+current_selected_dateTime);
+            Log.d("paul", "current_selected_dateTimekali" + current_selected_dateTime);
         } catch (Exception e) {
-            Log.d("paul","err : "+e.getMessage());
+            Log.d("paul", "err : " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -357,7 +353,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         int i = 0;
 
-        if(destinationDatas!=null) {
+        if (destinationDatas != null) {
             for (DestinationData data : destinationDatas) {
                 if (data.getScheduleDate() != null && data.getScheduleDate().length() != 0) {
                     scheduleDate = data.getScheduleDate().substring(0, 10);
@@ -388,7 +384,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void onDestroy() {
         super.onDestroy();
-       pagerCurrentItem = 0;
+        pagerCurrentItem = 0;
+        current_selected_dateTime = "";
+        MaterialCalendarView materialCalendarView = null;
+        pagerCurrentItem = 0;
+        DestinationData[] destinationDatas = null;
+        ArrayList<HistoryData> historyDatas =null;
+        mCalendarDay = null;
+
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().unregister(this);
 //        EventBus.getDefault().unregister(this);
@@ -403,18 +406,18 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             endDate = date.substring(0, 10) + " " + "23:59:59";
         }
         HistoryRestCall historyRestCall = new HistoryRestCall(MenuActivity.ContextMenuActivity);
-        historyRestCall.delegate =DestinationsTabFragment.this;
+        historyRestCall.delegate = DestinationsTabFragment.this;
         historyRestCall.callGetReport(startDate, endDate);
     }
+
     @Override
     public void onHistorySuccess(HistoryModel historyModel) {
         if (historyModel.getHistoryData().size() > 0) {
             historyDatas.clear();
-            Log.d("paul","historySucess...");
+            Log.d("paul", "historySucess...");
             historyDatas.addAll(historyModel.getHistoryData());
-                    EventBus.getDefault().post(AppEvents.HISTORY);
-        }
-        else {
+            EventBus.getDefault().post(AppEvents.HISTORY);
+        } else {
             historyDatas.clear();
             EventBus.getDefault().post(AppEvents.NOHISTORY);
         }
@@ -425,5 +428,4 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         historyDatas.clear();
         EventBus.getDefault().post(AppEvents.NOHISTORY);
     }
-
 }
