@@ -51,7 +51,7 @@ public class DestinationData {
 
     private long timeDifference;
 
-    private String travelTime;
+    private String travelTime = "-1";
 
     private String travelDistance;
 

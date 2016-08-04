@@ -22,6 +22,13 @@ import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.adapters.DestinationsAdapter;
 import com.knowall.findots.database.DataHelper;
+import com.knowall.findots.distancematrix.DistanceMatrixService;
+import com.knowall.findots.distancematrix.IDistanceMatrix;
+import com.knowall.findots.distancematrix.model.Distance;
+import com.knowall.findots.distancematrix.model.DistanceMatrix;
+import com.knowall.findots.distancematrix.model.Duration;
+import com.knowall.findots.distancematrix.model.Elements;
+import com.knowall.findots.distancematrix.model.Rows;
 import com.knowall.findots.events.AppEvents;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
@@ -54,8 +61,8 @@ public class DestinationFragment extends Fragment
         implements
         IDestinations,
         IGetDestinations,
-        ICheckInCheckOut
-        //IDistanceMatrix,
+        ICheckInCheckOut,
+        IDistanceMatrix
         //GoogleApiClient.OnConnectionFailedListener,
         //GoogleApiClient.ConnectionCallbacks,
         //LocationListener
@@ -281,6 +288,14 @@ public class DestinationFragment extends Fragment
             for (DestinationData data : arrayListScheduleDate) {
 
                 if (data.getTimeDifference() > 0) {
+                    Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
+
+                    if (location != null) {
+                        String origin = location.getLatitude() +","+location.getLongitude();
+                        String destination = data.getDestinationLatitude()+","+data.getDestinationLongitude();
+                        googleDistanceMatrixAPI(origin, destination);
+                    }
+
                     break;
                 }
                 nextScheduledItemPosition++;
@@ -636,7 +651,7 @@ public class DestinationFragment extends Fragment
      *   duration and distance of the
      *   current location and destination locations on the map markers
      */
-   /* public void googleDistanceMatrixAPI(String origin, String destination) {
+    public void googleDistanceMatrixAPI(String origin, String destination) {
         DistanceMatrixService service = new DistanceMatrixService();
         service.delegate = DestinationFragment.this;
         service.callDistanceMatrixService(getActivity(), origin, destination);
@@ -646,20 +661,30 @@ public class DestinationFragment extends Fragment
     Elements[] elements = null;
     @Override
     public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
+        String travelTime = "";
+
         if (distanceMatrix != null) {
             Rows[] rows = distanceMatrix.getRows();
             if (rows.length > 0) {
                 elements = rows[0].getElements();
                 if (elements.length > 0) {
+                    Duration duration = elements[0].getDuration();
 
-                    setAdapterForDestinations();
-
-                    *//*Duration duration = elements[0].getDuration();
                     if(duration != null) {
                         travelTime = duration.getText();
-                        setAdapterForDestinations();
                         Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
-                    }*//*
+                    }
+
+                    Distance distance = elements[0].getDistance();
+                    if (distance != null) {
+                        travelTime = travelTime + " " + distance.getText();
+                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
+                    }
+
+                    if (arrayListDestinations.size() > 0 && nextScheduledItemPosition != -1)
+                        arrayListDestinations.get(nextScheduledItemPosition).setTravelTime(travelTime);
+
+                    setAdapterForDestinations();
                 }
             }
         }
@@ -667,9 +692,8 @@ public class DestinationFragment extends Fragment
 
     @Override
     public void onDistanceMatrixFailure() {
-        onConnected(null);
-        //Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
-    }*/
+        Toast.makeText(getActivity(), "Unable to fetch the travel time.", Toast.LENGTH_SHORT).show();
+    }
 
     /**
      *   create Origins request parameter for DistanceMatrix

@@ -11,6 +11,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.knowall.findots.R;
+import com.knowall.findots.database.DataHelper;
+import com.knowall.findots.locationUtils.LocationModel.LocationData;
 
 import java.util.List;
 import java.util.Locale;
@@ -224,5 +228,50 @@ public class GeneralUtils {
         return true;
     }
 
+
+    public static Location getCurrentLatitudeAndLongitude(Context context) {
+
+        double currentLatitude, currentLongitude;
+
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            List<String> providers = locationManager.getProviders(true);
+            Location location = null;
+
+            for (String provider : providers) {
+                Location currentLocation = locationManager.getLastKnownLocation(provider);
+                if (currentLocation == null) {
+                    continue;
+                }
+                if (location == null || currentLocation.getAccuracy() < location.getAccuracy()) {
+                    location = currentLocation;
+                }
+            }
+
+            if (location != null) {
+                return location;
+            } else {
+                DataHelper dataHelper = DataHelper.getInstance(context);
+                List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+                if (locationLatestData.size() > 0) {
+                    for (LocationData locLastData : locationLatestData) {
+                        currentLatitude = locLastData.getLatitude();
+                        currentLongitude = locLastData.getLongitude();
+
+                        location = new Location("");
+                        location.setLatitude(currentLatitude);
+                        location.setLongitude(currentLongitude);
+
+                        return location;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }
