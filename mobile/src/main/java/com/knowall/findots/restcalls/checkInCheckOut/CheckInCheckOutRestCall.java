@@ -42,11 +42,11 @@ public class CheckInCheckOutRestCall {
         this.context = context;
     }
 
-    public void callCheckInService(final boolean isCheckIn, final int assignedDestinationID, double lattitude, double longitude) {
+    public void callCheckInService(String checkOutNote, final boolean isCheckIn, final int assignedDestinationID, double lattitude, double longitude) {
         this.assignedDestinationID = assignedDestinationID;
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getDestinationsRequest(assignedDestinationID,lattitude,longitude);
+        Map<String, Object> postValues = getDestinationsRequest(checkOutNote, assignedDestinationID,lattitude,longitude);
 
         Call<CheckInCheckOutModel> call = null;
 
@@ -91,7 +91,7 @@ public class CheckInCheckOutRestCall {
         });
     }
 
-    private Map<String, Object> getDestinationsRequest(int assignedDestinationID,double latitude,double longitude) {
+    private Map<String, Object> getDestinationsRequest(String checkOutNote, int assignedDestinationID,double latitude,double longitude) {
 
         currentLatitude = latitude;
         currentLongitude = longitude;
@@ -129,6 +129,7 @@ public class CheckInCheckOutRestCall {
         checkInValues.put("reportedTime", reportedTime);
         checkInValues.put("checkedInOutLatitude", currentLatitude);
         checkInValues.put("checkedInOutLongitude", currentLongitude);
+        checkInValues.put("checkoutComment", checkOutNote);
 
         list.add(checkInValues);
 

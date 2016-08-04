@@ -1,6 +1,8 @@
 package com.knowall.findots.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +24,7 @@ import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.interfaces.IDestinations;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.restcalls.destinations.DestinationData;
+import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -297,7 +301,15 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
+
+                boolean checkIn = destinationDatas.get(position).isCheckedIn();
+                boolean checkOut = destinationDatas.get(position).isCheckedOut();
+
+                if (checkIn == true && checkOut == false) {
+                    checkOutNote(context, destinationPosition, destinationDatas.get(position).isCheckedIn());
+                } else {
+                    delegate.callCheckInCheckOutService("", destinationPosition, destinationDatas.get(position).isCheckedIn());
+                }
             }
         });
 
@@ -306,83 +318,54 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
                 int destinationPosition = (int) v.getTag();
-                delegate.callCheckInCheckOutService(destinationPosition, destinationDatas.get(position).isCheckedIn());
+
+                boolean checkIn = destinationDatas.get(position).isCheckedIn();
+                boolean checkOut = destinationDatas.get(position).isCheckedOut();
+
+                if (checkIn == true && checkOut == false) {
+                    checkOutNote(context, destinationPosition, destinationDatas.get(position).isCheckedIn());
+                } else {
+                    delegate.callCheckInCheckOutService("", destinationPosition, destinationDatas.get(position).isCheckedIn());
+                }
             }
         });
 
     }
 
+    public void checkOutNote(Context context, final int destinationPosition, final boolean isChecked) {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(context);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(context);
+        alertDialogBuilderUserInput.setView(mView);
+        alertDialogBuilderUserInput.setTitle(context.getString(R.string.app_name));
 
-    /**
-     * get Time difference
-     *
-     * @param date
-     * @return
-     */
-    public String dateTimeDifference(String date) {
+        final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
 
-        String timeDifference = null;
+        mEditText.setHint("Check Out Note");
+        mEditText.requestFocus();
 
-        Log.i(Constants.TAG, "dateTimeDifference: getTime = " + getTime);
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(context.getString(R.string.done), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String checkOutNote = mEditText.getText().toString();
+                        dialog.dismiss();
+                        delegate.callCheckInCheckOutService(checkOutNote, destinationPosition, isChecked);
 
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
-        DateTime endTime = fmt.parseDateTime(getTime);
-        DateTime startTime = fmt.parseDateTime(date);
+                    }
+                })
+                .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
-        Period period = new Period(startTime, endTime);
+        AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
 
-        int years = period.getYears();
-        int months = period.getMonths();
-        int weeks = period.getWeeks();
-        int days = period.getDays();
-        int hours = period.getHours();
-        int minutes = period.getMinutes();
-        int seconds = period.getSeconds();
-
-        if (years != 0) {
-            if (years == 1) {
-                timeDifference = years + " year ago";
-            } else {
-                timeDifference = years + " years ago";
-            }
-        } else if (months != 0) {
-            if (months == 1) {
-                timeDifference = months + " month ago";
-            } else {
-                timeDifference = months + " months ago";
-            }
-        } else if (weeks != 0) {
-            if (weeks == 1) {
-                timeDifference = weeks + " week ago";
-            } else {
-                timeDifference = weeks + " weeks ago";
-            }
-        } else if (days != 0) {
-            if (days == 1) {
-                timeDifference = days + " day ago";
-            } else {
-                timeDifference = days + " days ago";
-            }
-        } else if (hours != 0) {
-            if (hours == 1) {
-                timeDifference = hours + " hr ago";
-            } else {
-                timeDifference = hours + " hrs ago";
-            }
-        } else if (minutes != 0) {
-            if (minutes == 1) {
-                timeDifference = minutes + " min ago";
-            } else {
-                timeDifference = minutes + " mins ago";
-            }
-        } else if (seconds != 0) {
-            if (seconds == 1) {
-                timeDifference = "few secs ago";
-            } else {
-                timeDifference = "few secs ago";
-            }
-        }
-
-        return timeDifference;
     }
+
 }
