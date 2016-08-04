@@ -50,7 +50,9 @@ public class HistoryFragment extends Fragment {
         this.inflater = inflater;
         rootView = (ViewGroup) inflater.inflate(R.layout.history, null);
         ButterKnife.bind(this, rootView);
-//        initializeEmptyAdapter();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MenuActivity.ContextMenuActivity);
+        recyclerViewHistories.setLayoutManager(layoutManager);
+//        setHistoryAdapter(historyDataList);
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         Log.d("paul", "onCreateView");
@@ -79,11 +81,10 @@ public class HistoryFragment extends Fragment {
         }*/
     }
 
-    public void initializeEmptyAdapter() {
-        Log.d("paul","initalize Item...");
+    public void setHistoryAdapter( ArrayList<HistoryData> historyDataList) {
+
         HistoryAdapter historyAdapter = new HistoryAdapter(
                 getActivity(), historyDataList);
-        recyclerViewHistories.setLayoutManager(new LinearLayoutManager(MenuActivity.ContextMenuActivity));
         recyclerViewHistories.setAdapter(historyAdapter);
         historyAdapter.notifyDataSetChanged();
     }
@@ -102,16 +103,16 @@ public class HistoryFragment extends Fragment {
                 EventBus.getDefault().unregister(this);
                 textViewNoHistory.setVisibility(View.GONE);
                 recyclerViewHistories.setVisibility(View.VISIBLE);
-                recyclerViewHistories.removeAllViews();
+//                recyclerViewHistories.removeAllViews();
                 Log.d("paul","historySize..."+DestinationsTabFragment.historyDatas.size());
                 historyDataList.clear();
                 historyDataList.addAll(DestinationsTabFragment.historyDatas);
-                HistoryAdapter historyAdapter = new HistoryAdapter(
-                        MenuActivity.ContextMenuActivity, historyDataList);
-                recyclerViewHistories.setLayoutManager(new LinearLayoutManager(MenuActivity.ContextMenuActivity));
-                recyclerViewHistories.setAdapter(historyAdapter);
-                historyAdapter.notifyDataSetChanged();
-
+//                HistoryAdapter historyAdapter = new HistoryAdapter(
+//                        MenuActivity.ContextMenuActivity, historyDataList);
+//                recyclerViewHistories.setLayoutManager(new LinearLayoutManager(MenuActivity.ContextMenuActivity));
+//                recyclerViewHistories.setAdapter(historyAdapter);
+//                historyAdapter.notifyDataSetChanged();
+                setHistoryAdapter(historyDataList);
                 if (!EventBus.getDefault().isRegistered(this))
                     EventBus.getDefault().register(this);
                 break;
@@ -121,9 +122,10 @@ public class HistoryFragment extends Fragment {
                 EventBus.getDefault().cancelEventDelivery(events);
                 EventBus.getDefault().unregister(this);
                 Log.d("paul","history44Size ..."+historyDataList.size());
-                recyclerViewHistories.removeAllViews();
+//                recyclerViewHistories.removeAllViews();
                 historyDataList.clear();
                 DestinationsTabFragment.historyDatas.clear();
+                setHistoryAdapter(historyDataList);
                 Log.d("paul","history44Size2 ..."+historyDataList.size()+" : "+DestinationsTabFragment.historyDatas.size());
                 textViewNoHistory.setVisibility(View.VISIBLE);
                 recyclerViewHistories.setVisibility(View.GONE);
