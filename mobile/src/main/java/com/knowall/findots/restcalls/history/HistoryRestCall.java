@@ -1,6 +1,7 @@
 package com.knowall.findots.restcalls.history;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
@@ -33,7 +34,7 @@ public class HistoryRestCall {
         GeneralUtils.initialize_progressbar(context);
 
         Map<String, Object> postValues = getHistoryRequest(startDate, endDate);
-
+        Log.d("paul","historyCallRequest23...");
         Call<HistoryModel> call = FinDotsApplication.getRestClient().getApiService().getHistory(postValues);
 
         call.enqueue(new Callback<HistoryModel>() {
@@ -62,7 +63,7 @@ public class HistoryRestCall {
     }
 
     private Map<String, Object> getHistoryRequest(String startDate, String endDate) {
-
+        Log.d("paul","historyCallRequest...");
         int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
 
         Map<String, Object> postValues = new HashMap<>();

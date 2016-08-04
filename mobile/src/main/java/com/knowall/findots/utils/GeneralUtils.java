@@ -22,11 +22,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.knowall.findots.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -169,9 +166,13 @@ public class GeneralUtils {
 
     public static int getSharedPreferenceInt(Context context, String prefKey) {
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        int preferenceVal = pref.getInt(prefKey, -1);
-        return preferenceVal;
+        try {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+            int preferenceVal = pref.getInt(prefKey, -1);
+            return preferenceVal;
+        }
+        catch (Exception e){}
+        return -1;
     }
 
     public static void setSharedPreferenceString(Context context, String prefKey, String prefVal) {

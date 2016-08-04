@@ -21,28 +21,30 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+
 /**
  * Created by parijathar on 7/27/2016.
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
     Context context = null;
-    HistoryData[] historyDatas = null;
+    ArrayList<HistoryData> historyDatas = null;
     Typeface typefaceLight = null;
     Typeface typefaceMedium = null;
 
-    public HistoryAdapter(Context context, HistoryData[] historyDatas) {
-        this.context = context;
+    public HistoryAdapter(Context context, ArrayList<HistoryData> historyDatas) {
+        this.context = MenuActivity.ContextMenuActivity;
         this.historyDatas = historyDatas;
-        Log.d("paul","historyAdapter..."+historyDatas.length);
         typefaceLight = Typeface.createFromAsset(MenuActivity.ContextMenuActivity.getAssets(), "fonts/Roboto-Light.ttf");
         typefaceMedium = Typeface.createFromAsset(MenuActivity.ContextMenuActivity.getAssets(), "fonts/Roboto-Medium.ttf");
+        Log.i("paul", "resunmm234");
     }
 
     @Override
     public int getItemCount() {
-        Log.d("paul","Count..."+historyDatas.length);
-        return historyDatas.length;
+        Log.d("paul","Count..."+historyDatas.size());
+        return historyDatas.size();
     }
 
     @Override
@@ -57,10 +59,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        boolean isCheckIn = historyDatas[position].isCheckIn();
-        boolean isCheckOut = historyDatas[position].isCheckOut();
-        String destinationName = historyDatas[position].getDestinationName();
-        String address = historyDatas[position].getAddress();
+        boolean isCheckIn = historyDatas.get(position).isCheckIn();
+        boolean isCheckOut = historyDatas.get(position).isCheckOut();
+        String destinationName = historyDatas.get(position).getDestinationName();
+        String address = historyDatas.get(position).getAddress();
 
         holder.textViewCheckInStoreAddress.setTypeface(typefaceLight);
         holder.textViewCheckInStoreName.setTypeface(typefaceMedium);
@@ -72,7 +74,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.textViewCheckInStoreAddress.setText(address);
         Log.d("paul","BindAdapter...");
         if (isCheckIn) {
-            String checkInTime = TimeSettings.getTimeOnly(historyDatas[position].getCheckInDate());
+            String checkInTime = TimeSettings.getTimeOnly(historyDatas.get(position).getCheckInDate());
             holder.buttonCheckInTime.setText(checkInTime);
         } else {
             holder.buttonCheckIN.setBackgroundResource(R.drawable.selector_checkin_round_strike);
@@ -95,14 +97,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.textViewCheckOutStoreAddress.setTypeface(typefaceLight);
             holder.buttonCheckOutTime.setTypeface(typefaceLight);
 
-            String checkInDateTime = historyDatas[position].getCheckInDate();
-            String checkOutDateTime = historyDatas[position].getCheckOutDate();
+            String checkInDateTime = historyDatas.get(position).getCheckInDate();
+            String checkOutDateTime = historyDatas.get(position).getCheckOutDate();
             String timeTaken = getTimeTaken(checkInDateTime, checkOutDateTime);
             holder.textViewTimeTaken.setText(timeTaken);
 
             holder.textViewCheckOutStoreName.setText(destinationName);
             holder.textViewCheckOutStoreAddress.setText(address);
-            String checkOutTime = TimeSettings.getTimeOnly(historyDatas[position].getCheckOutDate());
+            String checkOutTime = TimeSettings.getTimeOnly(historyDatas.get(position).getCheckOutDate());
             holder.buttonCheckOutTime.setText(checkOutTime);
         }
 
@@ -255,4 +257,5 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         return timeDifference;
     }
+
 }

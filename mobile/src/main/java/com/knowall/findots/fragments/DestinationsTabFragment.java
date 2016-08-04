@@ -27,6 +27,10 @@ import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
+import com.knowall.findots.restcalls.history.HistoryData;
+import com.knowall.findots.restcalls.history.HistoryModel;
+import com.knowall.findots.restcalls.history.HistoryRestCall;
+import com.knowall.findots.restcalls.history.IHistory;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
@@ -49,7 +53,7 @@ import java.util.Locale;
 import de.greenrobot.event.EventBus;
 
 
-public class DestinationsTabFragment extends Fragment implements IGetDestinations {
+public class DestinationsTabFragment extends Fragment implements IGetDestinations,IHistory {
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
@@ -59,6 +63,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static int pagerCurrentItem = 0;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
+    public static ArrayList<HistoryData> historyDatas=new ArrayList<HistoryData>();
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -121,10 +126,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 Log.i("Tab", "pagerCurrentItem --> "+pagerCurrentItem);
 
                 if (pagerCurrentItem == 2) {
-                    if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
-                        EventBus.getDefault().post(AppEvents.NOHISTORY);
-                    else
-                        EventBus.getDefault().post(AppEvents.HISTORY);
+                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                        callHistoryRestCall();
                 }
             }
 
@@ -135,7 +138,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
@@ -162,11 +164,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         viewPagerDestinations.setCurrentItem(pagerCurrentItem);
         viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
         if (pagerCurrentItem == 2) {
-            Log.d("paul","history22...");
-            if (mCalendarDay != null && mCalendarDay.isAfter(CalendarDay.today()))
-                EventBus.getDefault().post(AppEvents.NOHISTORY);
-            else
-                EventBus.getDefault().post(AppEvents.HISTORY);
+            if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                callHistoryRestCall();
         }
     }
 
@@ -227,15 +226,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 getSelectedDateFromCalendar(date.getDate());
-
                 mCalendarDay = date;
 
-                if (date.isAfter(CalendarDay.today())) {
-                    EventBus.getDefault().post(AppEvents.NOHISTORY);
-                } else {
-                    if (pagerCurrentItem == 2) {
-                        EventBus.getDefault().post(AppEvents.HISTORY);
-                    }
+                if (pagerCurrentItem == 2) {
+                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                        callHistoryRestCall();
                 }
 
             }
@@ -254,12 +249,15 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public void setMaterialCalendarDate(int year, int month, int day) {
         materialCalendarView.setSelectedDate(CalendarDay.from(year, month, day));
         materialCalendarView.setCurrentDate(CalendarDay.from(year, month, day));
+        mCalendarDay=materialCalendarView.getCurrentDate();
         Log.d("jo", "Build version ..." + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT > 22) {
             materialCalendarView.goToNext();
         }
 
     }
+
+
 
     class EventDecorator implements DayViewDecorator {
 
@@ -350,6 +348,37 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 //        if (!EventBus.getDefault().isRegistered(this))
 //            EventBus.getDefault().unregister(this);
 //        EventBus.getDefault().unregister(this);
+    }
+
+    public void callHistoryRestCall() {
+        String startDate = "", endDate = "";
+
+        String date = DestinationsTabFragment.current_selected_dateTime;
+        if (!date.equals("")) {
+            startDate = date.substring(0, 10) + " " + "00:00:00";
+            endDate = date.substring(0, 10) + " " + "23:59:59";
+        }
+        HistoryRestCall historyRestCall = new HistoryRestCall(MenuActivity.ContextMenuActivity);
+        historyRestCall.delegate =DestinationsTabFragment.this;
+        historyRestCall.callGetReport(startDate, endDate);
+    }
+    @Override
+    public void onHistorySuccess(HistoryModel historyModel) {
+        if (historyModel.getHistoryData().size() > 0) {
+            historyDatas.clear();
+            Log.d("paul","historySucess...");
+            historyDatas.addAll(historyModel.getHistoryData());
+                    EventBus.getDefault().post(AppEvents.HISTORY);
+        }
+        else {
+            historyDatas.clear();
+            EventBus.getDefault().post(AppEvents.NOHISTORY);
+        }
+    }
+
+    @Override
+    public void onHistoryFailure(String errorMessage) {
+        EventBus.getDefault().post(AppEvents.NOHISTORY);
     }
 
 }

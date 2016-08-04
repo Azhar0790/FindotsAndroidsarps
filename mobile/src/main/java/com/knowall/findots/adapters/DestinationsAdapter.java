@@ -187,7 +187,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         if(currentLatitude!=0)
         holder.textViewTravelTime.setVisibility(View.VISIBLE);
-        holder.textViewTravelTime.setText(kilometers + context.getResources().getString(R.string.km));
+        holder.textViewTravelTime.setText(kilometers +" "+ context.getResources().getString(R.string.km));
 
 
         /**

@@ -559,7 +559,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         Location.distanceBetween(mCurrentlatitude, mCurrentlongitude, destinationLatitude, destinationLongitude, distance);
         String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
-        mTextView_map_km.setText(kilometers + getResources().getString(R.string.km));
+        mTextView_map_km.setText(kilometers + " "+getResources().getString(R.string.km));
         if (requestForCheckInCheckOut) {
 
             if (distance[0] <= mCircle.getRadius()) {

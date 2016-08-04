@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+
 /**
  * Created by parijathar on 7/27/2016.
  */
@@ -13,8 +15,16 @@ public class HistoryModel {
 
     private int errorCode;
 
+    public ArrayList<HistoryData> getHistoryData() {
+        return historyData;
+    }
+
+    public void setHistoryData(ArrayList<HistoryData> historyData) {
+        this.historyData = historyData;
+    }
+
     @SerializedName("destinationsData")
-    private HistoryData[] historyData;
+    private ArrayList<HistoryData> historyData =new ArrayList<HistoryData>();
 
     public String getMessage() {
         return message;
@@ -32,13 +42,7 @@ public class HistoryModel {
         this.errorCode = errorCode;
     }
 
-    public HistoryData[] getHistoryData() {
-        return historyData;
-    }
 
-    public void setHistoryData(HistoryData[] historyData) {
-        this.historyData = historyData;
-    }
 
     @Override
     public String toString() {
