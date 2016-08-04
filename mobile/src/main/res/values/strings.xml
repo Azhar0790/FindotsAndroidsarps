@@ -32,7 +32,7 @@
          1022/33, Dr Rajkumar Road, 4th Block, Rajaji Nagar,Bangalore, Karnataka 560010.</string>
     <string name="no_address">No Address</string>
     <string name="logout_confirmation">Are you sure you want to logout?</string>
-    <string name="join_team">If you have a coupon code, please enter it here to join a team.</string>
+    <string name="join_team">Please provide a coupon code to join team.</string>
     <string name="skip">Skip</string>
     <string name="done">Done</string>
 

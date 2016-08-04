@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.adapters.DestinationsAdapter;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.distancematrix.DistanceMatrixService;
@@ -206,7 +207,7 @@ public class DestinationFragment extends Fragment
     }
 
     public void setAdapterForDestinations() {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(getActivity(), arrayListDestinations);
+        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(MenuActivity.ContextMenuActivity, arrayListDestinations);
         destinationsAdapter.delegate = DestinationFragment.this;
         Log.d("jomy", "arrayListDestinations ssew" + arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
@@ -366,7 +367,7 @@ public class DestinationFragment extends Fragment
     public static int destinationListPosition = 0;
 
     @Override
-    public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn) {
+    public void callCheckInCheckOutService(String checkOutNote, int destinationPosition, boolean isCheckedIn) {
         listViewState = layoutManager.onSaveInstanceState();
         destinationListPosition = destinationPosition;
 
@@ -374,7 +375,8 @@ public class DestinationFragment extends Fragment
                 arrayListDestinations.get(destinationPosition).getDestinationLongitude(),
                 arrayListDestinations.get(destinationPosition).getCheckInRadius(),
                 arrayListDestinations.get(destinationPosition).isCheckedIn(),
-                arrayListDestinations.get(destinationPosition).getAssignDestinationID(), isCheckedIn);
+                arrayListDestinations.get(destinationPosition).getAssignDestinationID(), isCheckedIn,
+                checkOutNote);
     }
 
     @Override
@@ -420,7 +422,8 @@ public class DestinationFragment extends Fragment
 
     public void isDeviceEnteredWithinDestinationRadius(double destinationLatitude,
                                                        double destinationLongitude, double checkInRadius,
-                                                       boolean checkedIn, int assignDestinationID, boolean isCheckIn) {
+                                                       boolean checkedIn, int assignDestinationID,
+                                                       boolean isCheckIn, String checkOutNote) {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -462,7 +465,7 @@ public class DestinationFragment extends Fragment
         if (isCheckIn) {
             CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
             restCall.delegate = DestinationFragment.this;
-            restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+            restCall.callCheckInService(checkOutNote, checkedIn, assignDestinationID, currentLatitude, currentLongitude);
         } else {
 
             float[] distance = new float[2];
@@ -481,7 +484,7 @@ public class DestinationFragment extends Fragment
                  */
                 CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(getActivity());
                 restCall.delegate = DestinationFragment.this;
-                restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+                restCall.callCheckInService(checkOutNote, checkedIn, assignDestinationID, currentLatitude, currentLongitude);
             }
         }
     }

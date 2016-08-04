@@ -17,12 +17,16 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.knowall.findots.R;
+import com.knowall.findots.activities.LoginActivity;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
 
@@ -174,8 +178,8 @@ public class GeneralUtils {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
             int preferenceVal = pref.getInt(prefKey, -1);
             return preferenceVal;
+        } catch (Exception e) {
         }
-        catch (Exception e){}
         return -1;
     }
 
@@ -273,5 +277,6 @@ public class GeneralUtils {
 
         return null;
     }
+
 
 }

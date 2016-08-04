@@ -2,6 +2,7 @@ package com.knowall.findots.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.UnderlineSpan;
@@ -54,6 +56,7 @@ import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
 import com.knowall.findots.restmodels.ResponseModel;
+import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -295,10 +298,14 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
-                if (!checkedIn)
-                    isDeviceEnteredWithinDestinationRadius(true, false);
-                else
-                    isDeviceEnteredWithinDestinationRadius(true, true);
+                if (checkedIn == true && checkedOut == false) {
+                    checkOutNote();
+                } else {
+                    if (!checkedIn)
+                        isDeviceEnteredWithinDestinationRadius(true, false, "");
+                    else
+                        isDeviceEnteredWithinDestinationRadius(true, true, "");
+                }
             }
         });
 
@@ -306,14 +313,58 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
-                if (!checkedIn)
-                    isDeviceEnteredWithinDestinationRadius(true, false);
-                else
-                    isDeviceEnteredWithinDestinationRadius(true, true);
+                if (checkedIn == true && checkedOut == false) {
+                    checkOutNote();
+                } else {
+                    if (!checkedIn)
+                        isDeviceEnteredWithinDestinationRadius(true, false, "");
+                    else
+                        isDeviceEnteredWithinDestinationRadius(true, true, "");
+                }
             }
         });
 
         scheduleTextUiCondition(checkedIn, checkedOut, scheduleDate);
+    }
+
+
+    public void checkOutNote() {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DetailDestinationActivity.this);
+        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DetailDestinationActivity.this);
+        alertDialogBuilderUserInput.setView(mView);
+        alertDialogBuilderUserInput.setTitle(getString(R.string.app_name));
+
+        final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
+        mEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        mEditText.setHint("Check Out Note");
+        mEditText.requestFocus();
+
+        alertDialogBuilderUserInput
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.done), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String checkOutNote = mEditText.getText().toString();
+                        if (!checkedIn)
+                            isDeviceEnteredWithinDestinationRadius(true, false, checkOutNote);
+                        else
+                            isDeviceEnteredWithinDestinationRadius(true, true, checkOutNote);
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+        alertDialog.show();
+
     }
 
 
@@ -537,23 +588,25 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut, boolean isCheckOut) {
+    public void isDeviceEnteredWithinDestinationRadius(boolean requestForCheckInCheckOut,
+                                                       boolean isCheckOut, String checkOutNote) {
         Location mLastLoc;
         if (mGoogleApiClient != null && ((mLastLoc = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient)) != null)) {
             if (isCheckOut) {
                 CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
                 restCall.delegate = DetailDestinationActivity.this;
-                restCall.callCheckInService(checkedIn, assignDestinationID, mLastLoc.getLatitude(), mLastLoc.getLongitude());
+                restCall.callCheckInService(checkOutNote, checkedIn, assignDestinationID, mLastLoc.getLatitude(), mLastLoc.getLongitude());
 
             } else if (requestForCheckInCheckOut)
-                setLocationDistanceText(requestForCheckInCheckOut, mLastLoc.getLatitude(), mLastLoc.getLongitude());
+                setLocationDistanceText(requestForCheckInCheckOut, mLastLoc.getLatitude(), mLastLoc.getLongitude(), checkOutNote);
 
         } else
             buildGoogleApiClient();
     }
 
-    public void setLocationDistanceText(boolean requestForCheckInCheckOut, double mCurrentlatitude, double mCurrentlongitude) {
+    public void setLocationDistanceText(boolean requestForCheckInCheckOut, double mCurrentlatitude,
+                                        double mCurrentlongitude, String checkOutNote) {
         float[] distance = new float[2];
 
         Location.distanceBetween(mCurrentlatitude, mCurrentlongitude, destinationLatitude, destinationLongitude, distance);
@@ -565,7 +618,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             if (distance[0] <= mCircle.getRadius()) {
                 CheckInCheckOutRestCall restCall = new CheckInCheckOutRestCall(DetailDestinationActivity.this);
                 restCall.delegate = DetailDestinationActivity.this;
-                restCall.callCheckInService(checkedIn, assignDestinationID, currentLatitude, currentLongitude);
+                restCall.callCheckInService(checkOutNote, checkedIn, assignDestinationID, currentLatitude, currentLongitude);
             } else {
                 Toast.makeText(this, getResources().getString(R.string.not_the_right_destination), Toast.LENGTH_SHORT).show();
             }
@@ -835,7 +888,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         } else {
             currentLatitude = currentLocation.getLatitude();
             currentLongitude = currentLocation.getLongitude();
-            setLocationDistanceText(false, currentLatitude, currentLongitude);
+            setLocationDistanceText(false, currentLatitude, currentLongitude, "");
             if(mMapLoaded)
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 200));
         }
@@ -852,7 +905,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             if (location != null) {
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
-                setLocationDistanceText(false, currentLatitude, currentLongitude);
+                setLocationDistanceText(false, currentLatitude, currentLongitude, "");
                 if(mMapLoaded)
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 200));
             }

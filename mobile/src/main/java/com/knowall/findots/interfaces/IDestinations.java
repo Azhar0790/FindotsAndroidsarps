@@ -6,6 +6,6 @@ package com.knowall.findots.interfaces;
 public interface IDestinations {
 
     public void onDestinationSelected(int itemPosition);
-    public void callCheckInCheckOutService(int destinationPosition, boolean isCheckedIn);
+    public void callCheckInCheckOutService(String checkOutNote, int destinationPosition, boolean isCheckedIn);
 
 }
