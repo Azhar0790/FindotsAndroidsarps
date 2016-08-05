@@ -66,6 +66,16 @@
             android:layout_marginTop="2dp"
             android:background="@drawable/destination_bg">
 
+            <ImageView
+                android:id="@+id/checkin_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/destination_notes"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/textViewTravelTime"
                 android:layout_width="wrap_content"
@@ -78,7 +88,7 @@
 
             <TextView
                 android:id="@+id/TextView_destinationName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
@@ -86,9 +96,13 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:layout_toLeftOf="@+id/checkin_notes"
                 android:text="Bridgetree Research Services"
                 android:textColor="@color/blue"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+               />
         </RelativeLayout>
 
         <LinearLayout

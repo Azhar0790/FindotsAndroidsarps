@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Location;
-import android.location.LocationManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
@@ -15,15 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.knowall.findots.Constants;
 import com.knowall.findots.R;
-import com.knowall.findots.database.DataHelper;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.interfaces.IDestinations;
-import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
@@ -31,13 +28,10 @@ import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -118,6 +112,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         TextView textViewTravelTime = null;
         TextView textViewSchedule = null;
         TextView mTextView_destinationScheduled = null;
+        ImageView mCheckin_notes=null;
 
         public ViewHolder(View view) {
             super(view);
@@ -130,6 +125,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             textViewTravelTime = (TextView) view.findViewById(R.id.textViewTravelTime);
             textViewSchedule = (TextView) view.findViewById(R.id.textViewSchedule);
             mTextView_destinationScheduled = (TextView) view.findViewById(R.id.TextView_destinationScheduled);
+            mCheckin_notes= (ImageView) view.findViewById(R.id.checkin_notes);
         }
 
         @Override
@@ -292,6 +288,10 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                     GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
             holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
+            if(destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0)
+                holder.mCheckin_notes.setVisibility(View.VISIBLE);
+            else
+                holder.mCheckin_notes.setVisibility(View.GONE);
         }
 
         /**
@@ -311,6 +311,28 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                 } else {
                     delegate.callCheckInCheckOutService("", destinationPosition, destinationDatas.get(position).isCheckedIn());
                 }
+            }
+        });
+        holder.mCheckin_notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                         Toast.makeText(context,""+ destinationDatas.get(position).getCheckoutComment(),Toast.LENGTH_SHORT).show();
+
+                            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
+            alertDialogBuilderUserInput.setTitle("" + context.getResources().getString(R.string.app_name));
+
+            alertDialogBuilderUserInput.setMessage(""+ destinationDatas.get(position).getCheckoutComment());
+
+
+            alertDialogBuilderUserInput
+                    .setCancelable(true)
+                    .setPositiveButton("" + context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogBox, int id) {
+                            dialogBox.cancel();
+                        }
+                    });
+            AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+            alertDialogAndroid.show();
             }
         });
 

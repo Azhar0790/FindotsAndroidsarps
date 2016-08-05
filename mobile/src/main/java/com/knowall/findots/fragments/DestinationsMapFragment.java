@@ -132,8 +132,8 @@ public class DestinationsMapFragment extends Fragment
         }
         if(scheduleCountFlag && DestinationsTabFragment.pagerCurrentItem==0)
         {
-//            Toast.makeText(MenuActivity.ContextMenuActivity,
-//                    ""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
+            Toast.makeText(MenuActivity.ContextMenuActivity,
+                    ""+MenuActivity.ContextMenuActivity.getResources().getString(R.string.no_destination_assigned),Toast.LENGTH_LONG).show();
 
 //            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
 //            alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
@@ -312,7 +312,6 @@ public class DestinationsMapFragment extends Fragment
         Log.d("map","On Map event...");
         switch (events) {
             case REFRESHDESTINATIONS:
-//                EventBus.getDefault().cancelEventDelivery(events);
                 EventBus.getDefault().unregister(this);
 
                 Log.i(Constants.TAG, "REFRESHDESTINATIONS");
@@ -325,8 +324,6 @@ public class DestinationsMapFragment extends Fragment
                 break;
 
             case SCHEDULEDDATEMAP:
-//                EventBus.getDefault().unregister(this);
-//                EventBus.getDefault().cancelEventDelivery(events);
                 fetchCurrentLocation();
                 addAllDestinationsOnMap();
                 showAllMarkers();

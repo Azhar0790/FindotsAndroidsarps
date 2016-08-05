@@ -1,6 +1,5 @@
 package com.knowall.findots.restcalls.destinations;
 
-import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import org.parceler.Parcel;
@@ -54,6 +53,9 @@ public class DestinationData {
     private String travelTime = "-1";
 
     private String travelDistance;
+
+
+    private String checkoutComment;
 
     public String getTravelTime() {
         return travelTime;
@@ -230,6 +232,15 @@ public class DestinationData {
     public void setRequiresApproval(boolean requiresApproval) {
         isRequiresApproval = requiresApproval;
     }
+    public String getCheckoutComment() {
+        return checkoutComment;
+    }
+
+    public void setCheckoutComment(String checkoutComment) {
+        this.checkoutComment = checkoutComment;
+    }
+
+
 
     @Override
     public String toString() {
