@@ -549,7 +549,7 @@ public class DestinationFragment extends Fragment
 
             case OFFLINECHECKIN:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKIN);
-                EventBus.getDefault().cancelEventDelivery(event);
+//                EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
                 Log.d("jomy", "callll checkout22...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
@@ -559,7 +559,7 @@ public class DestinationFragment extends Fragment
                 break;
             case OFFLINECHECKOUT:
                 EventBus.getDefault().post(AppEvents.OFFLINECHECKOUT);
-                EventBus.getDefault().cancelEventDelivery(event);
+//                EventBus.getDefault().cancelEventDelivery(event);
                 EventBus.getDefault().unregister(this);
                 Log.d("jomy", "callll checkout...");
                 destinationsRestCall = new GetDestinationsRestCall(getActivity());
