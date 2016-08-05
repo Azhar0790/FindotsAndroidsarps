@@ -65,4 +65,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
     compile 'com.google.android.gms:play-services-analytics:9.0.2'
     compile 'com.wdullaer:materialdatetimepicker:2.4.0'
+    compile 'me.grantland:autofittextview:0.2.+'
 }

@@ -86,8 +86,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         //mEditText_userName.setText("pnelapati@bridgetree.com");
         //mEditText_password.setText("12345");
 
-        mEditText_userName.setText("pari@gmail.com");
-        mEditText_password.setText("test1234");
+//        mEditText_userName.setText("pari@gmail.com");
+//        mEditText_password.setText("test1234");
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
