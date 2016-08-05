@@ -41,15 +41,19 @@ import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
 import com.knowall.findots.restcalls.destinations.IGetDestinations;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -206,8 +210,9 @@ public class DestinationFragment extends Fragment
         }
     }
 
+    DestinationsAdapter destinationsAdapter = null;
     public void setAdapterForDestinations() {
-        DestinationsAdapter destinationsAdapter = new DestinationsAdapter(MenuActivity.ContextMenuActivity, arrayListDestinations);
+        destinationsAdapter = new DestinationsAdapter(MenuActivity.ContextMenuActivity, arrayListDestinations);
         destinationsAdapter.delegate = DestinationFragment.this;
         Log.d("jomy", "arrayListDestinations ssew" + arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
@@ -281,6 +286,8 @@ public class DestinationFragment extends Fragment
             i++;
         }
 
+
+
         /**
          *   find out next scheduled position of list item
          */
@@ -289,12 +296,16 @@ public class DestinationFragment extends Fragment
             for (DestinationData data : arrayListScheduleDate) {
 
                 if (data.getTimeDifference() > 0) {
-                    Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
 
-                    if (location != null) {
-                        String origin = location.getLatitude() +","+location.getLongitude();
-                        String destination = data.getDestinationLatitude()+","+data.getDestinationLongitude();
-                        googleDistanceMatrixAPI(origin, destination);
+                    if(DestinationsTabFragment.pagerCurrentItem == 1 &&
+                            isSelectedDayEqualsCurrentDay()) {
+                        Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
+
+                        if (location != null) {
+                            String origin = location.getLatitude() + "," + location.getLongitude();
+                            String destination = data.getDestinationLatitude() + "," + data.getDestinationLongitude();
+                            googleDistanceMatrixAPI(origin, destination);
+                        }
                     }
 
                     break;
@@ -362,6 +373,54 @@ public class DestinationFragment extends Fragment
         Log.d("jomy", "Schedule Date size : " + arrayListScheduleDate.size());
         return arrayListScheduleDate;
     }
+
+
+
+    public boolean isSelectedDayEqualsCurrentDay() {
+
+        /**
+         *   check current date
+         */
+        CalendarDay selectedDay = DestinationsTabFragment.materialCalendarView.getSelectedDate();
+        Log.i("CalendarDay", selectedDay.toString());
+        Log.i("CalendarDay", CalendarDay.today().toString());
+
+        // ------------------------------------
+        SimpleDateFormat sdf3 = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+
+        Date dateSelectedDay = null;
+        Date dateCurrentDay = null;
+        try {
+            dateSelectedDay = sdf3.parse(selectedDay.getDate().toString());
+            dateCurrentDay = sdf3.parse(CalendarDay.today().getDate().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        // ------------------------------------
+        SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.ENGLISH);
+
+        String strSelectedDay = "";
+        String strCurrentDay = "";
+
+        try {
+            strSelectedDay = sdf4.format(dateSelectedDay);
+            strCurrentDay = sdf4.format(dateCurrentDay);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        strSelectedDay = strSelectedDay.substring(0, 10);
+        strCurrentDay = strCurrentDay.substring(0, 10);
+
+        if (strSelectedDay.equals(strCurrentDay)) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 
     public static int destinationListPosition = 0;
@@ -687,7 +746,8 @@ public class DestinationFragment extends Fragment
                     if (arrayListDestinations.size() > 0 && nextScheduledItemPosition != -1)
                         arrayListDestinations.get(nextScheduledItemPosition).setTravelTime(travelTime);
 
-                    setAdapterForDestinations();
+                    //setAdapterForDestinations();
+                    destinationsAdapter.notifyDataSetChanged();
                 }
             }
         }
