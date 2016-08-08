@@ -171,7 +171,7 @@ public class DestinationFragment extends Fragment
         boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
 
         String scheduleDate = arrayListDestinations.get(itemPosition).getScheduleDate();
-
+        String travelTime= arrayListDestinations.get(itemPosition).getTravelTime();
         listViewState = layoutManager.onSaveInstanceState();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
@@ -189,6 +189,7 @@ public class DestinationFragment extends Fragment
         intentDetailDestination.putExtra("editable", isEditable);
         intentDetailDestination.putExtra("requireApproval", isRequireApproval);
         intentDetailDestination.putExtra("scheduleDate", scheduleDate);
+        intentDetailDestination.putExtra("travelTime", travelTime);
         startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
@@ -739,7 +740,7 @@ public class DestinationFragment extends Fragment
 
                     Distance distance = elements[0].getDistance();
                     if (distance != null) {
-                        travelTime = travelTime + " " + distance.getText();
+                        travelTime = travelTime + " / " + distance.getText();
                         Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
                     }
 

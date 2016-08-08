@@ -2,7 +2,6 @@ package com.knowall.findots.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -76,6 +75,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import me.grantland.widget.AutofitTextView;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -94,7 +94,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
 
     @Bind(R.id.TextView_map_km)
-    TextView mTextView_map_km;
+    AutofitTextView mTextView_map_km;
 
     @Bind(R.id.imageView_back)
     ImageView imageView_back;
@@ -142,7 +142,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
     double currentLatitude = 0, currentLongitude = 0;
-    String scheduleDate = "", serverRequest_scheduleDate = "";
+    String scheduleDate = "", serverRequest_scheduleDate = "",travelTime="";
     int day, month, year;
 
 
@@ -244,6 +244,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         isEditable = bundle.getBoolean("editable");
         isRequiresApproval = bundle.getBoolean("requireApproval");
         scheduleDate = bundle.getString("scheduleDate");
+        travelTime=bundle.getString("travelTime");
+
         if (scheduleDate.trim().length() > 0)
             extractDateInfo(scheduleDate, false);
         else
@@ -612,7 +614,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         Location.distanceBetween(mCurrentlatitude, mCurrentlongitude, destinationLatitude, destinationLongitude, distance);
         String kilometers = new DecimalFormat("##.#").format(distance[0] / 1000);
 
+        if(travelTime==null || travelTime.trim().equals("-1") )
         mTextView_map_km.setText(kilometers + " "+getResources().getString(R.string.km));
+        else
+            mTextView_map_km.setText(travelTime);
         if (requestForCheckInCheckOut) {
 
             if (distance[0] <= mCircle.getRadius()) {
