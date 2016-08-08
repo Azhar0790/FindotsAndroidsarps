@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.locationUtils.Utils;
@@ -92,8 +94,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
 
-        //mEditText_userName.setText("mahi@bridgetree.com");
-        //mEditText_password.setText("Test1234");
+        mEditText_userName.setText("mahi@bridgetree.com");
+        mEditText_password.setText("Test1234");
     }
 
     @Override
@@ -143,12 +145,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             /**
              *   call Login webservice
              */
-            if(Utils.isLocationServiceEnabled(LoginActivity.this)) {
+            if (Utils.isLocationServiceEnabled(LoginActivity.this)) {
                 LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
                 loginRestCall.delegate = LoginActivity.this;
                 loginRestCall.callLoginService(userName, password);
-            }
-            else
+            } else
                 buildGoogleApiClient();
         }
 
@@ -162,6 +163,17 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.PASSWORD, password);
 
             if (loginModel.getLoginData().length > 0) {
+                int userTypeID = loginModel.getLoginData()[0].getUserTypeID();
+                String userType = loginModel.getLoginData()[0].getUserType();
+
+                Log.i(Constants.TAG, "userTypeID = " + userTypeID + "\n" + "userType = " + userType);
+
+                /**
+                 *   Check UserType and UserTypeID
+                 */
+                //??????????????
+
+
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
@@ -327,13 +339,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-            try {
-                if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-                    mGoogleApiClient.disconnect();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.disconnect();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

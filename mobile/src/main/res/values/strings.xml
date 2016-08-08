@@ -151,4 +151,23 @@
     <string name="in">IN</string>
     <string name="out">OUT</string>
 
+
+    <!-- User Types -->
+    <string-array name="userTypes">
+        <item>Individual</item>
+        <item>Corporate</item>
+        <item>CorporateAdmin</item>
+        <item>Web User Admin</item>
+        <item>Country Specific Admin</item>
+    </string-array>
+
+    <!-- User Type IDs-->
+    <string-array name="userTypeIDs">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
 </resources>
