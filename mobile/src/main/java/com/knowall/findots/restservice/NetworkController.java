@@ -58,7 +58,7 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_RESCHEDULE_DESTINATION_VISIT)
     Call<ResponseModel> reScheduleDestinationVisit(@Body Map<String, Object> request);
 
-    @POST(RestURLs.METHOD_GETREPORT)
+    @POST(RestURLs.METHOD_GETHISTORY)
     Call<HistoryModel> getHistory(@Body Map<String, Object> request);
 
     @POST(RestURLs.METHOD_LCATION_TRACKING)
