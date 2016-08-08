@@ -297,7 +297,7 @@ public class DestinationFragment extends Fragment
 
                 if (data.getTimeDifference() > 0) {
 
-                    if(DestinationsTabFragment.pagerCurrentItem == 1 &&
+                    if(/*DestinationsTabFragment.pagerCurrentItem == 1 &&*/
                             isSelectedDayEqualsCurrentDay()) {
                         Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
 
