@@ -137,6 +137,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
                 }
+                else if(pagerCurrentItem ==1) {
+                    EventBus.getDefault().post(AppEvents.SCHEDULEDDATELIST);
+                    Log.i("paul", "pagerCurrentItemEvent --> " + pagerCurrentItem);
+                }
             }
 
             @Override
