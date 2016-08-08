@@ -85,7 +85,7 @@ public class DestinationFragment extends Fragment
     Parcelable listViewState = null;
     private static final int REQUEST_CODE_ACTIVITYDETAILS = 1;
     double currentLatitude = 0.013, currentLongitude = 0.012;
-
+    boolean loadDistanceMatrix=false;
     ArrayList<DestinationData> arrayListDestinations = null;
 
     @Override
@@ -93,7 +93,7 @@ public class DestinationFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-        Log.d("paul","Oncreate");
+        Log.d("paul", "Oncreate");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class DestinationFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations, null);
 
-        Log.d("paul","Oncreateview");
+        Log.d("paul", "Oncreateview");
         if (!GeneralUtils.checkPlayServices(getActivity())) {
             Toast.makeText(getActivity(), "Location not supported in this device", Toast.LENGTH_SHORT).show();
         }
@@ -171,7 +171,7 @@ public class DestinationFragment extends Fragment
         boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
 
         String scheduleDate = arrayListDestinations.get(itemPosition).getScheduleDate();
-        String travelTime= arrayListDestinations.get(itemPosition).getTravelTime();
+        String travelTime = arrayListDestinations.get(itemPosition).getTravelTime();
         listViewState = layoutManager.onSaveInstanceState();
 
         Intent intentDetailDestination = new Intent(getContext(), DetailDestinationActivity.class);
@@ -212,10 +212,10 @@ public class DestinationFragment extends Fragment
     }
 
     DestinationsAdapter destinationsAdapter = null;
+
     public void setAdapterForDestinations() {
         destinationsAdapter = new DestinationsAdapter(MenuActivity.ContextMenuActivity, arrayListDestinations);
         destinationsAdapter.delegate = DestinationFragment.this;
-        Log.d("jomy", "arrayListDestinations ssew" + arrayListDestinations.size());
         mRecyclerView_destinations.setAdapter(destinationsAdapter);
 
         if (nextScheduledItemPosition >= 0) {
@@ -288,26 +288,29 @@ public class DestinationFragment extends Fragment
         }
 
 
-
         /**
          *   find out next scheduled position of list item
          */
+        loadDistanceMatrix= false;
         if (arrayListScheduleDate.size() > 0) {
             nextScheduledItemPosition = 0;
             for (DestinationData data : arrayListScheduleDate) {
 
                 if (data.getTimeDifference() > 0) {
 
-                    if(DestinationsTabFragment.pagerCurrentItem == 1 &&
+                    if (DestinationsTabFragment.pagerCurrentItem == 1 &&
                             isSelectedDayEqualsCurrentDay()) {
-                        Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
-
-                        if (location != null) {
-                            String origin = location.getLatitude() + "," + location.getLongitude();
-                            String destination = data.getDestinationLatitude() + "," + data.getDestinationLongitude();
-                            googleDistanceMatrixAPI(origin, destination);
-                        }
+                        loadDistanceMatrix=true;
+//                        Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
+//
+//                        if (location != null) {
+//                            String origin = location.getLatitude() + "," + location.getLongitude();
+//                            String destination = data.getDestinationLatitude() + "," + data.getDestinationLongitude();
+//                            googleDistanceMatrixAPI(origin, destination);
+//                        }
                     }
+                    else
+                        loadDistanceMatrix= false;
 
                     break;
                 }
@@ -375,6 +378,16 @@ public class DestinationFragment extends Fragment
         return arrayListScheduleDate;
     }
 
+    public void loadDistanceMatrix()
+    {
+        Location location = GeneralUtils.getCurrentLatitudeAndLongitude(getActivity());
+
+        if (location != null && arrayListDestinations.size()>0 ) {
+            String origin = location.getLatitude() + "," + location.getLongitude();
+            String destination = arrayListDestinations.get(nextScheduledItemPosition).getDestinationLatitude() + "," + arrayListDestinations.get(nextScheduledItemPosition).getDestinationLongitude();
+            googleDistanceMatrixAPI(origin, destination);
+        }
+    }
 
 
     public boolean isSelectedDayEqualsCurrentDay() {
@@ -421,7 +434,6 @@ public class DestinationFragment extends Fragment
 
         return false;
     }
-
 
 
     public static int destinationListPosition = 0;
@@ -629,21 +641,27 @@ public class DestinationFragment extends Fragment
                 break;
 
             case SCHEDULEDDATELIST:
-                Log.d("jomy", "Change Date in event.");
-                Log.d("paul","event");
+
 //                EventBus.getDefault().cancelEventDelivery(event);
 //              EventBus.getDefault().unregister(this);
-                Log.d("jomy", "Change Date in event.");
-                Log.i(Constants.TAG, "REFRESHDESTINATIONS");
+
+                Log.i("paul", "Page SCHEDULEDDATELIST");
                 arrayListDestinations = sortDestinationsOnScheduleDate(DestinationsTabFragment.destinationDatas);
 
                 if (arrayListDestinations == null || arrayListDestinations.size() == 0) {
                     textViewNoDestinations.setVisibility(View.VISIBLE);
                     mRecyclerView_destinations.setVisibility(View.INVISIBLE);
                 } else {
+                    Log.i("paul", "Page SCHEDULEDDATELIST Adapter ");
                     textViewNoDestinations.setVisibility(View.GONE);
                     mRecyclerView_destinations.setVisibility(View.VISIBLE);
                     setAdapterForDestinations();
+                    if(loadDistanceMatrix && nextScheduledItemPosition>=0)
+                    {
+                        Log.i("paul", "Page SCHEDULEDDATELIST Adapter Distance");
+                        loadDistanceMatrix();
+                        loadDistanceMatrix=false;
+                    }
                 }
                 break;
         }
@@ -710,9 +728,9 @@ public class DestinationFragment extends Fragment
     }*/
 
     /**
-     *   call DistanceMatrix API to display
-     *   duration and distance of the
-     *   current location and destination locations on the map markers
+     * call DistanceMatrix API to display
+     * duration and distance of the
+     * current location and destination locations on the map markers
      */
     public void googleDistanceMatrixAPI(String origin, String destination) {
         DistanceMatrixService service = new DistanceMatrixService();
@@ -722,6 +740,7 @@ public class DestinationFragment extends Fragment
 
 
     Elements[] elements = null;
+
     @Override
     public void onDistanceMatrixSuccess(DistanceMatrix distanceMatrix) {
         String travelTime = "";
@@ -733,15 +752,15 @@ public class DestinationFragment extends Fragment
                 if (elements.length > 0) {
                     Duration duration = elements[0].getDuration();
 
-                    if(duration != null) {
+                    if (duration != null) {
                         travelTime = duration.getText();
-                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
+                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = " + travelTime);
                     }
 
                     Distance distance = elements[0].getDistance();
                     if (distance != null) {
                         travelTime = travelTime + " / " + distance.getText();
-                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = "+travelTime);
+                        Log.i(Constants.TAG, "onDistanceMatrixSuccess: travelTime = " + travelTime);
                     }
 
                     if (arrayListDestinations.size() > 0 && nextScheduledItemPosition != -1)
