@@ -38,7 +38,7 @@ import com.knowall.findots.R;
 import com.knowall.findots.adapters.MenuItemsAdapter;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.fragments.Account_Settings;
-import com.knowall.findots.fragments.DestinationsTabFragment;
+import com.knowall.findots.fragments.InitialFragment;
 import com.knowall.findots.interfaces.IMenuItems;
 import com.knowall.findots.locationUtils.LocationModel.BackgroundLocData;
 import com.knowall.findots.locationUtils.LocationModel.LocationSyncData;
@@ -88,6 +88,25 @@ public class MenuActivity extends RuntimePermissionActivity
             R.drawable.logout};
 
     /**
+     * Menu Items for Corporate Admin
+     */
+    int AdminICONS[] = {
+            R.drawable.destinations,
+            R.drawable.settings,
+            R.drawable.help,
+            R.drawable.logout};
+
+
+    /**
+     * User Types
+     */
+    public static final int INDIVIDUAL = 1;
+    public static final int CORPORATE = 2;
+    public static final int CORPORATE_ADMIN = 3;
+    public static final int WEB_USER_ADMIN = 4;
+    public static final int COUNTRY_SPECIFIC_ADMIN = 5;
+
+    /**
      * Action bar / App bar
      */
     private Toolbar mToolbar = null;
@@ -122,11 +141,14 @@ public class MenuActivity extends RuntimePermissionActivity
     public static Context ContextMenuActivity = null;
     Bundle bundle = null;
     boolean fromRegister = false;
+    int userTypeID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
+
+        userTypeID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID);
 
         bundle = getIntent().getExtras();
 
@@ -176,26 +198,51 @@ public class MenuActivity extends RuntimePermissionActivity
         });
         app = (FinDotsApplication) getApplication();
         app.setLocationRequestData(LocationRequestData.FREQUENCY_MEDIUM);
-//        buildGoogleApiClient();
         initalizeLocationService();
-
-        /**
-         *   Fragment Transaction for Destinations
-         */
 
         mToggle.setDrawerIndicatorEnabled(true);
 
-        if (fromRegister) {
-            showJoinATeamDialog();
-        } else {
-            FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-            destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
-            destinationTransaction.commit();
-        }
+        setHeading();
 
-//        Log.d("jomy","Distance "+Utils.distFromCoordinates(12.987793094478766,77.55964301526546,12.988561489532328,77.5592011213302));
+        setInitialFragmentView();
+
     }
 
+    public void setInitialFragmentView() {
+        switch (userTypeID) {
+            case CORPORATE:
+                if (fromRegister) {
+                    showJoinATeamDialog();
+                } else {
+                    FragmentTransaction initialFragment = getSupportFragmentManager().beginTransaction();
+                    initialFragment.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+                    initialFragment.commit();
+                }
+                break;
+
+            case CORPORATE_ADMIN:
+                FragmentTransaction initialFragment = getSupportFragmentManager().beginTransaction();
+                initialFragment.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+                initialFragment.commit();
+                break;
+
+        }
+    }
+
+    public void setHeading() {
+        switch (userTypeID) {
+            case CORPORATE:
+                mTextView_heading.setText(getString(R.string.destinations));
+                break;
+
+            case CORPORATE_ADMIN:
+                mTextView_heading.setText(getString(R.string.all));
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -214,9 +261,9 @@ public class MenuActivity extends RuntimePermissionActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-
-        mTextView_heading.setText(getString(R.string.destinations));
         mTextView_heading.setTypeface(typefaceMyriadHebrew);
+
+
     }
 
     public void setViewForDashboard() {
@@ -224,7 +271,31 @@ public class MenuActivity extends RuntimePermissionActivity
 
         String name = GeneralUtils.getSharedPreferenceString(MenuActivity.this, AppStringConstants.NAME);
 
-        mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.menu_items), ICONS, name, null);
+        String menuItems[] = /*getResources().getStringArray(R.array.menu_items)*/null;
+        int icons[] = null;
+
+        switch (userTypeID) {
+            case CORPORATE:
+                menuItems = getResources().getStringArray(R.array.menu_items);
+                icons = ICONS;
+                break;
+
+            case CORPORATE_ADMIN:
+                menuItems = getResources().getStringArray(R.array.admin_menu_items);
+                icons = AdminICONS;
+/*
+                mAdapter = new MenuItemsAdapter(MenuActivity.this, getResources().getStringArray(R.array.admin_menu_items), AdminICONS, name, null);
+                MenuItemsAdapter.delegate = MenuActivity.this;
+                mRecyclerView_menu_items.setAdapter(mAdapter);*/
+                break;
+
+            default:
+                menuItems = new String[]{};
+                icons = new int[]{};
+                break;
+        }
+
+        mAdapter = new MenuItemsAdapter(MenuActivity.this, menuItems, icons, name, null);
         MenuItemsAdapter.delegate = MenuActivity.this;
         mRecyclerView_menu_items.setAdapter(mAdapter);
 
@@ -256,12 +327,22 @@ public class MenuActivity extends RuntimePermissionActivity
 
             case Constants.DESTINATIONS:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                mTextView_heading.setText(R.string.destinations);
                 findViewById(R.id.FrameLayout_content).setVisibility(View.GONE);
 
-                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-                destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
-                destinationTransaction.commit();
+                /*if (userTypeID == 3) {
+                    mTextView_heading.setText("All");
+
+                } else {
+                    mTextView_heading.setText(R.string.destinations);
+
+                    FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+                    destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+                    destinationTransaction.commit();
+                }*/
+
+                FragmentTransaction initialFragment = getSupportFragmentManager().beginTransaction();
+                initialFragment.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+                initialFragment.commit();
 
                 findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);
                 break;
@@ -387,7 +468,7 @@ public class MenuActivity extends RuntimePermissionActivity
                                 dialogBox.cancel();
 
                                 FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-                                destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+                                destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
                                 destinationTransaction.commit();
                             }
                         });
@@ -402,7 +483,7 @@ public class MenuActivity extends RuntimePermissionActivity
         Toast.makeText(MenuActivity.this, message, Toast.LENGTH_SHORT).show();
 
         FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-        destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
+        destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
         destinationTransaction.commit();
     }
 
@@ -605,7 +686,10 @@ public class MenuActivity extends RuntimePermissionActivity
         DataHelper dataHelper = DataHelper.getInstance(this);
         dataHelper.deleteAllLocations();
         dataHelper.deleteCheckinList();
+
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USERID);
+        GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USER_TYPE);
+        GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USER_TYPE_ID);
         Intent intentLogout = new Intent(MenuActivity.this, LoginActivity.class);
         startActivity(intentLogout);
         finish();
