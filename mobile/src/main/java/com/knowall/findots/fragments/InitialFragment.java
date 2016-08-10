@@ -1,5 +1,6 @@
 package com.knowall.findots.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,16 +8,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.knowall.findots.R;
+import com.knowall.findots.activities.MenuActivity;
+import com.knowall.findots.activities.SearchUserActivity;
 import com.knowall.findots.restcalls.getUser.GetUserData;
 import com.knowall.findots.restcalls.getUser.GetUserRestCall;
 import com.knowall.findots.restcalls.getUser.IGetUser;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by parijathar on 8/9/2016.
@@ -31,7 +34,9 @@ public class InitialFragment extends Fragment implements IGetUser {
     public static final int CORPORATE_ADMIN = 3;
     public static final int WEB_USER_ADMIN = 4;
     public static final int COUNTRY_SPECIFIC_ADMIN = 5;
+    private static final int REQUEST_CODE_SEARCH_USER = 1000;
 
+    public static ArrayList<GetUserData> getUserDatasList=new ArrayList<GetUserData>();
     int userTypeID = 0;
 
     public static InitialFragment newInstance() {
@@ -54,10 +59,19 @@ public class InitialFragment extends Fragment implements IGetUser {
             navigateBasedOnUserType(userTypeID, null);
         }
 
+        TextView textView_heading  =(TextView) getActivity().findViewById(R.id.TextView_heading);
+        textView_heading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
+            }
+        });
+
         return rootView;
     }
 
-    private void navigateBasedOnUserType(int userTypeID, GetUserData[] userDatas) {
+    private void navigateBasedOnUserType(int userTypeID, ArrayList<GetUserData> userDatas) {
         switch (userTypeID) {
             case INDIVIDUAL:
 
@@ -86,7 +100,8 @@ public class InitialFragment extends Fragment implements IGetUser {
     }
 
     @Override
-    public void onGetUserSuccess(GetUserData[] getUserDatas) {
+    public void onGetUserSuccess(ArrayList<GetUserData> getUserDatas) {
+        getUserDatasList.addAll(getUserDatas);
         navigateBasedOnUserType(userTypeID, getUserDatas);
     }
 

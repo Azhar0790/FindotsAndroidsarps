@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.knowall.findots.Constants;
@@ -154,14 +153,6 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             }
         });
 
-        TextView textView_heading  =(TextView) getActivity().findViewById(R.id.TextView_heading);
-        textView_heading.setText("UserList");
-        textView_heading.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"welcome",Toast.LENGTH_LONG).show();
-            }
-        });
 
         return rootView;
     }

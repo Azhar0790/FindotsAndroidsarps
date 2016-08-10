@@ -24,9 +24,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.MenuActivity;
-import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.getUser.GetUserData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,9 +37,9 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
 
     GoogleMap mGoogleMap = null;
     SupportMapFragment supportMapFragment;
-    private static GetUserData[] userDatas = null;
+    private static ArrayList<GetUserData> userDatas = null;
 
-    public static GetUsersMapFragment newInstance(GetUserData[] getUserDatas) {
+    public static GetUsersMapFragment newInstance(ArrayList<GetUserData> getUserDatas) {
         userDatas = getUserDatas;
         GetUsersMapFragment getUsersMapFragment = new GetUsersMapFragment();
         return getUsersMapFragment;

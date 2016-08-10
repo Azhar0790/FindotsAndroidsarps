@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 
 import com.knowall.findots.R;
 import com.knowall.findots.restcalls.getUser.GetUserData;
-import com.knowall.findots.restcalls.getUser.GetUserModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jpaulose on 8/10/2016.
@@ -19,11 +17,11 @@ import java.util.List;
 public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHolder> {
 
     private final LayoutInflater mInflater;
-    private final List<GetUserModel> mModels;
+    private final ArrayList<GetUserData> mModels;
 
-    public Serach_UserListAdapter(Context context, List<GetUserModel> models) {
+    public Serach_UserListAdapter(Context context, ArrayList<GetUserData> models) {
         mInflater = LayoutInflater.from(context);
-        mModels = new ArrayList<>(models);
+        mModels = new ArrayList<GetUserData>(models);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
 
     @Override
     public void onBindViewHolder(UserListViewHolder holder, int position) {
-        holder.userNameText.setText(""+mModels.get(0).getUserData().get(position).getName());
+        holder.userNameText.setText(""+mModels.get(position).getName());
 
     }
 
@@ -43,33 +41,33 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
         return mModels.size();
     }
 
-    public void animateTo(List<GetUserModel> models) {
+    public void animateTo(ArrayList<GetUserData> models) {
         applyAndAnimateRemovals(models);
         applyAndAnimateAdditions(models);
         applyAndAnimateMovedItems(models);
     }
 
-    private void applyAndAnimateRemovals(List<GetUserModel> newModels) {
+    private void applyAndAnimateRemovals(ArrayList<GetUserData> newModels) {
         for (int i = mModels.size() - 1; i >= 0; i--) {
-            final GetUserData model = mModels.get(0).getUserData().get(i);
+            final GetUserData model = mModels.get(i);
             if (!newModels.contains(model)) {
                 removeItem(i);
             }
         }
     }
 
-    private void applyAndAnimateAdditions(List<GetUserModel> newModels) {
+    private void applyAndAnimateAdditions(ArrayList<GetUserData> newModels) {
         for (int i = 0, count = newModels.size(); i < count; i++) {
-            final GetUserData model = newModels.get(0).getUserData().get(i);
+            final GetUserData model = newModels.get(i);
             if (!mModels.contains(model)) {
                 addItem(i, model);
             }
         }
     }
 
-    private void applyAndAnimateMovedItems(List<GetUserModel> newModels) {
+    private void applyAndAnimateMovedItems(ArrayList<GetUserData> newModels) {
         for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final GetUserData model = newModels.get(0).getUserData().get(toPosition);
+            final GetUserData model = newModels.get(toPosition);
             final int fromPosition = mModels.indexOf(model);
             if (fromPosition >= 0 && fromPosition != toPosition) {
                 moveItem(fromPosition, toPosition);
@@ -78,20 +76,20 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
     }
 
     public GetUserData removeItem(int position) {
-        final GetUserData model = mModels.get(0).getUserData().get(position);
+        final GetUserData model = mModels.get(position);
         notifyItemRemoved(position);
         return model;
     }
 
     public void addItem(int position, GetUserData model) {
 
-        mModels.get(0).getUserData().add(position, model);
+        mModels.add(position, model);
         notifyItemInserted(position);
     }
 
     public void moveItem(int fromPosition, int toPosition) {
-        final GetUserData model = mModels.get(0).getUserData().get(toPosition);
-        mModels.get(0).getUserData().add(toPosition, model);
+        final GetUserData model = mModels.get(toPosition);
+        mModels.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
     }
 }
