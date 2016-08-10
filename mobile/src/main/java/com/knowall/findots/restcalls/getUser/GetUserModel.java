@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+
 /**
  * Created by parijathar on 8/9/2016.
  */
@@ -14,7 +16,7 @@ public class GetUserModel {
     private int errorCode;
 
     @SerializedName("data")
-    private GetUserData[] getUserDatas;
+    private ArrayList<GetUserData> getUserDatas;
 
     public String getMessage ()
     {
@@ -36,12 +38,12 @@ public class GetUserModel {
         this.errorCode = errorCode;
     }
 
-    public GetUserData[] getUserData ()
+    public ArrayList<GetUserData> getUserData ()
     {
         return getUserDatas;
     }
 
-    public void setData (GetUserData[] getUserDatas)
+    public void setData (ArrayList<GetUserData> getUserDatas)
     {
         this.getUserDatas = getUserDatas;
     }
