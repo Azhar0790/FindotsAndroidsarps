@@ -11,4 +11,6 @@ public class AppStringConstants {
     public static String USERID = "userID";
     public static String CORPORATEUSERID = "corporateUserID";
     public static String ACCOUNT_UPDATE = "account_update";
+    public static String USER_TYPE = "userType";
+    public static String USER_TYPE_ID = "userTypeID";
 }

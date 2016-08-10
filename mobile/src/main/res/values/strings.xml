@@ -16,6 +16,7 @@
     <string name="runtime_permissions_txt">Please enable ALL permissions from app settings.</string>
     <string name="tracking_list">Tracking List</string>
     <string name="destinations">Destinations</string>
+    <string name="all">All</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
@@ -124,6 +125,13 @@
         <item>Destinations</item>
         <item>Report My Location</item>
         <item>Join a Team</item>
+        <item>Account Settings</item>
+        <item>Help</item>
+        <item>Logout</item>
+    </string-array>
+
+    <string-array name="admin_menu_items">
+        <item>Dashboard</item>
         <item>Account Settings</item>
         <item>Help</item>
         <item>Logout</item>
