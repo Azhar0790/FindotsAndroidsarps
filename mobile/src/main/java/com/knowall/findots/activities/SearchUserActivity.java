@@ -17,10 +17,8 @@ import com.knowall.findots.R;
 import com.knowall.findots.adapters.Serach_UserListAdapter;
 import com.knowall.findots.fragments.InitialFragment;
 import com.knowall.findots.restcalls.getUser.GetUserData;
-import com.knowall.findots.restcalls.getUser.GetUserModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jpaulose on 8/10/2016.

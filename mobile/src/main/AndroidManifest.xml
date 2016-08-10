@@ -65,7 +65,7 @@
         <activity
             android:name="com.knowall.findots.activities.SearchUserActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:theme="@style/AppTheme.SearchUser"/>
 
 
 
