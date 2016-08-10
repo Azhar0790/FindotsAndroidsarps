@@ -70,6 +70,15 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
     String userName = null, password = null;
     GoogleApiClient mGoogleApiClient;
 
+    /**
+     *   User Types
+     */
+    public static final int INDIVIDUAL = 1;
+    public static final int CORPORATE = 2;
+    public static final int CORPORATE_ADMIN = 3;
+    public static final int WEB_USER_ADMIN = 4;
+    public static final int COUNTRY_SPECIFIC_ADMIN = 5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +103,12 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
 
-        mEditText_userName.setText("mahi@bridgetree.com");
+//        Production corporate user
+//        mEditText_userName.setText("mahi@bridgetree.com");
+//        mEditText_password.setText("Test1234");
+
+//        Test Admin
+        mEditText_userName.setText("sgudu@bridgetree.com");
         mEditText_password.setText("Test1234");
     }
 
@@ -163,17 +177,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.PASSWORD, password);
 
             if (loginModel.getLoginData().length > 0) {
-                int userTypeID = loginModel.getLoginData()[0].getUserTypeID();
-                String userType = loginModel.getLoginData()[0].getUserType();
-
-                Log.i(Constants.TAG, "userTypeID = " + userTypeID + "\n" + "userType = " + userType);
-
-                /**
-                 *   Check UserType and UserTypeID
-                 */
-                //??????????????
-
-
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID, loginModel.getLoginData()[0].getUserTypeID());
+                GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USER_TYPE, loginModel.getLoginData()[0].getUserType());
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
