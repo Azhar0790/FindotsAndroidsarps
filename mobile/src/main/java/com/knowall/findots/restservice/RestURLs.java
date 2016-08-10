@@ -8,11 +8,11 @@ public class RestURLs {
     /**
      *   development url
      */
-//    public static final String BASE_URL = "http://182.73.82.185/Findots/API/";
+    public static final String BASE_URL = "http://182.73.82.185/Findots/API/";
     /**
      *   production url
      */
-    public static final String BASE_URL = "https://service.findots.com/API/";
+//    public static final String BASE_URL = "https://service.findots.com/API/";
 
     // ------------------------   METHODS   ----------------------------------
 
@@ -35,5 +35,6 @@ public class RestURLs {
     public static final String METHOD_RESCHEDULE_DESTINATION_VISIT = "ReScheduleForDestination";
     public static final String METHOD_GETREPORT = "GetReport";
     public static final String METHOD_JOINATEAM = "JoinTeam";
+    public static final String METHOD_GETUSERS = "GetUsers";
 
 }
