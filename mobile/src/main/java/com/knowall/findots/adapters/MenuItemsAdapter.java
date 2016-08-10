@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.knowall.findots.R;
 import com.knowall.findots.interfaces.IMenuItems;
+import com.knowall.findots.utils.AppStringConstants;
+import com.knowall.findots.utils.GeneralUtils;
 
 /**
  * Created by parijathar on 5/26/2016.
@@ -39,6 +41,16 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
     String email;
 
     Typeface typefaceLight = null;
+    public static int userTypeID = 0;
+
+    /**
+     *   User Types
+     */
+    public static final int INDIVIDUAL = 1;
+    public static final int CORPORATE = 2;
+    public static final int CORPORATE_ADMIN = 3;
+    public static final int WEB_USER_ADMIN = 4;
+    public static final int COUNTRY_SPECIFIC_ADMIN = 5;
 
     /**
      *  Constructor
@@ -51,6 +63,7 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         this.username = username;
         this.email = email;
 
+        userTypeID = GeneralUtils.getSharedPreferenceInt(mContext, AppStringConstants.USER_TYPE_ID);
         typefaceLight = Typeface.createFromAsset(mContext.getAssets(), "fonts/Roboto-Light.ttf");
     }
 
@@ -136,7 +149,18 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             Log.d("jomy","pos >.."+adapterPosition);
-            delegate.onMenuItemSelected(adapterPosition);
+
+            if (MenuItemsAdapter.userTypeID == CORPORATE) {
+                delegate.onMenuItemSelected(adapterPosition);
+            } else if (userTypeID == CORPORATE_ADMIN) {
+                if (adapterPosition > 1) {
+                    delegate.onMenuItemSelected(adapterPosition + 2);
+                } else {
+                    delegate.onMenuItemSelected(adapterPosition);
+                }
+            }
+
+
         }
     }
 
