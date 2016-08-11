@@ -13,10 +13,11 @@
 
 
     <style name="AppTheme.SearchUser" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="drawerArrowStyle">@style/custom_drawer</item>
+        <item name="android:homeAsUpIndicator">@drawable/back</item>
     </style>
 
 

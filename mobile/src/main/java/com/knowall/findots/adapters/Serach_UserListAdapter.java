@@ -22,7 +22,9 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
     private final LayoutInflater mInflater;
     private final ArrayList<GetUserData> mModels;
     Context mContext;
-    public Serach_UserListAdapter(Context context, ArrayList<GetUserData> models) {
+    int mUserId;
+    public Serach_UserListAdapter(Context context, ArrayList<GetUserData> models,int userId) {
+        mUserId=userId;
         mContext=context;
         mInflater = LayoutInflater.from(mContext);
         mModels = new ArrayList<GetUserData>(models);
@@ -37,6 +39,10 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
     @Override
     public void onBindViewHolder(UserListViewHolder holder, int position) {
         holder.userNameText.setText(""+mModels.get(position).getName());
+        if(mModels.get(position).getUserID()==mUserId)
+           holder.current_user_indicator.setVisibility(View.VISIBLE);
+        else
+        holder.current_user_indicator.setVisibility(View.GONE);
         holder.userListLay.setTag(position);
         holder.userListLay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +56,7 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
                 else
                 {
                     returnIntent.putExtra("allUser", false);
-                    returnIntent.putExtra("userID", ""+mModels.get(((int)v.getTag())).getUserID());
+                    returnIntent.putExtra("userID",mModels.get(((int)v.getTag())).getUserID());
                     returnIntent.putExtra("userName", ""+mModels.get(((int)v.getTag())).getName());
                 }
                 ((Activity) mContext).setResult(Activity.RESULT_OK, returnIntent);

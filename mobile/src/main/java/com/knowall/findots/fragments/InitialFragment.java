@@ -36,10 +36,11 @@ public class InitialFragment extends Fragment implements IGetUser {
     public static final int WEB_USER_ADMIN = 4;
     public static final int COUNTRY_SPECIFIC_ADMIN = 5;
     private static final int REQUEST_CODE_SEARCH_USER = 1000;
-    String userID="All";
+    int userID = -1;
 
-    public static ArrayList<GetUserData> getUserDatasList=new ArrayList<GetUserData>();
+    public static ArrayList<GetUserData> getUserDatasList = new ArrayList<GetUserData>();
     int userTypeID = 0;
+    TextView textView_heading;
 
     public static InitialFragment newInstance() {
         InitialFragment initialFragment = new InitialFragment();
@@ -57,16 +58,17 @@ public class InitialFragment extends Fragment implements IGetUser {
             GetUserRestCall getUserRestCall = new GetUserRestCall(getActivity());
             getUserRestCall.delegate = InitialFragment.this;
             getUserRestCall.callGetUsers();
-        } else if (userTypeID == CORPORATE){
+        } else if (userTypeID == CORPORATE) {
             navigateBasedOnUserType(userTypeID, null);
         }
 
-        TextView textView_heading  =(TextView) getActivity().findViewById(R.id.TextView_heading);
+        textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
+//        textView_heading.setText("All");
         textView_heading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
-                intent.putExtra("userId",userID);
+                intent.putExtra("userId", userID);
                 startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
             }
         });
@@ -104,6 +106,7 @@ public class InitialFragment extends Fragment implements IGetUser {
 
     @Override
     public void onGetUserSuccess(ArrayList<GetUserData> getUserDatas) {
+        getUserDatasList.clear();
         getUserDatasList.addAll(getUserDatas);
         navigateBasedOnUserType(userTypeID, getUserDatas);
     }
@@ -118,12 +121,18 @@ public class InitialFragment extends Fragment implements IGetUser {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SEARCH_USER) {
-            if ((resultCode == getActivity().RESULT_OK) && (data.getStringExtra("result").equals("success")))
-            {
-                if(data.getBooleanExtra("allUser",false))
-                {
-                   Log.d("jomy","All User");
-                    userID="All";
+            if ((resultCode == getActivity().RESULT_OK) && (data.getStringExtra("result").equals("success"))) {
+                if (data.getBooleanExtra("allUser", false)) {
+                    Log.d("jomy", "All User");
+                    textView_heading.setText(getActivity().getString(R.string.all));
+                    userID = -1;
+                } else {
+                    Log.d("jomy", "Id : " + data.getStringExtra("userID"));
+                    userID = data.getIntExtra("userID", -1);
+                    if (userID != -1)
+                        textView_heading.setText("" + data.getStringExtra("userName"));
+                    else
+                        textView_heading.setText(getActivity().getString(R.string.all));
                 }
                 else
                 {
@@ -140,5 +149,12 @@ public class InitialFragment extends Fragment implements IGetUser {
             }
 
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        textView_heading.setOnClickListener(null);
+        textView_heading = null;
     }
 }

@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.knowall.findots.R;
@@ -28,6 +29,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
     private RecyclerView mRecyclerView;
     private Serach_UserListAdapter mAdapter;
     private ArrayList<GetUserData> mModels;
+    int userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +44,19 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
 //        }
 
 //        setHasOptionsMenu(true);
-
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
-        Log.d("jomy", "Search Size : "+InitialFragment.getUserDatasList.size());
         mModels = new ArrayList<GetUserData>();
         mModels.addAll(InitialFragment.getUserDatasList);
 
+        if(getIntent().getExtras()!=null)
+        userId=getIntent().getExtras().getInt("userId");
 
-        mAdapter = new Serach_UserListAdapter(SearchUserActivity.this, mModels);
+        if(userId==0)
+            userId=-1;
+        mAdapter = new Serach_UserListAdapter(SearchUserActivity.this, mModels,userId);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
@@ -63,7 +70,15 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
         searchView.setOnQueryTextListener(SearchUserActivity.this);
+//        int id = searchView.getContext()
+//                .getResources()
+//                .getIdentifier("android:id/search_src_text", null, null);
+//        TextView textView = (TextView) searchView.findViewById(id);
+//        textView.setTextColor(Color.CYAN);
         // Get the search close button image view
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setHintTextColor(getResources().getColor(R.color.black_25));
+        ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextColor(getResources().getColor(R.color.black_70));
+
         ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
 
         // Set on click listener
@@ -91,6 +106,16 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public boolean onQueryTextChange(String query) {
