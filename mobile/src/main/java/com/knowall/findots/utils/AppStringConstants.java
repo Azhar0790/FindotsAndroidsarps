@@ -13,4 +13,5 @@ public class AppStringConstants {
     public static String ACCOUNT_UPDATE = "account_update";
     public static String USER_TYPE = "userType";
     public static String USER_TYPE_ID = "userTypeID";
+    public static String ADMIN_ID = "adminID";
 }

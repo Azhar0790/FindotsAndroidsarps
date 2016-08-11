@@ -110,6 +110,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 //        Test Admin
         mEditText_userName.setText("sgudu@bridgetree.com");
         mEditText_password.setText("Test1234");
+
+//        Production Admin
+        mEditText_userName.setText("vanitha@bridgetree.com");
+        mEditText_password.setText("vanitha");
     }
 
     @Override
@@ -177,6 +181,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.PASSWORD, password);
 
             if (loginModel.getLoginData().length > 0) {
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.ADMIN_ID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID, loginModel.getLoginData()[0].getUserTypeID());
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USER_TYPE, loginModel.getLoginData()[0].getUserType());
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());

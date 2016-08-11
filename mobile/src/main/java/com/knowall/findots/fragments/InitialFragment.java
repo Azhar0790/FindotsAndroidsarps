@@ -130,6 +130,12 @@ public class InitialFragment extends Fragment implements IGetUser {
                     Log.d("jomy","Id : "+data.getStringExtra("userID"));
                     userID=data.getStringExtra("userID");
                     Log.d("jomy","Id : "+data.getStringExtra("userName"));
+
+                    GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.USERID, Integer.parseInt(userID));
+
+                    FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
+                    destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
+                    destinationTransaction.commit();
                 }
             }
 

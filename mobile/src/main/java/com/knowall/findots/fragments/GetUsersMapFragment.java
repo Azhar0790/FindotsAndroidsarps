@@ -58,7 +58,6 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         googleMapSettings();
-        addAllUsersOnMap();
     }
 
     /**
@@ -70,6 +69,14 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
         mGoogleMap.getUiSettings().setCompassEnabled(true);
         mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(true);
+
+        mGoogleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                addAllUsersOnMap();
+            }
+        });
+
     }
 
     /**
@@ -94,8 +101,6 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
 
 
     private void addAllUsersOnMap() {
-        if (mGoogleMap != null)
-            mGoogleMap.clear();
 
         for (GetUserData getUserData: userDatas) {
             LatLng latLng = new LatLng(getUserData.getLatitude(), getUserData.getLongitude());
@@ -103,10 +108,11 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
             markerOptions.title(getUserData.getName());
             markerOptions.position(latLng);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(drawUserName(getUserData.getName())));
-            mGoogleMap.addMarker(markerOptions);
+            mGoogleMap.addMarker(markerOptions).showInfoWindow();
         }
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 150));
+        if (mGoogleMap != null)
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 150));
     }
 
     private Bitmap drawUserName(String name) {

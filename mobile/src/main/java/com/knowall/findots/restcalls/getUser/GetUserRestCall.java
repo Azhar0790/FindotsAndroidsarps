@@ -60,14 +60,14 @@ public class GetUserRestCall {
 
     private Map<String, Object> getRequestForGetUsers() {
 
-        int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
+        int adminID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.ADMIN_ID);
 
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", userID);
+        postValues.put("userID", adminID);
         return postValues;
     }
 }

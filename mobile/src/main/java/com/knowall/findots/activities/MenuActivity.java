@@ -687,6 +687,7 @@ public class MenuActivity extends RuntimePermissionActivity
         dataHelper.deleteAllLocations();
         dataHelper.deleteCheckinList();
 
+        GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.ADMIN_ID);
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USERID);
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USER_TYPE);
         GeneralUtils.removeSharedPreference(MenuActivity.this, AppStringConstants.USER_TYPE_ID);
