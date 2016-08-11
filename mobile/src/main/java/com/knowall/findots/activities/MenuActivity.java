@@ -339,6 +339,7 @@ public class MenuActivity extends RuntimePermissionActivity
                     destinationTransaction.replace(R.id.FrameLayout_content, DestinationsTabFragment.newInstance());
                     destinationTransaction.commit();
                 }*/
+                setHeading();
 
                 FragmentTransaction initialFragment = getSupportFragmentManager().beginTransaction();
                 initialFragment.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
@@ -467,9 +468,9 @@ public class MenuActivity extends RuntimePermissionActivity
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
 
-                                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-                                destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
-                                destinationTransaction.commit();
+//                                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+//                                destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+//                                destinationTransaction.commit();
                             }
                         });
 
