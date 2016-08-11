@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,5 +109,26 @@ public class InitialFragment extends Fragment implements IGetUser {
     @Override
     public void onGetUserFailure(String message) {
         GeneralUtils.createAlertDialog(getActivity(), message);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SEARCH_USER) {
+            if ((resultCode == getActivity().RESULT_OK) && (data.getStringExtra("result").equals("success")))
+            {
+                if(data.getBooleanExtra("allUser",false))
+                {
+                   Log.d("jomy","All User");
+                }
+                else
+                {
+                    Log.d("jomy","Id : "+data.getStringExtra("userID"));
+                    Log.d("jomy","Id : "+data.getStringExtra("userName"));
+                }
+            }
+
+        }
     }
 }

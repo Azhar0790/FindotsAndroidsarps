@@ -44,7 +44,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
 //        setHasOptionsMenu(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
-
+        Log.d("jomy", "Search Size : "+InitialFragment.getUserDatasList.size());
         mModels = new ArrayList<GetUserData>();
         mModels.addAll(InitialFragment.getUserDatasList);
 
@@ -111,8 +111,10 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         final ArrayList<GetUserData> filteredModelList = new ArrayList<>();
         for (GetUserData model : models) {
             final String text = model.getName().toLowerCase();
+//            Log.d("jomy", "text  : "+text);
             if (text.contains(query)) {
                 filteredModelList.add(model);
+                Log.d("jomy", "text Added : "+filteredModelList.size());
             }
         }
         return filteredModelList;
