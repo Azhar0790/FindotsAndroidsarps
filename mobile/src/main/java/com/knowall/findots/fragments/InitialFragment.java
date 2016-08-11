@@ -36,6 +36,7 @@ public class InitialFragment extends Fragment implements IGetUser {
     public static final int WEB_USER_ADMIN = 4;
     public static final int COUNTRY_SPECIFIC_ADMIN = 5;
     private static final int REQUEST_CODE_SEARCH_USER = 1000;
+    String userID="All";
 
     public static ArrayList<GetUserData> getUserDatasList=new ArrayList<GetUserData>();
     int userTypeID = 0;
@@ -65,6 +66,7 @@ public class InitialFragment extends Fragment implements IGetUser {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
+                intent.putExtra("userId",userID);
                 startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
             }
         });
@@ -121,10 +123,12 @@ public class InitialFragment extends Fragment implements IGetUser {
                 if(data.getBooleanExtra("allUser",false))
                 {
                    Log.d("jomy","All User");
+                    userID="All";
                 }
                 else
                 {
                     Log.d("jomy","Id : "+data.getStringExtra("userID"));
+                    userID=data.getStringExtra("userID");
                     Log.d("jomy","Id : "+data.getStringExtra("userName"));
                 }
             }
