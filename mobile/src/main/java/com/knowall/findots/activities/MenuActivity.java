@@ -150,6 +150,11 @@ public class MenuActivity extends RuntimePermissionActivity
 
         userTypeID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID);
 
+        if (userTypeID == CORPORATE_ADMIN) {
+            int adminID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.ADMIN_ID);
+            GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, adminID);
+        }
+
         bundle = getIntent().getExtras();
 
         if (bundle != null) {
