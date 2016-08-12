@@ -55,6 +55,8 @@ public class InitialFragment extends Fragment implements IGetUser {
         userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
 
         textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
+        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.drop_down_user,0);
+        textView_heading.setCompoundDrawablePadding(5);
 //        textView_heading.setText("All");
         textView_heading.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,17 +141,17 @@ public class InitialFragment extends Fragment implements IGetUser {
         if (requestCode == REQUEST_CODE_SEARCH_USER) {
             if ((resultCode == getActivity().RESULT_OK) && (data.getStringExtra("result").equals("success"))) {
                 if (data.getBooleanExtra("allUser", false)) {
-                    Log.d("jomy", "All User");
+
                     textView_heading.setText(getActivity().getString(R.string.all));
                     userID = -1;
                 } else {
-                    Log.d("jomy", "Id : " + data.getIntExtra("userID", -1));
                     userID = data.getIntExtra("userID", -1);
                     if (userID != -1) {
                         textView_heading.setText("" + data.getStringExtra("userName"));
                         GeneralUtils.setSharedPreferenceString(getActivity(),
                                 AppStringConstants.SELECTED_USERNAME,
                                 data.getStringExtra("userName"));
+
                     } else {
                         textView_heading.setText(getActivity().getString(R.string.all));
                     }
@@ -171,6 +173,7 @@ public class InitialFragment extends Fragment implements IGetUser {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         textView_heading.setOnClickListener(null);
         textView_heading = null;
     }
