@@ -33,7 +33,9 @@ import com.knowall.findots.Constants;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.activities.MenuActivity;
+import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.events.AppEvents;
+import com.knowall.findots.locationUtils.LocationModel.LocationData;
 import com.knowall.findots.restcalls.destinations.DestinationData;
 import com.knowall.findots.restcalls.destinations.DestinationsModel;
 import com.knowall.findots.restcalls.destinations.GetDestinationsRestCall;
@@ -298,6 +300,16 @@ public class DestinationsMapFragment extends Fragment
             currentLongitude = location.getLongitude();
             Log.i(Constants.TAG, "fetchCurrentLocation: location manager = " + currentLatitude + "," + currentLongitude);
         } else {
+
+            DataHelper dataHelper = DataHelper.getInstance(getActivity());
+            List<LocationData> locationLatestData = dataHelper.getLocationLastRecord();
+            if (locationLatestData.size() > 0) {
+                for (LocationData locLastData : locationLatestData) {
+                    currentLatitude = locLastData.getLatitude();
+                    currentLongitude = locLastData.getLongitude();
+                }
+            }
+
             /**
              *   call Google api client to fetch current location
              */
