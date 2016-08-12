@@ -513,7 +513,8 @@ public class MenuActivity extends RuntimePermissionActivity
     }
 
     private void startTrackLocationService() {
-        startService(new Intent(this, TrackLocationService.class));
+        if (userTypeID != CORPORATE_ADMIN)
+            startService(new Intent(this, TrackLocationService.class));
     }
 
 

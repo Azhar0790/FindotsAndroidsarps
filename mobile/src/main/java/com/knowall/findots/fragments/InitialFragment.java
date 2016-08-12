@@ -55,18 +55,25 @@ public class InitialFragment extends Fragment implements IGetUser {
         userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
 
         textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
-        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_drop_down_user,0);
-        textView_heading.setCompoundDrawablePadding(5);
+
+        if (userTypeID == CORPORATE_ADMIN) {
+            textView_heading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_drop_down_user, 0);
+            textView_heading.setCompoundDrawablePadding(5);
+
 //        textView_heading.setText("All");
-        textView_heading.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
-                Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
-                intent.putExtra("userId", userID);
-                startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
-            }
-        });
+            textView_heading.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
+                    Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
+                    intent.putExtra("userId", userID);
+                    startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
+                }
+            });
+        } else {
+            textView_heading.setText(getActivity().getString(R.string.destinations));
+            textView_heading.setEnabled(false);
+        }
 
         restoreTheView();
 
@@ -77,7 +84,7 @@ public class InitialFragment extends Fragment implements IGetUser {
         int userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
         int adminID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.ADMIN_ID);
 
-        if (userID == adminID || userID ==-1) {
+        if (userID == adminID || userID == -1) {
             if (userTypeID == CORPORATE_ADMIN) {
                 GetUserRestCall getUserRestCall = new GetUserRestCall(getActivity());
                 getUserRestCall.delegate = InitialFragment.this;
@@ -186,7 +193,7 @@ public class InitialFragment extends Fragment implements IGetUser {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         textView_heading.setOnClickListener(null);
         textView_heading = null;
     }
