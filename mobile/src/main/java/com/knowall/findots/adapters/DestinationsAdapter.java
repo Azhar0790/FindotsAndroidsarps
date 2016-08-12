@@ -302,7 +302,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                     GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
             holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
-            if(destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0)
+            if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0) ||
+                    (destinationDatas.get(position).getComment()!=null && destinationDatas.get(position).getComment().trim().length()>0) )
                 holder.mCheckin_notes.setVisibility(View.VISIBLE);
             else
                 holder.mCheckin_notes.setVisibility(View.GONE);
@@ -332,10 +333,17 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             public void onClick(View v) {
 //                         Toast.makeText(context,""+ destinationDatas.get(position).getCheckoutComment(),Toast.LENGTH_SHORT).show();
 
+                String message="";
+
+                if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0))
+                     message=destinationDatas.get(position).getCheckoutComment();
+                else
+                message=destinationDatas.get(position).getComment();
+
                             AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
             alertDialogBuilderUserInput.setTitle("" + context.getResources().getString(R.string.app_name));
 
-            alertDialogBuilderUserInput.setMessage(""+ destinationDatas.get(position).getCheckoutComment());
+            alertDialogBuilderUserInput.setMessage(""+ message);
 
 
             alertDialogBuilderUserInput
