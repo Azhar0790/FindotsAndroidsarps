@@ -137,8 +137,12 @@ public class ChangePassword extends AppCompatActivity {
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
-        postValues.put("ipAddress", "");
+
+        int userTypeID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID);
+        if (userTypeID == MenuActivity.CORPORATE_ADMIN)
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.ADMIN_ID));
+        else
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
 
         return postValues;
     }

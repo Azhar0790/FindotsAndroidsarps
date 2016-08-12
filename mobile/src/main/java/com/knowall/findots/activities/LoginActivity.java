@@ -108,8 +108,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 //        mEditText_password.setText("Test1234");
 
 //        Test Admin
-        mEditText_userName.setText("sgudu@bridgetree.com");
-        mEditText_password.setText("Test1234");
+//        mEditText_userName.setText("sgudu@bridgetree.com");
+//        mEditText_password.setText("Test1234");
 
 //        Production Admin
 //        mEditText_userName.setText("vanitha@bridgetree.com");

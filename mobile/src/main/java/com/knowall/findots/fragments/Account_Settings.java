@@ -21,6 +21,7 @@ import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.ChangePassword;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.restcalls.accountSettings.GetAccountInfoModel;
 import com.knowall.findots.restcalls.accountSettings.GetAccountInfoRestCall;
 import com.knowall.findots.restcalls.accountSettings.IGetAccountInfoCallBack;
@@ -179,8 +180,12 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         postValues.put("appVersion", GeneralUtils.getAppVersion(getActivity()));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID));
-        postValues.put("ipAddress", "");
+
+        int userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
+        if (userTypeID == MenuActivity.CORPORATE_ADMIN)
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.ADMIN_ID));
+        else
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID));
 
         return postValues;
     }

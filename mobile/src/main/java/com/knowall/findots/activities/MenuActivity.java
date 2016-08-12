@@ -689,7 +689,8 @@ public class MenuActivity extends RuntimePermissionActivity
 
     public void logOutNavigation() {
         GeneralUtils.stop_progressbar();
-        stopTracking();
+        if (userTypeID != CORPORATE_ADMIN)
+            stopTracking();
         DataHelper dataHelper = DataHelper.getInstance(this);
         dataHelper.deleteAllLocations();
         dataHelper.deleteCheckinList();
