@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/userListLay"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
         android:clickable="true"
         android:background="@drawable/userlist_rectangle"
         android:layout_marginLeft="10dp"
@@ -21,16 +20,19 @@
             android:background="@drawable/small_circle"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
-            android:visibility="gone"/>
+            android:layout_centerVertical="true"
+            android:visibility="visible"/>
 
         <TextView
             android:id="@+id/userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/current_user_indicator"
             android:text="dsfdshfhds"
+            android:ellipsize="end"
             android:textColor="@color/light_grey"/>
     </RelativeLayout>
 </LinearLayout>

@@ -51,8 +51,10 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("result", "success");
-                if(((int)v.getTag())==0)
+                if((mModels.get(((int)v.getTag())).getUserID()==-1)) {
                     returnIntent.putExtra("allUser", true);
+                    returnIntent.putExtra("userID", mModels.get(((int) v.getTag())).getUserID());
+                }
                 else
                 {
                     returnIntent.putExtra("allUser", false);
@@ -60,10 +62,10 @@ public class Serach_UserListAdapter extends RecyclerView.Adapter<UserListViewHol
                     returnIntent.putExtra("userName", ""+mModels.get(((int)v.getTag())).getName());
                 }
                 ((Activity) mContext).setResult(Activity.RESULT_OK, returnIntent);
+                ((Activity) mContext).overridePendingTransition(0, 0);
                 ((Activity) mContext).finish();
             }
         });
-
     }
 
     @Override
