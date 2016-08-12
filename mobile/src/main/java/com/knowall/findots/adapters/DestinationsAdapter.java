@@ -241,7 +241,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         if (userID == assignedUserID) {
             assignedUserName = "Assigned by \nSelf";
         } else {
-            assignedUserName = "Assigned by \n" + destinationDatas.get(position).getAssignedUserName();
+            assignedUserName = "Assigned by \n" + destinationDatas.get(position).getName();
         }
 
         holder.mTextView_destinationAssignedBy.setText(assignedUserName);
