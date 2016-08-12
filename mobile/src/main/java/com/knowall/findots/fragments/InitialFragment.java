@@ -61,6 +61,7 @@ public class InitialFragment extends Fragment implements IGetUser {
         textView_heading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
                 Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
                 intent.putExtra("userId", userID);
                 startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
@@ -144,6 +145,12 @@ public class InitialFragment extends Fragment implements IGetUser {
 
                     textView_heading.setText(getActivity().getString(R.string.all));
                     userID = -1;
+
+                    GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.USERID, userID);
+
+                    FragmentTransaction getUsersMapFragment = getFragmentManager().beginTransaction();
+                    getUsersMapFragment.replace(R.id.frameLayoutInitialContent, GetUsersMapFragment.newInstance(getUserDatasList));
+                    getUsersMapFragment.commit();
                 } else {
                     userID = data.getIntExtra("userID", -1);
                     if (userID != -1) {
