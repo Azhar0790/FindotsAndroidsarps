@@ -55,12 +55,13 @@ public class InitialFragment extends Fragment implements IGetUser {
         userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
 
         textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
-        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.drop_down_user,0);
+        textView_heading.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_drop_down_user,0);
         textView_heading.setCompoundDrawablePadding(5);
 //        textView_heading.setText("All");
         textView_heading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
                 Intent intent = new Intent(MenuActivity.ContextMenuActivity, SearchUserActivity.class);
                 intent.putExtra("userId", userID);
                 startActivityForResult(intent, REQUEST_CODE_SEARCH_USER);
@@ -144,6 +145,12 @@ public class InitialFragment extends Fragment implements IGetUser {
 
                     textView_heading.setText(getActivity().getString(R.string.all));
                     userID = -1;
+
+                    GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.USERID, userID);
+
+                    FragmentTransaction getUsersMapFragment = getFragmentManager().beginTransaction();
+                    getUsersMapFragment.replace(R.id.frameLayoutInitialContent, GetUsersMapFragment.newInstance(getUserDatasList));
+                    getUsersMapFragment.commit();
                 } else {
                     userID = data.getIntExtra("userID", -1);
                     if (userID != -1) {
@@ -152,18 +159,24 @@ public class InitialFragment extends Fragment implements IGetUser {
                                 AppStringConstants.SELECTED_USERNAME,
                                 data.getStringExtra("userName"));
 
+                        DestinationsTabFragment.pagerCurrentItem = 0;
+                        DestinationsTabFragment.current_selected_dateTime = "";
+
+                        FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
+                        destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
+                        destinationTransaction.commit();
+
                     } else {
                         textView_heading.setText(getActivity().getString(R.string.all));
+
+                        FragmentTransaction getUsersMapFragment = getFragmentManager().beginTransaction();
+                        getUsersMapFragment.replace(R.id.frameLayoutInitialContent, GetUsersMapFragment.newInstance(getUserDatasList));
+                        getUsersMapFragment.commit();
                     }
 
                     GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.USERID, userID);
 
-                    DestinationsTabFragment.pagerCurrentItem = 0;
-                    DestinationsTabFragment.current_selected_dateTime = "";
 
-                    FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
-                    destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
-                    destinationTransaction.commit();
                 }
             }
 
