@@ -47,8 +47,18 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        // change the icon according to your needs
+//        home.seti(getResources().getDrawable(R.drawable.back));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(SearchUserActivity.this));
         mModels = new ArrayList<GetUserData>();
+        if(InitialFragment.getUserDatasList!=null && InitialFragment.getUserDatasList.size()>0)
+        {
+            GetUserData addUserAllObject=new GetUserData();
+            addUserAllObject.setUserID(-1);
+            addUserAllObject.setName("All");
+            mModels.add(addUserAllObject);
+        }
         mModels.addAll(InitialFragment.getUserDatasList);
 
         if(getIntent().getExtras()!=null)
@@ -80,7 +90,7 @@ public class SearchUserActivity extends AppCompatActivity implements SearchView.
         ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setTextColor(getResources().getColor(R.color.black_70));
 
         ImageView closeButton = (ImageView)searchView.findViewById(R.id.search_close_btn);
-
+        closeButton.setColorFilter(getResources().getColor(R.color.black_70));
         // Set on click listener
         closeButton.setOnClickListener(new View.OnClickListener() {
 
