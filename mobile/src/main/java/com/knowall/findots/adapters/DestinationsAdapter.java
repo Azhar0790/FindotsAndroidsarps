@@ -45,6 +45,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     final String scheduledAt = "Scheduled at ";
     String getTime = null;
     int userID = 0;
+    int userTypeID = 0;
     int assignedUserID = 0;
     Elements[] elements = null;
     //double currentLatitude;
@@ -61,6 +62,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         getTime = dateTime.toString(fmt1);
 
         userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
+        userTypeID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USER_TYPE_ID);
 
         typefaceLight = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
 
@@ -239,7 +241,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         if (userID == assignedUserID) {
             assignedUserName = "Assigned by \nSelf";
         } else {
-            assignedUserName = "Assigned by \n" + destinationDatas.get(position).getName();
+            assignedUserName = "Assigned by \n" + destinationDatas.get(position).getAssignedUserName();
         }
 
         holder.mTextView_destinationAssignedBy.setText(assignedUserName);
@@ -268,14 +270,26 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         if (!isCheckIn) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkin);
-            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
-            holder.mButton_checkIncheckOut.setEnabled(true);
+
+            if (userTypeID == MenuActivity.CORPORATE_ADMIN) {
+                holder.mLinearLayout_checkIncheckOut.setEnabled(false);
+                holder.mButton_checkIncheckOut.setEnabled(false);
+            } else {
+                holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+                holder.mButton_checkIncheckOut.setEnabled(true);
+            }
             holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkin));
             holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.green));
         } else if (!isCheckOut) {
             holder.mLinearLayout_checkIncheckOut.setBackgroundResource(R.drawable.selector_checkout);
-            holder.mLinearLayout_checkIncheckOut.setEnabled(true);
-            holder.mButton_checkIncheckOut.setEnabled(true);
+
+            if (userTypeID == MenuActivity.CORPORATE_ADMIN) {
+                holder.mLinearLayout_checkIncheckOut.setEnabled(false);
+                holder.mButton_checkIncheckOut.setEnabled(false);
+            } else {
+                holder.mLinearLayout_checkIncheckOut.setEnabled(true);
+                holder.mButton_checkIncheckOut.setEnabled(true);
+            }
             holder.mButton_checkIncheckOut.setText(context.getString(R.string.checkout));
             holder.mButton_checkIncheckOut.setTextColor(context.getResources().getColor(R.color.app_color));
         } else {

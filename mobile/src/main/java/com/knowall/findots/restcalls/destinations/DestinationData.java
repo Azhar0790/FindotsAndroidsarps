@@ -54,8 +54,17 @@ public class DestinationData {
 
     private String travelDistance;
 
-
     private String checkoutComment;
+
+    private String assignedUserName;
+
+    public String getAssignedUserName() {
+        return assignedUserName;
+    }
+
+    public void setAssignedUserName(String assignedUserName) {
+        this.assignedUserName = assignedUserName;
+    }
 
     public String getTravelTime() {
         return travelTime;

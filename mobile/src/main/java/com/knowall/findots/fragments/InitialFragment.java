@@ -54,14 +54,6 @@ public class InitialFragment extends Fragment implements IGetUser {
 
         userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
 
-        if (userTypeID == CORPORATE_ADMIN) {
-            GetUserRestCall getUserRestCall = new GetUserRestCall(getActivity());
-            getUserRestCall.delegate = InitialFragment.this;
-            getUserRestCall.callGetUsers();
-        } else if (userTypeID == CORPORATE) {
-            navigateBasedOnUserType(userTypeID, null);
-        }
-
         textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
 //        textView_heading.setText("All");
         textView_heading.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +65,31 @@ public class InitialFragment extends Fragment implements IGetUser {
             }
         });
 
+        restoreTheView();
+
         return rootView;
+    }
+
+    private void restoreTheView() {
+        int userID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USERID);
+        int adminID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.ADMIN_ID);
+
+        if (userID == adminID || userID ==-1) {
+            if (userTypeID == CORPORATE_ADMIN) {
+                GetUserRestCall getUserRestCall = new GetUserRestCall(getActivity());
+                getUserRestCall.delegate = InitialFragment.this;
+                getUserRestCall.callGetUsers();
+            } else if (userTypeID == CORPORATE) {
+                navigateBasedOnUserType(userTypeID, null);
+            }
+        } else {
+            String selectedUserName = GeneralUtils.getSharedPreferenceString(getActivity(), AppStringConstants.SELECTED_USERNAME);
+            textView_heading.setText(selectedUserName);
+
+            FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
+            destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
+            destinationTransaction.commit();
+        }
     }
 
     private void navigateBasedOnUserType(int userTypeID, ArrayList<GetUserData> userDatas) {
@@ -127,15 +143,21 @@ public class InitialFragment extends Fragment implements IGetUser {
                     textView_heading.setText(getActivity().getString(R.string.all));
                     userID = -1;
                 } else {
-                    Log.d("jomy", "Id : " + data.getStringExtra("userID"));
+                    Log.d("jomy", "Id : " + data.getIntExtra("userID", -1));
                     userID = data.getIntExtra("userID", -1);
-                    if (userID != -1)
+                    if (userID != -1) {
                         textView_heading.setText("" + data.getStringExtra("userName"));
-                    else
+                        GeneralUtils.setSharedPreferenceString(getActivity(),
+                                AppStringConstants.SELECTED_USERNAME,
+                                data.getStringExtra("userName"));
+                    } else {
                         textView_heading.setText(getActivity().getString(R.string.all));
-
+                    }
 
                     GeneralUtils.setSharedPreferenceInt(getActivity(), AppStringConstants.USERID, userID);
+
+                    DestinationsTabFragment.pagerCurrentItem = 0;
+                    DestinationsTabFragment.current_selected_dateTime = "";
 
                     FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
                     destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());

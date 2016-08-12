@@ -85,7 +85,7 @@ public class GetUsersMapFragment extends Fragment implements OnMapReadyCallback 
     public LatLngBounds getCenterCoordinates() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        if (userDatas != null) {
+        if (userDatas != null && userDatas.size() > 0) {
             for (GetUserData getUserData : userDatas) {
                 builder.include(new LatLng(getUserData.getLatitude(), getUserData.getLongitude()));
             }

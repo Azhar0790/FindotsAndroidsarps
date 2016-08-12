@@ -5,6 +5,7 @@ import android.content.Context;
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
+import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
@@ -70,8 +71,14 @@ public class GetAccountInfoRestCall {
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
-        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID));
         postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
+
+        int userTypeID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USER_TYPE_ID);
+        if (userTypeID == MenuActivity.CORPORATE_ADMIN) {
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.ADMIN_ID));
+        } else {
+            postValues.put("userID", GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID));
+        }
 
         return postValues;
     }

@@ -14,4 +14,5 @@ public class AppStringConstants {
     public static String USER_TYPE = "userType";
     public static String USER_TYPE_ID = "userTypeID";
     public static String ADMIN_ID = "adminID";
+    public static String SELECTED_USERNAME = "selectedUserName";
 }
