@@ -48,6 +48,8 @@
     <string name="validate_email">Please enter valid EmailID</string>
     <string name="prompt_required">This field is required</string>
     <string name="prompt_password">This password is too short</string>
+    <string name="admin">Admin</string>
+    <string name="adminAlert">Please click on ADMIN button if you are trying to access the admin panel.</string>
 
     <!-- Register -->
     <string name="signup_heading">Sign Up</string>

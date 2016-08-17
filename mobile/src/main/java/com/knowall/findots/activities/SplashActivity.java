@@ -48,7 +48,11 @@ public class SplashActivity extends AppCompatActivity {
 
                     if((GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USERID))>-1)
                     {
-                        intentNextActivity = new Intent(SplashActivity.this,MenuActivity.class );
+                        int userTypeID = GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USER_TYPE_ID);
+                        if (userTypeID != LoginActivity.CORPORATE_ADMIN)
+                            intentNextActivity = new Intent(SplashActivity.this,MenuActivity.class );
+                        else
+                            intentNextActivity = new Intent(SplashActivity.this, LoginActivity.class);
                     }
                     else
                     {

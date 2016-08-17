@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.knowall.findots" >
+    package="com.knowall.findots">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -65,9 +65,11 @@
         <activity
             android:name="com.knowall.findots.activities.SearchUserActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.SearchUser"/>
+            android:theme="@style/AppTheme.SearchUser" />
 
-
+        <activity
+            android:name=".activities.AdminActivity"
+            android:screenOrientation="unspecified" />
 
 
         <provider
@@ -121,7 +123,6 @@
         <service
             android:name="com.knowall.findots.offlineServices.CheckInOutOfflineService"
             android:exported="false" />
-
 
 
         <!--

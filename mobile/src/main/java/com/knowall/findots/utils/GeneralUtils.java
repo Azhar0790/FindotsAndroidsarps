@@ -21,8 +21,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.knowall.findots.R;
@@ -85,6 +89,20 @@ public class GeneralUtils {
         mDialog.setContentView(R.layout.dialog_progress);
         mDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         mDialog.setCancelable(false);
+
+        LinearLayout linearLayout = (LinearLayout) mDialog.findViewById(R.id.linearLayoutLoader);
+
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(
+                300,
+                300
+        ));
+        imageView.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(imageView);
+        Glide.with(context).load(R.drawable.loader_animation).into(imageViewTarget);
+
+        linearLayout.addView(imageView);
+
         mDialog.show();
     }
 

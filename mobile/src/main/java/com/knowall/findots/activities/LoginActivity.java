@@ -62,6 +62,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
     @Bind(R.id.TextView_signup)
     TextView mTextView_signup;
 
+    @Bind(R.id.textViewAdmin)
+    TextView textViewAdmin;
+
     EditText mEditText_FrgtPswdUsername = null;
 
     public static String USERNAME = "username";
@@ -71,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
     GoogleApiClient mGoogleApiClient;
 
     /**
-     *   User Types
+     * User Types
      */
     public static final int INDIVIDUAL = 1;
     public static final int CORPORATE = 2;
@@ -97,8 +100,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         //mEditText_userName.setText("pnelapati@bridgetree.com");
         //mEditText_password.setText("12345");
 
-//        mEditText_userName.setText("pari@gmail.com");
-//        mEditText_password.setText("test1234");
+        mEditText_userName.setText("pari@gmail.com");
+        mEditText_password.setText("test1234");
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
@@ -114,6 +117,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 //        Production Admin
 //        mEditText_userName.setText("vanitha@bridgetree.com");
 //        mEditText_password.setText("vanitha");
+    }
+
+    @OnClick(R.id.textViewAdmin)
+    public void openAdminActivity() {
+        startActivity(new Intent(LoginActivity.this, AdminActivity.class));
     }
 
     @Override
@@ -181,15 +189,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             GeneralUtils.setSharedPreferenceString(this, AppStringConstants.PASSWORD, password);
 
             if (loginModel.getLoginData().length > 0) {
+
+                int userTypeID = loginModel.getLoginData()[0].getUserTypeID();
+
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.ADMIN_ID, loginModel.getLoginData()[0].getUserID());
-                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID, loginModel.getLoginData()[0].getUserTypeID());
+                GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID, userTypeID);
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.USER_TYPE, loginModel.getLoginData()[0].getUserType());
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
+
+                if (userTypeID == CORPORATE_ADMIN) {
+                    GeneralUtils.createAlertDialog(LoginActivity.this, getString(R.string.adminAlert));
+                } else {
+                    startMenuActivity();
+                }
             }
 
-            startMenuActivity();
         } else {
             GeneralUtils.createAlertDialog(LoginActivity.this, loginModel.getMessage());
         }
@@ -211,6 +227,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         mEditText_userName.setTypeface(typefaceLight);
         mEditText_password.setTypeface(typefaceLight);
         mButton_login.setTypeface(typefaceLight);
+        textViewAdmin.setTypeface(typefaceLight);
         mTextView_forgotPassword.setTypeface(typefaceLight);
         mTextView_donthaveaccount.setTypeface(typefaceLight);
         mTextView_signup.setTypeface(typefaceBold);

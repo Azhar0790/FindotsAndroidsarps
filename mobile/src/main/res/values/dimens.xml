@@ -55,6 +55,7 @@
     <dimen name="textview_donthaveaccount_textSize">15sp</dimen>
     <dimen name="textview_signup_textSize">18sp</dimen>
     <dimen name="bottom_lay">160dp</dimen>
+    <dimen name="forgotPasswordAndAdmin_margin">40dp</dimen>
 
     <!-- Register -->
     <dimen name="signup_text_marginTopBottom">30dp</dimen>
