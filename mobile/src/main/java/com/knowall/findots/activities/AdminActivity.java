@@ -1,5 +1,7 @@
 package com.knowall.findots.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -54,8 +56,17 @@ public class AdminActivity extends AppCompatActivity {
     class LoadAdminPanel extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
+
+            if(url.startsWith(WebView.SCHEME_MAILTO)) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+                return false;
+            } else {
+                view.loadUrl(url);
+                return true;
+            }
+
         }
     }
 

@@ -2,6 +2,7 @@ package com.knowall.findots.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -100,8 +102,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         //mEditText_userName.setText("pnelapati@bridgetree.com");
         //mEditText_password.setText("12345");
 
-        mEditText_userName.setText("pari@gmail.com");
-        mEditText_password.setText("test1234");
+//        mEditText_userName.setText("pari@gmail.com");
+//        mEditText_password.setText("test1234");
 
         //mEditText_userName.setText("asingh@bridgetree.com");
         //mEditText_password.setText("Welcome");
@@ -160,6 +162,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
     public void validateCredentials() {
         userName = mEditText_userName.getText().toString();
         password = mEditText_password.getText().toString();
+
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mEditText_userName.getWindowToken(), 0);
 
         if (userName == null || userName.length() == 0) {
             mEditText_userName.setError(getString(R.string.prompt_required));
