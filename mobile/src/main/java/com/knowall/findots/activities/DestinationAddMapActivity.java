@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -80,7 +81,7 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
         GoogleApiClient.OnConnectionFailedListener, LocationListener,
         TimePickerDialog.OnTimeSetListener,
         DatePickerDialog.OnDateSetListener {
-
+    private long lastClickTime = 0;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -139,6 +140,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
         mAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
                 LayoutInflater layoutInflaterAndroid = LayoutInflater.from(DestinationAddMapActivity.this);
                 View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
                 AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(DestinationAddMapActivity.this);
@@ -306,6 +311,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
         imageView_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
                 onBackPressed();
             }
         });
