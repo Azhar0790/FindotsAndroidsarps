@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     int userID = 0;
     int userTypeID = 0;
     int assignedUserID = 0;
+    private long lastClickTime = 0;
     Elements[] elements = null;
     //double currentLatitude;
     //double currentLongitude;
@@ -132,6 +134,12 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         @Override
         public void onClick(View v) {
+
+            if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                return;
+            }
+
+            lastClickTime = SystemClock.elapsedRealtime();
             int adapterPosition = getAdapterPosition();
             delegate.onDestinationSelected(adapterPosition);
         }
@@ -302,12 +310,14 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                     GeneralUtils.scaleDrawable(this.context.getResources().getDrawable(R.drawable.checkedout_tick), 40, 40),
                     null, null, null);
             holder.mButton_checkIncheckOut.setTextColor(Color.WHITE);
-            if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0) ||
-                    (destinationDatas.get(position).getComment()!=null && destinationDatas.get(position).getComment().trim().length()>0) )
-                holder.mCheckin_notes.setVisibility(View.VISIBLE);
-            else
-                holder.mCheckin_notes.setVisibility(View.GONE);
+
         }
+
+        if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0) ||
+                (destinationDatas.get(position).getComment()!=null && destinationDatas.get(position).getComment().trim().length()>0) )
+            holder.mCheckin_notes.setVisibility(View.VISIBLE);
+        else
+            holder.mCheckin_notes.setVisibility(View.GONE);
 
         /**
          *   on clicking below LinearLayout or Button , call CheckInCheckOut API
@@ -316,6 +326,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+
+                lastClickTime = SystemClock.elapsedRealtime();
                 int destinationPosition = (int) v.getTag();
 
                 boolean checkIn = destinationDatas.get(position).isCheckedIn();
@@ -332,7 +347,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
 //                         Toast.makeText(context,""+ destinationDatas.get(position).getCheckoutComment(),Toast.LENGTH_SHORT).show();
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
 
+                lastClickTime = SystemClock.elapsedRealtime();
                 String message="";
 
                 if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0))
@@ -362,6 +381,11 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+
+                lastClickTime = SystemClock.elapsedRealtime();
                 int destinationPosition = (int) v.getTag();
 
                 boolean checkIn = destinationDatas.get(position).isCheckedIn();

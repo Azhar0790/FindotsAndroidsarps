@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -123,6 +124,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     Toolbar mToolbar = null;
 
+    private long lastClickTime = 0;
     private GoogleApiClient mGoogleApiClient;
     GoogleMap mGoogleMap = null;
     Circle mCircle = null;
@@ -299,7 +301,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
                 if (checkedIn == true && checkedOut == false) {
                     checkOutNote();
                 } else {
@@ -314,6 +319,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+
+                lastClickTime = SystemClock.elapsedRealtime();
 
                 if (checkedIn == true && checkedOut == false) {
                     checkOutNote();
@@ -469,13 +479,22 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @OnClick(R.id.imageView_back)
     public void goBack() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+
+        lastClickTime = SystemClock.elapsedRealtime();
         onBackPressed();
     }
 
 
     @OnClick(R.id.destSchedule)
     public void scheduleDestination() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
 
+        lastClickTime = SystemClock.elapsedRealtime();
         Calendar calendarDate = Calendar.getInstance();
         if (serverRequest_scheduleDate != null && serverRequest_scheduleDate.trim().length() > 0 && (((TimeSettings.getTimeDifference(serverRequest_scheduleDate)) / 60000) > 0)) {
             Date date = new Date();
@@ -706,6 +725,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
 
     @OnClick(R.id.destModify)
     public void modifyDestinationActivity() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+
+        lastClickTime = SystemClock.elapsedRealtime();
         if (assignDestinationID > -1) {
 
             PopupMenu popupMenu = new PopupMenu(DetailDestinationActivity.this, mDestModify);
@@ -718,7 +742,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                        return false;
+                    }
 
+                    lastClickTime = SystemClock.elapsedRealtime();
                     if (item.getItemId() == R.id.item2) {
                         Intent intentModifyLoc = new Intent(DetailDestinationActivity.this, DestinationModify_MapActivity.class);
                         intentModifyLoc.putExtra("destinationID", destinationID);
@@ -762,11 +790,14 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                     }
                     if (item.getItemId() == R.id.item4) {
 
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.setPackage("com.whatsapp");
-                        sendIntent.setType("text/plain");
-                        startActivity(sendIntent);
+                        try {
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.setPackage("com.whatsapp");
+                            sendIntent.setType("text/plain");
+                            startActivity(sendIntent);
+                        }
+                        catch (Exception  e){}
                     }
 
 

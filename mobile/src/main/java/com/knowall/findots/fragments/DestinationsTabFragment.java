@@ -3,6 +3,7 @@ package com.knowall.findots.fragments;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -58,7 +59,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
     public static String current_selected_dateTime = "";
-
+    private long lastClickTime = 0;
     public static MaterialCalendarView materialCalendarView = null;
     public static int pagerCurrentItem = 0;
     public static DestinationData[] destinationDatas = null;
@@ -97,6 +98,12 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+
+                lastClickTime = SystemClock.elapsedRealtime();
                 FinDotsApplication.getInstance().trackEvent("Destination", "Click", "Clicked Add Destination Event");
                 // Click action
                 pagerCurrentItem = viewPagerDestinations.getCurrentItem();
