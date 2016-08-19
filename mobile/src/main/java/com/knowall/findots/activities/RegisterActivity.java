@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -53,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks,
         LocationListener {
 
-
+    private long lastClickTime = 0;
     @Bind(R.id.EditText_name)
     EditText mEditText_name;
 
@@ -144,7 +145,10 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.Button_createAccount)
     public void validateAndCreateAccount() {
-
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         /**
          *   let the user to register if all the permissions granted
          */
@@ -177,6 +181,10 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.TextView_termsCondition)
     public void openTermsandCondition() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse("https://findots.com/terms-privacy.html"));
         startActivity(i);

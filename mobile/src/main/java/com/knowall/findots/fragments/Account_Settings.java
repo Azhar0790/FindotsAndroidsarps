@@ -3,6 +3,7 @@ package com.knowall.findots.fragments;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
@@ -46,7 +47,7 @@ import retrofit.Retrofit;
 public class Account_Settings extends Fragment implements IGetAccountInfoCallBack {
 
     GetAccountInfoModel accountInfoModel;
-
+    private long lastClickTime = 0;
     @Bind(R.id.account_setting_parentlay)
     LinearLayout mParentLay;
 
@@ -124,6 +125,10 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
     @OnClick(R.id.textView_changePwd)
     public void saveAccountSettisngInfo()
     {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         Intent intentChangePassword = new Intent(getActivity(), ChangePassword.class);
         startActivity(intentChangePassword);
     }
@@ -131,7 +136,10 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
     @OnClick(R.id.button_saveAccountSettings)
     public void saveAccountSettingInfo()
     {
-
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         if(validateEnteredValues()) {
             GeneralUtils.initialize_progressbar(getActivity());
             Call<ResponseModel> login = FinDotsApplication.getRestClient().getApiService().saveAccountInfo(setAccountInfoRequest());
