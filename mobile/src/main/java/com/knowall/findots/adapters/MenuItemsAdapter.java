@@ -158,6 +158,8 @@ public class MenuItemsAdapter extends RecyclerView.Adapter<MenuItemsAdapter.View
                 } else {
                     delegate.onMenuItemSelected(adapterPosition);
                 }
+            } else {
+                delegate.onMenuItemSelected(adapterPosition);
             }
 
 
