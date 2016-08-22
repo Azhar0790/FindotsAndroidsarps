@@ -7,10 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.locationUtils.Utils;
@@ -46,6 +45,7 @@ import butterknife.OnClick;
 public class LoginActivity extends AppCompatActivity implements ILoginRestCall, IForgotPasswordRestCall, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private long lastClickTime = 0;
     @Bind(R.id.EditText_userName)
     EditText mEditText_userName;
 
@@ -123,6 +123,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 
     @OnClick(R.id.textViewAdmin)
     public void openAdminActivity() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         startActivity(new Intent(LoginActivity.this, AdminActivity.class));
     }
 
@@ -160,6 +164,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
      */
     @OnClick(R.id.Button_login)
     public void validateCredentials() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         userName = mEditText_userName.getText().toString();
         password = mEditText_password.getText().toString();
 
@@ -246,6 +254,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 
     @OnClick(R.id.TextView_forgotPassword)
     public void showForgotPasswordDialog() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
 
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(LoginActivity.this);
         View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
@@ -348,6 +360,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 
     @OnClick(R.id.TextView_signup)
     public void startSignUpActivity() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
         finish();

@@ -3,6 +3,7 @@ package com.knowall.findots.activities;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +38,7 @@ import retrofit.Retrofit;
  */
 public class ChangePassword extends AppCompatActivity {
 
+    private long lastClickTime = 0;
     @Bind(R.id.editText_current_password)
     EditText mEditText_current_password;
 
@@ -92,6 +94,10 @@ public class ChangePassword extends AppCompatActivity {
 
     @OnClick(R.id.button_changePassword)
     public void changePassword() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         if (validateEnteredValues()) {
 
             GeneralUtils.initialize_progressbar(this);
