@@ -11,29 +11,44 @@ public class RegisterData {
 
     private String Status;
 
-    public int getUserID ()
-    {
+    private int userTypeID;
+
+    private String userType;
+
+    public int getUserTypeID() {
+        return userTypeID;
+    }
+
+    public void setUserTypeID(int userTypeID) {
+        this.userTypeID = userTypeID;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID (int userID)
-    {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
-    public String getStatus ()
-    {
+    public String getStatus() {
         return Status;
     }
 
-    public void setStatus (String Status)
-    {
+    public void setStatus(String Status) {
         this.Status = Status;
     }
 
     @Override
-    public String toString()
-    {
-        return "ClassPojo [userID = "+userID+", Status = "+Status+"]";
+    public String toString() {
+        return "ClassPojo [userID = " + userID + ", Status = " + Status + "]";
     }
 }

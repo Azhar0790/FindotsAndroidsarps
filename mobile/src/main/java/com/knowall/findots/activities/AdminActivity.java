@@ -26,7 +26,11 @@ public class AdminActivity extends AppCompatActivity {
 
     int goBackCount = 0;
 
-    private static final String adminLoginUrl = "http://182.73.82.185/FindotsWeb/login/login";
+    // Test Server URL
+//    private static final String adminLoginUrl = "http://182.73.82.185/FindotsWeb/login/login";
+
+    // Production Server URL
+    private static final String adminLoginUrl = "https://findots.com/Login/Login";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

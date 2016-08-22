@@ -217,7 +217,7 @@ public class MenuActivity extends RuntimePermissionActivity
         switch (userTypeID) {
             case CORPORATE:
                 if (fromRegister) {
-                    showJoinATeamDialog();
+                    showJoinATeamDialog(true);
                 } else {
                     FragmentTransaction initialFragment = getSupportFragmentManager().beginTransaction();
                     initialFragment.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
@@ -362,7 +362,7 @@ public class MenuActivity extends RuntimePermissionActivity
 
             case Constants.JOIN_A_TEAM:
                 mDrawerLayout_slider.closeDrawer(Gravity.LEFT);
-                showJoinATeamDialog();
+                showJoinATeamDialog(false);
                 break;
 
 
@@ -430,7 +430,7 @@ public class MenuActivity extends RuntimePermissionActivity
                 }).show();
     }
 
-    private void showJoinATeamDialog() {
+    private void showJoinATeamDialog(final boolean isDestinations) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(MenuActivity.this);
         View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.this);
@@ -472,10 +472,11 @@ public class MenuActivity extends RuntimePermissionActivity
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
-
-//                                FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
-//                                destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
-//                                destinationTransaction.commit();
+                                if (isDestinations) {
+                                    FragmentTransaction destinationTransaction = getSupportFragmentManager().beginTransaction();
+                                    destinationTransaction.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+                                    destinationTransaction.commit();
+                                }
                             }
                         });
 

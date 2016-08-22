@@ -93,8 +93,13 @@ public class InitialFragment extends Fragment implements IGetUser {
                 navigateBasedOnUserType(userTypeID, null);
             }
         } else {
-            String selectedUserName = GeneralUtils.getSharedPreferenceString(getActivity(), AppStringConstants.SELECTED_USERNAME);
-            textView_heading.setText(selectedUserName);
+            if (userTypeID == CORPORATE_ADMIN) {
+                String selectedUserName = GeneralUtils.getSharedPreferenceString(getActivity(), AppStringConstants.SELECTED_USERNAME);
+                textView_heading.setText(selectedUserName);
+            } else {
+                textView_heading.setText(getActivity().getString(R.string.destinations));
+                textView_heading.setEnabled(false);
+            }
 
             FragmentTransaction destinationTransaction = getFragmentManager().beginTransaction();
             destinationTransaction.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
