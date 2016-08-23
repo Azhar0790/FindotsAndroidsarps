@@ -116,7 +116,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         TextView textViewTravelTime = null;
         TextView textViewSchedule = null;
         TextView mTextView_destinationScheduled = null;
-        ImageView mCheckin_notes=null;
+        ImageView mCheckin_notes = null;
 
         public ViewHolder(View view) {
             super(view);
@@ -129,13 +129,13 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             textViewTravelTime = (TextView) view.findViewById(R.id.textViewTravelTime);
             textViewSchedule = (TextView) view.findViewById(R.id.textViewSchedule);
             mTextView_destinationScheduled = (TextView) view.findViewById(R.id.TextView_destinationScheduled);
-            mCheckin_notes= (ImageView) view.findViewById(R.id.checkin_notes);
+            mCheckin_notes = (ImageView) view.findViewById(R.id.checkin_notes);
         }
 
         @Override
         public void onClick(View v) {
 
-            if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                 return;
             }
 
@@ -313,8 +313,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
         }
 
-        if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0) ||
-                (destinationDatas.get(position).getComment()!=null && destinationDatas.get(position).getComment().trim().length()>0) )
+        if ((destinationDatas.get(position).getCheckoutComment() != null && destinationDatas.get(position).getCheckoutComment().trim().length() > 0) ||
+                (destinationDatas.get(position).getComment() != null && destinationDatas.get(position).getComment().trim().length() > 0))
             holder.mCheckin_notes.setVisibility(View.VISIBLE);
         else
             holder.mCheckin_notes.setVisibility(View.GONE);
@@ -326,7 +326,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
 
@@ -347,33 +347,38 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
             @Override
             public void onClick(View v) {
 //                         Toast.makeText(context,""+ destinationDatas.get(position).getCheckoutComment(),Toast.LENGTH_SHORT).show();
-                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
 
                 lastClickTime = SystemClock.elapsedRealtime();
-                String message="";
+                String message = "";
 
-                if((destinationDatas.get(position).getCheckoutComment()!=null && destinationDatas.get(position).getCheckoutComment().trim().length()>0))
-                     message=destinationDatas.get(position).getCheckoutComment();
+                String adminComment = destinationDatas.get(position).getComment();
+                String userComment = destinationDatas.get(position).getCheckoutComment();
+
+                commentView(adminComment, userComment);
+
+                /*if ((destinationDatas.get(position).getCheckoutComment() != null && destinationDatas.get(position).getCheckoutComment().trim().length() > 0))
+                    message = destinationDatas.get(position).getCheckoutComment();
                 else
-                message=destinationDatas.get(position).getComment();
+                    message = destinationDatas.get(position).getComment();
 
-                            AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
-            alertDialogBuilderUserInput.setTitle("" + context.getResources().getString(R.string.app_name));
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(MenuActivity.ContextMenuActivity);
+                alertDialogBuilderUserInput.setTitle("" + context.getResources().getString(R.string.app_name));
 
-            alertDialogBuilderUserInput.setMessage(""+ message);
+                alertDialogBuilderUserInput.setMessage("" + message);
 
 
-            alertDialogBuilderUserInput
-                    .setCancelable(true)
-                    .setPositiveButton("" + context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogBox, int id) {
-                            dialogBox.cancel();
-                        }
-                    });
-            AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
-            alertDialogAndroid.show();
+                alertDialogBuilderUserInput
+                        .setCancelable(true)
+                        .setPositiveButton("" + context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                dialogBox.cancel();
+                            }
+                        });
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();*/
             }
         });
 
@@ -381,7 +386,7 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
 
@@ -435,6 +440,39 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         AlertDialog alertDialog = alertDialogBuilderUserInput.create();
         alertDialog.show();
 
+    }
+
+    private void commentView(String adminComment, String userComment) {
+        LayoutInflater layoutInflaterAndroid = LayoutInflater.from(context);
+        View mView = layoutInflaterAndroid.inflate(R.layout.comment_view, null);
+        AlertDialog.Builder alertDialogCommentView = new AlertDialog.Builder(context);
+        alertDialogCommentView.setView(mView);
+
+        TextView textViewAdminComment = (TextView) mView.findViewById(R.id.textViewAdminComment);
+        TextView textViewUserComment = (TextView) mView.findViewById(R.id.textViewUserComment);
+
+        if (adminComment.length() > 0) {
+            textViewAdminComment.setText(adminComment);
+        } else {
+            textViewAdminComment.setText("No admin comment available.");
+        }
+
+        if (userComment.length() > 0) {
+            textViewUserComment.setText(userComment);
+        } else {
+            textViewUserComment.setText("No user comment available.");
+        }
+
+        alertDialogCommentView.setCancelable(false)
+                .setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogCommentView.create();
+        alertDialog.show();
     }
 
 }

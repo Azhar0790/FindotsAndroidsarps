@@ -1,9 +1,11 @@
 package com.knowall.findots.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -53,8 +55,30 @@ public class AdminActivity extends AppCompatActivity {
             webViewAdminPanel.goBack();
             goBackCount++;
         } else {
-            finish();
+            exitConfirmation();
         }
+    }
+
+    public void exitConfirmation() {
+        AlertDialog exitConfirmationDialog = new AlertDialog.Builder(AdminActivity.this)
+                .setTitle(getString(R.string.app_name))
+                .setMessage("Are you sure want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+
+        exitConfirmationDialog.show();
+
     }
 
     class LoadAdminPanel extends WebViewClient {
