@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     ViewPager viewPagerDestinations = null;
     TabLayout tabLayout = null;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     public static String current_selected_dateTime = "";
     private long lastClickTime = 0;
     public static MaterialCalendarView materialCalendarView = null;
@@ -89,6 +91,8 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
         initializeMaterialCalendarView(rootView);
         Log.d("paul", "oncreateViewTab..");
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.app_color, R.color.darkgreen, R.color.darkblue);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("List"));
@@ -99,7 +103,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             @Override
             public void onClick(View view) {
 
-                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
 
@@ -123,9 +127,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         if (viewPagerDestinations == null)
             viewPagerDestinations = (ViewPager) rootView.findViewById(R.id.viewPagerDestinations);
 
-        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
-        destinationsRestCall.delegate = DestinationsTabFragment.this;
-        destinationsRestCall.callGetDestinations();
+        callDestinationRestOperation();
 
         viewPagerDestinations.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
@@ -143,8 +145,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                         historyDatas.clear();
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
-                }
-                else if(pagerCurrentItem ==1) {
+                } else if (pagerCurrentItem == 1) {
                     EventBus.getDefault().post(AppEvents.SCHEDULEDDATELIST);
                     Log.i("paul", "pagerCurrentItemEvent --> " + pagerCurrentItem);
                 }
@@ -159,9 +160,27 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (pagerCurrentItem == 2) {
+                    if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
+                        callHistoryRestCall();
+                } else {
+                    callDestinationRestOperation();
+                }
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
 
-
+        });
         return rootView;
+    }
+
+    void callDestinationRestOperation() {
+        GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
+        destinationsRestCall.delegate = DestinationsTabFragment.this;
+        destinationsRestCall.callGetDestinations();
+
     }
 
     @Override
@@ -220,15 +239,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 Log.d("jomy", "set pagerCurrentItem..//" + pagerCurrentItem);
             }
 
-            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
-            destinationsRestCall.delegate = DestinationsTabFragment.this;
-            destinationsRestCall.callGetDestinations();
+            callDestinationRestOperation();
 
         } else if (resultCode == 3) {
             Log.d("jomy", "check...");
-            GetDestinationsRestCall destinationsRestCall = new GetDestinationsRestCall(MenuActivity.ContextMenuActivity);
-            destinationsRestCall.delegate = DestinationsTabFragment.this;
-            destinationsRestCall.callGetDestinations();
+            callDestinationRestOperation();
         } else {
         }
     }
@@ -401,7 +416,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         MaterialCalendarView materialCalendarView = null;
         pagerCurrentItem = 0;
         DestinationData[] destinationDatas = null;
-        ArrayList<HistoryData> historyDatas =null;
+        ArrayList<HistoryData> historyDatas = null;
         mCalendarDay = null;
 
 //        if (!EventBus.getDefault().isRegistered(this))

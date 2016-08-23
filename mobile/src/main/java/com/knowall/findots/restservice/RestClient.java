@@ -1,6 +1,5 @@
 package com.knowall.findots.restservice;
 
-import com.knowall.findots.distancematrix.DistanceMatrixURL;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -8,6 +7,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
@@ -33,6 +33,9 @@ public class RestClient {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         client = new OkHttpClient();
+        client.setConnectTimeout(60, TimeUnit.SECONDS);
+        client.setReadTimeout(60, TimeUnit.SECONDS);
+        client.setWriteTimeout(60, TimeUnit.SECONDS);
         client.interceptors().add(loggingInterceptor);
         client.interceptors().add(new Interceptor() {
             @Override

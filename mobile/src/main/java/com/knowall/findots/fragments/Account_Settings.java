@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
@@ -70,6 +71,8 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
     @Bind(R.id.button_saveAccountSettings)
     Button mButton_saveAccountSettings;
 
+    @Bind(R.id.swipeRefresh)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static Account_Settings newInstance() {
         Account_Settings account_Settings = new Account_Settings();
@@ -85,12 +88,25 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
         ButterKnife.bind(this, rootView);
         setUIElementsProperty();
         mParentLay.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.app_color,R.color.darkgreen,R.color.darkblue);
+        callaccountInfoRestOperation();
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                callaccountInfoRestOperation();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+        });
+        return rootView;
+    }
+
+    void callaccountInfoRestOperation()
+    {
         GetAccountInfoRestCall accountInfoRestCall = new GetAccountInfoRestCall(getActivity());
         accountInfoRestCall.delegate = Account_Settings.this;
         accountInfoRestCall.callGetAccountInfoService();
-
-        return rootView;
     }
 
     public void setUIElementsProperty() {
