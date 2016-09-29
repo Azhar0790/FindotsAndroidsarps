@@ -148,6 +148,10 @@ public class MenuActivity extends RuntimePermissionActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
 
+        if (getIntent().getExtras() != null) {
+            showNotificationDialog(getIntent().getStringExtra("title"),getIntent().getStringExtra("body"));
+            Log.d("jomy", "bodyvv: " + getIntent().getStringExtra("body")+" Keyvv : "+getIntent().getStringExtra("title") );
+        }
         userTypeID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID);
 
         if (userTypeID == CORPORATE_ADMIN) {
@@ -271,6 +275,21 @@ public class MenuActivity extends RuntimePermissionActivity
 
     }
 
+    void showNotificationDialog(String title,String body)
+    {
+        if(title!=null && body !=null)
+        {
+            new AlertDialog.Builder(MenuActivity.this)
+                    .setTitle(title)
+                    .setMessage(body)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
+    }
     public void setViewForDashboard() {
         mRecyclerView_menu_items.setHasFixedSize(true);
 

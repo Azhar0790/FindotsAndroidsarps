@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.locationUtils.Utils;
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         setListeners();
 
         buildGoogleApiClient();
+        Log.d("jomy","Token: "+ FirebaseInstanceId.getInstance().getToken());
 
         //mEditText_userName.setText("vanithaergam405@gmail.com");
         //mEditText_password.setText("1234");
