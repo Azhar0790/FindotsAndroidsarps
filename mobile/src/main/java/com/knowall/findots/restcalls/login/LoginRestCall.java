@@ -2,6 +2,7 @@ package com.knowall.findots.restcalls.login;
 
 import android.content.Context;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
@@ -73,7 +74,7 @@ public class LoginRestCall {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("email", username);
         postValues.put("password", password);
-        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
+        postValues.put("deviceID", FirebaseInstanceId.getInstance().getToken());
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());

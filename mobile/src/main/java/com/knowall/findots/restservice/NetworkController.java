@@ -89,6 +89,9 @@ public interface NetworkController {
     @POST(RestURLs.METHOD_GETUSERS)
     Call<GetUserModel> getUsers(@Body Map<String, Object> request);
 
+    @POST(RestURLs.METHOD_REGISTERNOTICATION_TOKEN)
+    Call<ResponseModel> setNotification_RefreshedToken(@Body Map<String, Object> request);
+
     @GET
     Call<DistanceMatrix> distanceMatrix(@Url String url, @Query("units") String units,
                                         @Query("key") String key,
