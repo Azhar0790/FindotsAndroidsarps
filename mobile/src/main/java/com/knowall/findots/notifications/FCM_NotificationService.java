@@ -39,13 +39,12 @@ public class FCM_NotificationService extends FirebaseMessagingService {
 
 
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-        }
+//        if (remoteMessage!=null && remoteMessage.getData().size() > 0) {
+//            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+//        }
 
         // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null && remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        if (remoteMessage!=null  && remoteMessage.getData()!=null) {
             sendNotification(remoteMessage);
         }
 
@@ -60,8 +59,8 @@ public class FCM_NotificationService extends FirebaseMessagingService {
      * @param remoteMessage FCM message body received.
      */
     private void sendNotification(RemoteMessage remoteMessage) {
-        String body="",title="";
-        if(((GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID))>-1) && (remoteMessage.getData().size() > 0)) {
+        String body="",title=""+getResources().getString(R.string.app_name);
+        if(((GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID))>-1)) {
             Intent intent = new Intent(this, MenuActivity.class);
             for (String key : remoteMessage.getData().keySet()) {
                 Object value = remoteMessage.getData().get(key);
@@ -79,23 +78,25 @@ public class FCM_NotificationService extends FirebaseMessagingService {
 //            intent.putExtra("body",""+remoteMessage.getNotification().getBody());
 //            intent.putExtra("title",remoteMessage.getNotification().getTitle());
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+            if(body.length()>0) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
 
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle("" + title)
-                    .setContentText(""+body)
-                    .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
-                    .setContentIntent(pendingIntent);
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("" + title)
+                        .setContentText("" + body)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
 
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+                notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+            }
         }
     }
 }

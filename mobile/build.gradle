@@ -13,8 +13,8 @@ android {
         applicationId "com.knowall.findots"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 3
-        versionName "3"
+        versionCode 4
+        versionName "4"
 
         // Enabling multidex support.
         multiDexEnabled true

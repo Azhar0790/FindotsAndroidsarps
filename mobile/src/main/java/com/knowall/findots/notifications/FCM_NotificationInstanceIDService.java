@@ -83,15 +83,12 @@ public class FCM_NotificationInstanceIDService extends FirebaseInstanceIdService
     }
 
     private Map<String, Object> getTokenUpdateRequest(String refreshedToken) {
-
-        int userID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID);
-
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("appVersion", GeneralUtils.getAppVersion(this));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());
         postValues.put("deviceID", ""+refreshedToken);
-        postValues.put("userID", 240);
+        postValues.put("userID", GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USERID));
         postValues.put("ipAddress", "");
         return postValues;
     }
