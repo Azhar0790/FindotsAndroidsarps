@@ -717,6 +717,9 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
     }
 
     public void addDestinationRequest(String destinationName,String scheduleTime) {
+
+        FinDotsApplication.getInstance().trackEvent("ADD Destination", "Click", "Submitted Add Destination Request Event");
+
         GeneralUtils.initialize_progressbar(this);
         Call<ResponseModel> addDestinationCall = FinDotsApplication.getRestClient().getApiService().addDestination(setAddDestinationRequest(destinationName, scheduleTime));
 
