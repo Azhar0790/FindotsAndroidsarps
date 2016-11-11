@@ -37,5 +37,6 @@ public class RestURLs {
     public static final String METHOD_GETHISTORY = "GetHistory";
     public static final String METHOD_JOINATEAM = "JoinTeam";
     public static final String METHOD_GETUSERS = "GetUsers";
+    public static final String METHOD_REGISTERNOTICATION_TOKEN= "UpdateDeviceDetails";
 
 }

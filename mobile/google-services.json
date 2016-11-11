@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "480251709367",
+    "firebase_url": "https://findots-6be08.firebaseio.com",
+    "project_id": "findots-6be08",
+    "storage_bucket": "findots-6be08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480251709367:android:c0157e3e991a335c",
+        "android_client_info": {
+          "package_name": "com.knowall.findots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480251709367-gtj2fi778dgiieojg6mivn229bur7qcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzTZr5YK5E2snh5-vzfO6kEyu3_3qo7J4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

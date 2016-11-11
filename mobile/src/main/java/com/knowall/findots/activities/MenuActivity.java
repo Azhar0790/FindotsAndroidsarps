@@ -32,6 +32,7 @@ import com.google.android.gms.common.ErrorDialogFragment;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
@@ -50,6 +51,7 @@ import com.knowall.findots.restcalls.joinTeam.JoinTeamRestCall;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
+import com.knowall.findots.utils.FcmAnalytics;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 
@@ -148,6 +150,10 @@ public class MenuActivity extends RuntimePermissionActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
 
+        if (getIntent().getExtras() != null) {
+            showNotificationDialog(getIntent().getStringExtra("title"),getIntent().getStringExtra("body"));
+            Log.d("jomy", "bodyvv: " + getIntent().getStringExtra("body")+" Keyvv : "+getIntent().getStringExtra("title") );
+        }
         userTypeID = GeneralUtils.getSharedPreferenceInt(this, AppStringConstants.USER_TYPE_ID);
 
         if (userTypeID == CORPORATE_ADMIN) {
@@ -271,6 +277,21 @@ public class MenuActivity extends RuntimePermissionActivity
 
     }
 
+    void showNotificationDialog(String title,String body)
+    {
+        if(title!=null && body !=null)
+        {
+            new AlertDialog.Builder(MenuActivity.this)
+                    .setTitle(title)
+                    .setMessage(body)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
+    }
     public void setViewForDashboard() {
         mRecyclerView_menu_items.setHasFixedSize(true);
 
@@ -351,6 +372,12 @@ public class MenuActivity extends RuntimePermissionActivity
                 initialFragment.commit();
 
                 findViewById(R.id.FrameLayout_content).setVisibility(View.VISIBLE);
+                //Fcm Analytics
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Destinations");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Destinations"+ " is opened");
+                FcmAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+//                FcmAnalytics.getInstance(this).setUserProperty("userDevice", ""+ CommonUtils.DeviceInfo);
                 break;
 
             case Constants.TRACKLOCATION:

@@ -136,11 +136,11 @@ public class RegisterActivity extends AppCompatActivity
      * change the background of switch(ImageView) button
      */
     public void changeSwitchButtonBackground() {
-        if (mImageView_onOff.getTag() == true) {
-            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_on);
-        } else if (mImageView_onOff.getTag() == false) {
-            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_off);
-        }
+//        if (mImageView_onOff.getTag() == true) {
+//            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_on);
+//        } else if (mImageView_onOff.getTag() == false) {
+//            mImageView_onOff.setBackgroundResource(R.drawable.ic_switch_off);
+//        }
     }
 
     @OnClick(R.id.Button_createAccount)
@@ -298,11 +298,11 @@ public class RegisterActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ImageView_onOff:
-                if (mImageView_onOff.getTag() == false) {
-                    mImageView_onOff.setTag(true);
-                } else if (mImageView_onOff.getTag() == true) {
-                    mImageView_onOff.setTag(false);
-                }
+//                if (mImageView_onOff.getTag() == false) {
+//                    mImageView_onOff.setTag(true);
+//                } else if (mImageView_onOff.getTag() == true) {
+//                    mImageView_onOff.setTag(false);
+//                }
                 changeSwitchButtonBackground();
 
             default:

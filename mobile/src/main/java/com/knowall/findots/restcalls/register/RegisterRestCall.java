@@ -2,6 +2,7 @@ package com.knowall.findots.restcalls.register;
 
 import android.content.Context;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
@@ -71,7 +72,7 @@ public class RegisterRestCall {
         postValues.put("mobileNumber", mobile);
         postValues.put("name", name);
         postValues.put("company", "");
-        postValues.put("deviceID", GeneralUtils.getUniqueDeviceId(context));
+        postValues.put("deviceID", FirebaseInstanceId.getInstance().getToken());
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
         postValues.put("deviceTypeID", Constants.DEVICETYPEID);
         postValues.put("deviceInfo", GeneralUtils.getDeviceInfo());

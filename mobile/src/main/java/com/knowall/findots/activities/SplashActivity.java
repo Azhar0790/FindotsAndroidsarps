@@ -24,7 +24,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-
         Message message = new Message();
         message.what = SPLASH_THREAD;
         SplashActivity.this.mHandlerSplash.sendMessageDelayed(message, DELAY_TIME);
@@ -35,9 +34,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         FinDotsApplication.getInstance().trackScreenView("Splash Screen");
-
     }
-
 
     Handler mHandlerSplash = new Handler(){
         @Override
@@ -48,11 +45,26 @@ public class SplashActivity extends AppCompatActivity {
 
                     if((GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USERID))>-1)
                     {
-                        int userTypeID = GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USER_TYPE_ID);
-                        if (userTypeID != LoginActivity.CORPORATE_ADMIN)
+//                        int userTypeID = GeneralUtils.getSharedPreferenceInt(SplashActivity.this, AppStringConstants.USER_TYPE_ID);
+//                        if (userTypeID != LoginActivity.CORPORATE_ADMIN)
+
+                        // If a notification message is tapped, any data accompanying the notification
+                        // message is available in the intent extras. In this sample the launcher
+                        // intent is fired when the notification is tapped, so any accompanying data would
+                        // be handled here. If you want a different intent fired, set the click_action
+                        // field of the notification message to the desired intent. The launcher intent
+                        // is used when no click_action is specified.
                             intentNextActivity = new Intent(SplashActivity.this,MenuActivity.class );
-                        else
-                            intentNextActivity = new Intent(SplashActivity.this, LoginActivity.class);
+                        if (getIntent().getExtras() != null) {
+
+                            for (String key : getIntent().getExtras().keySet()) {
+                                Object value = getIntent().getExtras().get(key);
+                                if(key.equals("body"))
+                                    intentNextActivity.putExtra("body",""+value);
+                                else if(key.equals("title"))
+                                    intentNextActivity.putExtra("title",""+value.toString());
+                            }
+                        }
                     }
                     else
                     {
