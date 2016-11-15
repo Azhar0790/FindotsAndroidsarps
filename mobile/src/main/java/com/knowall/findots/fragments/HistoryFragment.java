@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.adapters.HistoryAdapter;
@@ -43,6 +44,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         Log.d("paul", "onCreate");
     }
 
@@ -58,6 +61,9 @@ public class HistoryFragment extends Fragment {
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
         Log.d("paul", "onCreateView");
+
+        FinDotsApplication.getInstance().trackScreenView("History Screen");
+
         return rootView;
     }
 
