@@ -95,7 +95,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         mSwipeRefreshLayout.setColorSchemeResources(R.color.app_color, R.color.darkgreen, R.color.darkblue);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
-        tabLayout.addTab(tabLayout.newTab().setText("List"));
+        tabLayout.addTab(tabLayout.newTab().setText("Trip"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
 
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
