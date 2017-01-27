@@ -1,6 +1,8 @@
 package com.knowall.findots.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -58,6 +60,8 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+
+import static com.knowall.findots.adapters.DestinationsAdapter.show_admin_comment;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -169,6 +173,7 @@ public class DestinationFragment extends Fragment
         String checkedOutReportedDate = arrayListDestinations.get(itemPosition).getCheckedOutReportedDate();
         boolean isEditable = arrayListDestinations.get(itemPosition).isEditable();
         boolean isRequireApproval = arrayListDestinations.get(itemPosition).isRequiresApproval();
+        String admin_comment = arrayListDestinations.get(itemPosition).getComment();
 
         String scheduleDate = arrayListDestinations.get(itemPosition).getScheduleDate();
         String travelTime = arrayListDestinations.get(itemPosition).getTravelTime();
@@ -190,6 +195,8 @@ public class DestinationFragment extends Fragment
         intentDetailDestination.putExtra("requireApproval", isRequireApproval);
         intentDetailDestination.putExtra("scheduleDate", scheduleDate);
         intentDetailDestination.putExtra("travelTime", travelTime);
+        intentDetailDestination.putExtra("adminComment", admin_comment);
+
         startActivityForResult(intentDetailDestination, REQUEST_CODE_ACTIVITYDETAILS);
     }
 
@@ -208,6 +215,25 @@ public class DestinationFragment extends Fragment
 //            arrayListDestinations = sortDestinationsOnScheduleDate(destinationDatas);
 //            Log.d("jomy","arrayListDestinations ss"+arrayListDestinations.size());
 //            setAdapterForDestinations();
+        }
+
+            /*
+             *  display admin comment
+             */
+        if (DestinationsAdapter.show_admin_comment && DestinationsAdapter.admin_comment != null &&
+                !DestinationsAdapter.admin_comment.equals("")) {
+
+            DestinationsAdapter.show_admin_comment = false;
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Admin Comment")
+                    .setMessage(DestinationsAdapter.admin_comment)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
         }
     }
 

@@ -1,6 +1,8 @@
 package com.knowall.findots.restcalls.login;
 
 import android.content.Context;
+import android.telephony.PhoneNumberUtils;
+import android.util.Patterns;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.knowall.findots.Constants;
@@ -17,6 +19,8 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static android.util.Patterns.EMAIL_ADDRESS;
+
 /**
  * Created by parijathar on 6/17/2016.
  */
@@ -30,11 +34,11 @@ public class LoginRestCall {
     }
 
 
-    public void callLoginService(String username, String password) {
+    public void callLoginService(String username, String password, boolean isEmailID, boolean isMobileNumber) {
 
         GeneralUtils.initialize_progressbar(context);
 
-        Map<String, Object> postValues = getLoginRequest(username, password);
+        Map<String, Object> postValues = getLoginRequest(username, password, isEmailID, isMobileNumber);
 
         Call<LoginModel> call = FinDotsApplication.getRestClient().getApiService().login(postValues);
         call.enqueue(new Callback<LoginModel>() {
@@ -67,12 +71,20 @@ public class LoginRestCall {
     }
 
 
-    private Map<String, Object> getLoginRequest(String username, String password) {
+    private Map<String, Object> getLoginRequest(String username, String password, boolean isEmailID, boolean isMobileNumber) {
 
         int userID = GeneralUtils.getSharedPreferenceInt(context, AppStringConstants.USERID);
 
         Map<String, Object> postValues = new HashMap<>();
-        postValues.put("email", username);
+
+        if (isEmailID) {
+            postValues.put("email", username);
+            postValues.put("mobileNumber", "");
+        } else if (isMobileNumber) {
+            postValues.put("email", "");
+            postValues.put("mobileNumber", username);
+        }
+
         postValues.put("password", password);
         postValues.put("deviceID", FirebaseInstanceId.getInstance().getToken());
         postValues.put("appVersion", GeneralUtils.getAppVersion(context));
@@ -82,5 +94,7 @@ public class LoginRestCall {
 
         return postValues;
     }
+
+
 
 }

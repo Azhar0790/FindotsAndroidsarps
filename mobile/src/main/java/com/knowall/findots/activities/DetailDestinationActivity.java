@@ -82,6 +82,9 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static android.R.id.message;
+import static com.knowall.findots.R.string.admin;
+
 
 /**
  * Created by parijathar on 6/21/2016.
@@ -141,10 +144,11 @@ public class DetailDestinationActivity extends AppCompatActivity implements
     public static boolean FLAG_CHECKINCHECKOUT = false;
     public static boolean FLAG_OFFLINECHECKINCHECKOUT = false;
     public boolean mFlag_Scheduled = false;
+    boolean show_admin_comment = false;
     public static final int STROKE_WIDTH = 6;
     private static final int REQUEST_CODE_MODIFY_DESTINATION = 1;
     double currentLatitude = 0, currentLongitude = 0;
-    String scheduleDate = "", serverRequest_scheduleDate = "",travelTime="";
+    String scheduleDate = "", serverRequest_scheduleDate = "",travelTime="",admin_comment=null;
     int day, month, year;
 
 
@@ -206,6 +210,22 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         } else
             setSpannableScheduleString("" + getString(R.string.schedule));
 
+
+        /*
+             *  display admin comment
+             */
+        if (show_admin_comment && admin_comment != null && !admin_comment.equals("")) {
+            show_admin_comment = false;
+            new AlertDialog.Builder(DetailDestinationActivity.this)
+                    .setTitle("Admin Comment")
+                    .setMessage(admin_comment)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
     }
 
     public boolean checkCurrentTimeGreater(String scheduleDate) {
@@ -247,6 +267,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         isRequiresApproval = bundle.getBoolean("requireApproval");
         scheduleDate = bundle.getString("scheduleDate");
         travelTime=bundle.getString("travelTime");
+        admin_comment = bundle.getString("adminComment");
 
         if (scheduleDate.trim().length() > 0)
             extractDateInfo(scheduleDate, false);
@@ -301,6 +322,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                show_admin_comment = false;
+
                 if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
                     return;
                 }
@@ -308,10 +332,12 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 if (checkedIn == true && checkedOut == false) {
                     checkOutNote();
                 } else {
-                    if (!checkedIn)
+                    if (!checkedIn) {
                         isDeviceEnteredWithinDestinationRadius(true, false, "");
-                    else
+                        show_admin_comment = true;
+                    } else {
                         isDeviceEnteredWithinDestinationRadius(true, true, "");
+                    }
                 }
             }
         });
@@ -319,6 +345,9 @@ public class DetailDestinationActivity extends AppCompatActivity implements
         mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                show_admin_comment = false;
+
                 if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
                     return;
                 }
@@ -328,10 +357,12 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                 if (checkedIn == true && checkedOut == false) {
                     checkOutNote();
                 } else {
-                    if (!checkedIn)
+                    if (!checkedIn) {
                         isDeviceEnteredWithinDestinationRadius(true, false, "");
-                    else
+                        show_admin_comment = true;
+                    } else {
                         isDeviceEnteredWithinDestinationRadius(true, true, "");
+                    }
                 }
             }
         });
@@ -713,6 +744,8 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             checkInRadius = data.getCheckInRadius();
 
             setData();
+
+
         }
 
     }

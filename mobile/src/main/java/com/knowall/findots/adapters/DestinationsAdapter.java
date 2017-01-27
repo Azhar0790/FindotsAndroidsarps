@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.knowall.findots.R;
+import com.knowall.findots.activities.DetailDestinationActivity;
 import com.knowall.findots.activities.MenuActivity;
 import com.knowall.findots.distancematrix.model.Elements;
 import com.knowall.findots.interfaces.IDestinations;
@@ -53,6 +54,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
     //double currentLatitude;
     //double currentLongitude;
     Typeface typefaceLight = null;
+    public static boolean show_admin_comment = false;
+    public static String admin_comment = null;
 
     public DestinationsAdapter(Context context, ArrayList<DestinationData> destinationDatas/*, Elements[] elements*/
     ) {
@@ -326,6 +329,10 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mLinearLayout_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                show_admin_comment = false;
+                admin_comment = null;
+
                 if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
@@ -339,6 +346,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                 if (checkIn == true && checkOut == false) {
                     checkOutNote(context, destinationPosition, destinationDatas.get(position).isCheckedIn());
                 } else {
+                    show_admin_comment = true;
+                    admin_comment = destinationDatas.get(position).getComment();
                     delegate.callCheckInCheckOutService("", destinationPosition, destinationDatas.get(position).isCheckedIn());
                 }
             }
@@ -386,6 +395,10 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
         holder.mButton_checkIncheckOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                show_admin_comment = false;
+                admin_comment = null;
+
                 if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                     return;
                 }
@@ -399,6 +412,8 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
                 if (checkIn == true && checkOut == false) {
                     checkOutNote(context, destinationPosition, destinationDatas.get(position).isCheckedIn());
                 } else {
+                    show_admin_comment = true;
+                    admin_comment = destinationDatas.get(position).getComment();
                     delegate.callCheckInCheckOutService("", destinationPosition, destinationDatas.get(position).isCheckedIn());
                 }
             }

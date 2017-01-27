@@ -11,7 +11,9 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -40,6 +42,9 @@ import com.knowall.findots.utils.GeneralUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
+import static com.knowall.findots.R.string.username;
 
 /**
  * A login screen that offers login via email/password.
@@ -171,8 +176,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             return;
         }
         lastClickTime = SystemClock.elapsedRealtime();
-        userName = mEditText_userName.getText().toString();
-        password = mEditText_password.getText().toString();
+        userName = mEditText_userName.getText().toString().trim();
+        password = mEditText_password.getText().toString().trim();
 
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(mEditText_userName.getWindowToken(), 0);
@@ -181,20 +186,48 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
             mEditText_userName.setError(getString(R.string.prompt_required));
         } else if (password == null || password.length() == 0) {
             mEditText_password.setError(getString(R.string.prompt_password));
-        } else if (!GeneralUtils.isvalid_email(userName)) {
-            mEditText_userName.setError(getString(R.string.validate_email));
-        } else {
-            /**
-             *   call Login webservice
-             */
-            if (Utils.isLocationServiceEnabled(LoginActivity.this)) {
-                LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
-                loginRestCall.delegate = LoginActivity.this;
-                loginRestCall.callLoginService(userName, password);
-            } else
-                buildGoogleApiClient();
+        } /*else if (!GeneralUtils.isvalid_email(userName)) {
+
+        }*/ else {
+
+            validateUsernameAndCallLogin(userName);
+
         }
 
+    }
+
+
+
+    private void validateUsernameAndCallLogin(String username) {
+
+        boolean isEmailID = Patterns.EMAIL_ADDRESS.matcher(username.trim()).matches();
+
+        boolean isMobileNumber = PhoneNumberUtils.isGlobalPhoneNumber(username);
+
+        if (isEmailID)
+            callLogin(isEmailID, isMobileNumber);
+        else {
+            if (username.length() == 10) {
+                if (isMobileNumber)
+                    callLogin(isEmailID, isMobileNumber);
+                else
+                    mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
+            } else
+                mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
+        }
+
+    }
+
+    private void callLogin(boolean isEmailID, boolean isMobileNumber) {
+        /**
+         *   call Login webservice
+         */
+        if (Utils.isLocationServiceEnabled(LoginActivity.this)) {
+            LoginRestCall loginRestCall = new LoginRestCall(LoginActivity.this);
+            loginRestCall.delegate = LoginActivity.this;
+            loginRestCall.callLoginService(userName.trim(), password, isEmailID, isMobileNumber);
+        } else
+            buildGoogleApiClient();
     }
 
 
@@ -266,7 +299,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(LoginActivity.this);
         alertDialogBuilderUserInput.setView(mView);
-        alertDialogBuilderUserInput.setTitle("" + getResources().getString(R.string.app_name));
+        alertDialogBuilderUserInput.setTitle("Reset Password");
 
 
         final EditText userInputDialogEditText = (EditText) mView.findViewById(R.id.userInputDialog);
