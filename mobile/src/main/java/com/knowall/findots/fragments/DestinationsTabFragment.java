@@ -95,7 +95,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         mSwipeRefreshLayout.setColorSchemeResources(R.color.app_color, R.color.darkgreen, R.color.darkblue);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
-        tabLayout.addTab(tabLayout.newTab().setText("Trip"));
+        tabLayout.addTab(tabLayout.newTab().setText("Trips"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
 
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
@@ -121,6 +121,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout.setSelectedTabIndicatorHeight(8);
         tabLayout.setTabTextColors(getResources().getColor(R.color.app_color),
                 getResources().getColor(R.color.app_color));
+        tabLayout.setScrollPosition(1, 0f, true);
 
         ViewCompat.setElevation(tabLayout, 5f);
 
@@ -130,6 +131,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         callDestinationRestOperation();
 
         viewPagerDestinations.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -206,7 +208,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
             resetViewPager = false;
         }
-        viewPagerDestinations.setCurrentItem(pagerCurrentItem);
+        viewPagerDestinations.setCurrentItem(1);
 
         if (pagerCurrentItem == 2) {
             if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
