@@ -63,7 +63,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static String current_selected_dateTime = "";
     private long lastClickTime = 0;
     public static MaterialCalendarView materialCalendarView = null;
-    public static int pagerCurrentItem = 0;
+    public static int pagerCurrentItem = 1;
     public static DestinationData[] destinationDatas = null;
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
     public static ArrayList<HistoryData> historyDatas = new ArrayList<HistoryData>();
@@ -208,7 +208,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             viewPagerDestinations.setOffscreenPageLimit(tabLayout.getTabCount());
             resetViewPager = false;
         }
-        viewPagerDestinations.setCurrentItem(1);
+        viewPagerDestinations.setCurrentItem(pagerCurrentItem);
 
         if (pagerCurrentItem == 2) {
             if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
