@@ -30,6 +30,7 @@ import com.knowall.findots.restcalls.accountSettings.IGetAccountInfoCallBack;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -185,7 +186,10 @@ public class Account_Settings extends Fragment implements IGetAccountInfoCallBac
                 @Override
                 public void onFailure(Throwable t) {
                     GeneralUtils.stop_progressbar();
-                    Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    if (NetworkChangeReceiver.isNetworkAvailable(getActivity()))
+                        Toast.makeText(getActivity(), getResources().getString(R.string.account_updateInfoError), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
                 }
             });

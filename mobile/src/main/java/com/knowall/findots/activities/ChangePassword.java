@@ -21,6 +21,7 @@ import com.knowall.findots.locationUtils.TrackLocationService;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class ChangePassword extends AppCompatActivity {
 
     @OnClick(R.id.button_changePassword)
     public void changePassword() {
-        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
             return;
         }
         lastClickTime = SystemClock.elapsedRealtime();
@@ -127,7 +128,10 @@ public class ChangePassword extends AppCompatActivity {
                                        @Override
                                        public void onFailure(Throwable t) {
                                            GeneralUtils.stop_progressbar();
-                                           Toast.makeText(ChangePassword.this, getResources().getString(R.string.password_updateInfoError), Toast.LENGTH_SHORT).show();
+                                           if (NetworkChangeReceiver.isNetworkAvailable(ChangePassword.this))
+                                               Toast.makeText(ChangePassword.this, getResources().getString(R.string.password_updateInfoError), Toast.LENGTH_SHORT).show();
+                                           else
+                                               Toast.makeText(ChangePassword.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
                                        }
                                    }

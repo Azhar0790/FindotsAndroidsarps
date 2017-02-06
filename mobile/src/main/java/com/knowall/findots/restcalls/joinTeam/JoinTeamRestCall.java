@@ -8,6 +8,7 @@ import com.knowall.findots.R;
 import com.knowall.findots.restcalls.login.LoginModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,11 @@ public class JoinTeamRestCall {
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                delegate.joinTeamFinish(context.getString(R.string.data_error));
+                if (NetworkChangeReceiver.isNetworkAvailable(context))
+                    delegate.joinTeamFinish(context.getString(R.string.data_error));
+                else
+                    delegate.joinTeamFinish(context.getString(R.string.noInternet));
+
             }
         });
 

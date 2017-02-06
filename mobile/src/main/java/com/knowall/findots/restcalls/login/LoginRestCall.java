@@ -10,6 +10,7 @@ import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +65,10 @@ public class LoginRestCall {
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                delegate.onLoginFailure(context.getString(R.string.data_error));
+                if (NetworkChangeReceiver.isNetworkAvailable(context))
+                    delegate.onLoginFailure(context.getString(R.string.data_error));
+                else
+                    delegate.onLoginFailure(context.getString(R.string.noInternet));
             }
         });
 

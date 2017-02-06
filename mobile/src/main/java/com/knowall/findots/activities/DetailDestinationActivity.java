@@ -59,6 +59,7 @@ import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -1023,7 +1024,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DetailDestinationActivity.this))
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -1074,7 +1078,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DetailDestinationActivity.this))
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -1126,7 +1133,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DetailDestinationActivity.this))
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -1179,7 +1189,10 @@ public class DetailDestinationActivity extends AppCompatActivity implements
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DetailDestinationActivity.this))
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.delete_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DetailDestinationActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
         });

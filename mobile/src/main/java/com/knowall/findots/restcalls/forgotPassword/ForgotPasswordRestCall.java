@@ -6,6 +6,7 @@ import com.knowall.findots.Constants;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.R;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,10 @@ public class ForgotPasswordRestCall {
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                delegate.onForgotPasswordFailure(context.getString(R.string.data_error));
+                if (NetworkChangeReceiver.isNetworkAvailable(context))
+                    delegate.onForgotPasswordFailure(context.getString(R.string.data_error));
+                else
+                    delegate.onForgotPasswordFailure(context.getString(R.string.noInternet));
             }
         });
     }

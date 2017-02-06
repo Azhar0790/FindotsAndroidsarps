@@ -48,6 +48,7 @@ import com.knowall.findots.locationUtils.Utils;
 import com.knowall.findots.restmodels.ResponseModel;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -666,7 +667,10 @@ public class DestinationModify_MapActivity extends AppCompatActivity implements 
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DestinationModify_MapActivity.this))
+                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.modify_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DestinationModify_MapActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
         });

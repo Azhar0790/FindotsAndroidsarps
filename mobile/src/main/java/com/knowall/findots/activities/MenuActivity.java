@@ -53,6 +53,7 @@ import com.knowall.findots.utils.AddTextWatcher;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.FcmAnalytics;
 import com.knowall.findots.utils.GeneralUtils;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 
 import java.util.ArrayList;
@@ -667,7 +668,10 @@ public class MenuActivity extends RuntimePermissionActivity
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(MenuActivity.this))
+                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.report_loc_fail), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MenuActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
                 Log.d("jomy", "Failure... ");
             }
         });

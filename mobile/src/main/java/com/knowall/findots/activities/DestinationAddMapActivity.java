@@ -55,6 +55,7 @@ import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.MaterialDatePickerDialogCustom;
 import com.knowall.findots.utils.MaterialTimePickerDialogCustom;
+import com.knowall.findots.utils.NetworkChangeReceiver;
 import com.knowall.findots.utils.mapUtils.MapStateListener;
 import com.knowall.findots.utils.mapUtils.TouchableMapFragment;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
@@ -750,7 +751,10 @@ public class DestinationAddMapActivity extends AppCompatActivity implements Mate
             @Override
             public void onFailure(Throwable t) {
                 GeneralUtils.stop_progressbar();
-                Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
+                if (NetworkChangeReceiver.isNetworkAvailable(DestinationAddMapActivity.this))
+                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.add_destinationError), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DestinationAddMapActivity.this, getResources().getString(R.string.noInternet), Toast.LENGTH_SHORT).show();
 
             }
         });
