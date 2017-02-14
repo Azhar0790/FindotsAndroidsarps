@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -146,10 +147,16 @@ public class MenuActivity extends RuntimePermissionActivity
     boolean fromRegister = false;
     int userTypeID = 0;
 
+    public static int device_width;
+    DisplayMetrics metrics = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
+
+        metrics = this.getResources().getDisplayMetrics();
+        device_width = metrics.widthPixels;
 
         if (getIntent().getExtras() != null) {
             showNotificationDialog(getIntent().getStringExtra("title"),getIntent().getStringExtra("body"));

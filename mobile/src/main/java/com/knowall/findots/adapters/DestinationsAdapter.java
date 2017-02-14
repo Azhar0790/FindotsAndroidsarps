@@ -1,10 +1,12 @@
 package com.knowall.findots.adapters;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -13,6 +15,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,6 +39,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+
+import static com.knowall.findots.activities.MenuActivity.device_width;
 
 /**
  * Created by parijathar on 6/14/2016.
@@ -422,44 +428,48 @@ public class DestinationsAdapter extends RecyclerView.Adapter<DestinationsAdapte
 
     }
 
-    public void checkOutNote(Context context, final int destinationPosition, final boolean isChecked) {
+    public void checkOutNote(final Context context, final int destinationPosition, final boolean isChecked) {
+
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(context);
-        View mView = layoutInflaterAndroid.inflate(R.layout.dialog_user_input, null);
-        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(context);
-        alertDialogBuilderUserInput.setView(mView);
-        alertDialogBuilderUserInput.setTitle(context.getString(R.string.app_name));
+        final View view = layoutInflaterAndroid.inflate(R.layout.dialog_checkout_comment, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Findots");
+        alertDialog.setCancelable(false);
 
-        final EditText mEditText = (EditText) mView.findViewById(R.id.userInputDialog);
+        final EditText edit_checkout_comment = (EditText) view.findViewById(R.id.edit_checkout_comment);
 
-        mEditText.addTextChangedListener(new AddTextWatcher(mEditText));
-        mEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        mEditText.setHint("Check Out Note");
-        mEditText.requestFocus();
-        //mEditText.setGravity(Gravity.TOP|Gravity.LEFT);
-        //mEditText.setLines(5);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String checkOutNote = edit_checkout_comment.getText().toString();
+                dialog.dismiss();
+                delegate.callCheckInCheckOutService(checkOutNote, destinationPosition, isChecked);
+            }
+        });
 
-        alertDialogBuilderUserInput
-                .setCancelable(false)
-                .setPositiveButton(context.getString(R.string.done), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String checkOutNote = mEditText.getText().toString();
-                        dialog.dismiss();
-                        delegate.callCheckInCheckOutService(checkOutNote, destinationPosition, isChecked);
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
-                    }
-                })
-                .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setTextColor(context.getResources().getColor(R.color.app_color));
 
-        AlertDialog alertDialog = alertDialogBuilderUserInput.create();
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        .setTextColor(context.getResources().getColor(R.color.app_color));
+
+            }
+        });
+
+        alertDialog.setView(view);
         alertDialog.show();
-
     }
+
 
     private void commentView(String adminComment, String userComment) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(context);

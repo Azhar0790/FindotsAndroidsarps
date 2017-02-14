@@ -128,7 +128,7 @@
         <item>Destinations</item>
         <item>Report My Location</item>
         <item>Join a Team</item>
-        <item>Account Settings</item>
+        <item>Profile</item>
         <item>Help</item>
         <item>Logout</item>
     </string-array>
@@ -144,7 +144,7 @@
 
 
     <!-- Strings related to Account Settings -->
-    <string name="account_heading">Account Settings</string>
+    <string name="account_heading">Profile</string>
     <string name="save_account">Save</string>
     <string name="changepwd">Change Password</string>
     <string name="account_updateInfo">Your Account settings Updated</string>

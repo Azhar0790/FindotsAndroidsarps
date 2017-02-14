@@ -413,10 +413,10 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
     public void onDestroy() {
         super.onDestroy();
-        pagerCurrentItem = 0;
+        //pagerCurrentItem = 0;
         current_selected_dateTime = "";
         MaterialCalendarView materialCalendarView = null;
-        pagerCurrentItem = 0;
+        pagerCurrentItem = 1;
         DestinationData[] destinationDatas = null;
         ArrayList<HistoryData> historyDatas = null;
         mCalendarDay = null;
