@@ -43,9 +43,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.telephony.PhoneNumberUtils.isGlobalPhoneNumber;
-import static com.knowall.findots.R.string.username;
-
 /**
  * A login screen that offers login via email/password.
  */
@@ -200,21 +197,23 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
 
     private void validateUsernameAndCallLogin(String username) {
 
+
         boolean isEmailID = Patterns.EMAIL_ADDRESS.matcher(username.trim()).matches();
 
         boolean isMobileNumber = PhoneNumberUtils.isGlobalPhoneNumber(username);
-
-        if (isEmailID)
-            callLogin(isEmailID, isMobileNumber);
-        else {
-            if (username.length() == 10) {
-                if (isMobileNumber)
-                    callLogin(isEmailID, isMobileNumber);
-                else
-                    mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
-            } else
-                mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
-        }
+        callLogin(isEmailID, isMobileNumber);
+//
+//        if (isEmailID)
+//            callLogin(isEmailID, isMobileNumber);
+//        else {
+//            if (username.length() == 10) {
+//                if (isMobileNumber)
+//                    callLogin(isEmailID, isMobileNumber);
+//                else
+//                    mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
+//            } else
+//                mEditText_userName.setError(getString(R.string.validate_email)+"/MobileNumber");
+//        }
 
     }
 

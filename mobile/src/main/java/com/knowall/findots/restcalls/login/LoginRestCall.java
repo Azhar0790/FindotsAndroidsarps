@@ -1,8 +1,6 @@
 package com.knowall.findots.restcalls.login;
 
 import android.content.Context;
-import android.telephony.PhoneNumberUtils;
-import android.util.Patterns;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.knowall.findots.Constants;
@@ -19,8 +17,6 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-
-import static android.util.Patterns.EMAIL_ADDRESS;
 
 /**
  * Created by parijathar on 6/17/2016.
@@ -71,7 +67,6 @@ public class LoginRestCall {
                     delegate.onLoginFailure(context.getString(R.string.noInternet));
             }
         });
-
     }
 
 
@@ -81,12 +76,13 @@ public class LoginRestCall {
 
         Map<String, Object> postValues = new HashMap<>();
 
-        if (isEmailID) {
-            postValues.put("email", username);
-            postValues.put("mobileNumber", "");
-        } else if (isMobileNumber) {
+       if (isMobileNumber) {
             postValues.put("email", "");
             postValues.put("mobileNumber", username);
+        }
+        else {
+            postValues.put("email", username);
+            postValues.put("mobileNumber", "");
         }
 
         postValues.put("password", password);
