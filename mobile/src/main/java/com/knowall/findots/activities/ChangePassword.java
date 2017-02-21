@@ -85,7 +85,7 @@ public class ChangePassword extends AppCompatActivity {
         Typeface typefaceMyriadHebrew = Typeface.createFromAsset(getAssets(), "fonts/MyriadHebrew-Bold.otf");
 
         mTextView_heading.setText(getString(R.string.changepwd));
-        mTextView_heading.setTypeface(typefaceMyriadHebrew);
+//        mTextView_heading.setTypeface(typefaceMyriadHebrew);
         mEditText_current_password.setTypeface(typefaceLight);
         mEditText_new_password.setTypeface(typefaceLight);
         mEditText_conf_new_password.setTypeface(typefaceLight);
