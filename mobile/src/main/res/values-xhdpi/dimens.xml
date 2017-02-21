@@ -4,8 +4,121 @@
     <dimen name="kmTextSize">12dp</dimen>
 
 
-    <!--Registration -->
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- Tool Bar -->
+    <dimen name="tool_bar_paddingTop">0dp</dimen>
+    <dimen name="textView_heading_textSize">20sp</dimen>
+    <dimen name="imageView_back_marginLeft">10dp</dimen>
+
+    <!-- Drawer Layout -->
+    <dimen name="drawer_layout_elevation">4dp</dimen>
+    <dimen name="recyclerView_menu_items_dividerHeight">1dp</dimen>
+    <dimen name="recyclerView_menu_items_width">300dp</dimen>
+
+    <!-- Header Layout -->
+    <dimen name="imageView_userImage_width_height">45dp</dimen>
+    <dimen name="imageView_userImage_marginLeft">15dp</dimen>
+    <dimen name="textView_userName_textSize">16sp</dimen>
+    <dimen name="textView_userName_marginLeft">25dp</dimen>
+    <dimen name="header_height">100dp</dimen>
+    <dimen name="header_marginBottom">15dp</dimen>
+
+    <!-- Menu Item Row -->
+    <dimen name="textView_menuItem_textSize">16sp</dimen>
+    <dimen name="textViewStopUpdating_textSize">12sp</dimen>
+    <dimen name="textView_menuItem_marginLeft">30dp</dimen>
+    <dimen name="imageView_menuItem_marginLeft">25dp</dimen>
+    <dimen name="menu_item_height">60dp</dimen>
+
+    <!-- Logout -->
+    <dimen name="textView_logoutItem_marginTop">10dp</dimen>
+    <dimen name="textView_logoutItem_textSize">16sp</dimen>
+
+    <!-- Splash -->
+    <dimen name="imageView_splash_logo_height">350dp</dimen>
+    <dimen name="imageView_splash_logo_marginTop">100dp</dimen>
+
+    <!-- Login -->
+    <dimen name="imageView_logo_width_height">200dp</dimen>
+    <dimen name="imageView_logo_marginTop">20dp</dimen>
+    <dimen name="login_edittext_height">44dp</dimen>
+    <dimen name="login_edittext_marginLeftAndRight">37dp</dimen>
+    <dimen name="login_edittext_marginTop">20dp</dimen>
+    <dimen name="login_edittext_paddingLeftRight">15dp</dimen>
+    <dimen name="login_edittext_textSize">22sp</dimen>
+    <dimen name="login_button_height">50dp</dimen>
+    <dimen name="login_button_marginLeftAndRight">37dp</dimen>
+    <dimen name="login_button_marginTop">22dp</dimen>
+    <dimen name="login_button_textSize">22sp</dimen>
+    <dimen name="textView_forgotPassword_marginTop">20dp</dimen>
+    <dimen name="textView_forgotPassword_textSize">15sp</dimen>
+    <dimen name="signup_marginBottom">8dp</dimen>
+    <dimen name="signup_marginLeft">4dp</dimen>
+    <dimen name="textview_donthaveaccount_textSize">15sp</dimen>
+    <dimen name="textview_signup_textSize">18sp</dimen>
+    <dimen name="bottom_lay">160dp</dimen>
+    <dimen name="forgotPasswordAndAdmin_margin">40dp</dimen>
+
+    <!-- Register -->
+    <dimen name="signup_textSize">34sp</dimen>
+    <dimen name="signup_text_hedding_padding">10dp</dimen>
+    <dimen name="linearLayout_termsCondition_height">50dp</dimen>
+    <dimen name="linearLayout_termsCondition_marginTop">10dp</dimen>
+    <dimen name="termsCondition_textSize">15sp</dimen>
+    <dimen name="textView_agree_marginLeft">8dp</dimen>
+    <dimen name="textView_termsCondition_marginLeft">4dp</dimen>
+    <dimen name="imageView_onOff_width">70dp</dimen>
+    <dimen name="imageView_onOff_height">70dp</dimen>
     <dimen name="signup_text_marginTopBottom">25dp</dimen>
     <dimen name="register_edittexts_marginTop">18dp</dimen>
     <dimen name="button_createAccount_marginTop">25dp</dimen>
+
+    <!-- Destinations -->
+    <dimen name="recyclerView_destinations_marginLeftRight">10dp</dimen>
+    <dimen name="recyclerView_destinations_marginBottom">15dp</dimen>
+    <dimen name="floating_button_margin">10dp</dimen>
+
+    <!-- Destination tabs -->
+    <dimen name="calendarViewHeight">26dp</dimen>
+
+
+    <!-- Destination Inflater -->
+    <dimen name="linearLayout_destination_height">220dp</dimen>
+    <dimen name="linearLayout_destination_marginTop">15dp</dimen>
+    <dimen name="linearLayout_destination_padding">8dp</dimen>
+    <dimen name="textView_assignedBy_height">40dp</dimen>
+    <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
+
+    <!-- Modify  Destination-->
+    <dimen name="top_loc_padding">14dp</dimen>
+    <dimen name="top_loc_font">20sp</dimen>
+
+    <!-- Account Settings -->
+    <dimen name="firsttext_topMargin">60dp</dimen>
+    <dimen name="button_saveAccount_marginTop">30dp</dimen>
+    <dimen name="accntSetting_edtTextSize">20dp</dimen>
+    <dimen name="button_height">60dp</dimen>
+
+    <!-- Store Inflater Layout -->
+    <dimen name="relativeLayoutCheckInOut_margin">10dp</dimen>
+    <dimen name="buttonCheckINOUT_width_height">32dp</dimen>
+    <dimen name="buttonCheckINOUT_textSize">13sp</dimen>
+    <dimen name="line_width">1dp</dimen>
+    <dimen name="line_height">25dp</dimen>
+    <dimen name="textViewCheckInOutStoreName_marginLeft">10dp</dimen>
+    <dimen name="textViewCheckInStoreName_marginTop">5dp</dimen>
+    <dimen name="textViewCheckOutStoreName_marginTop">21dp</dimen>
+    <dimen name="textViewCheckInOutStoreName_textSize">16sp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_textSize">14sp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_marginTop">4dp</dimen>
+    <dimen name="buttonCheckOutTime_marginTop">16dp</dimen>
+    <dimen name="buttonCheckInOutTime_width">100dp</dimen>
+    <dimen name="buttonCheckInOutTime_height">28dp</dimen>
+    <dimen name="buttonCheckInOutTime_textSize">16sp</dimen>
+    <dimen name="linearLayoutCheckIn_marginTop">6dp</dimen>
+    <dimen name="textViewTimeTaken_marginLeft">10dp</dimen>
+    <dimen name="textViewTimeTaken_textSize">14sp</dimen>
 </resources>

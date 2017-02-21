@@ -76,6 +76,9 @@
     <dimen name="recyclerView_destinations_marginBottom">15dp</dimen>
     <dimen name="floating_button_margin">10dp</dimen>
 
+    <!-- Destination tabs -->
+    <dimen name="calendarViewHeight">26dp</dimen>
+
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>
