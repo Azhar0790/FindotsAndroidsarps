@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,6 @@ public class InitialFragment extends Fragment implements IGetUser {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.initial_view, null);
-
         userTypeID = GeneralUtils.getSharedPreferenceInt(getActivity(), AppStringConstants.USER_TYPE_ID);
 
         textView_heading = (TextView) getActivity().findViewById(R.id.TextView_heading);
@@ -90,6 +88,10 @@ public class InitialFragment extends Fragment implements IGetUser {
                 getUserRestCall.delegate = InitialFragment.this;
                 getUserRestCall.callGetUsers();
             } else if (userTypeID == CORPORATE) {
+                navigateBasedOnUserType(userTypeID, null);
+            }
+            else
+            {
                 navigateBasedOnUserType(userTypeID, null);
             }
         } else {
@@ -132,6 +134,10 @@ public class InitialFragment extends Fragment implements IGetUser {
             case COUNTRY_SPECIFIC_ADMIN:
 
                 break;
+            default:
+                FragmentTransaction destinationTransaction1 = getFragmentManager().beginTransaction();
+                destinationTransaction1.replace(R.id.frameLayoutInitialContent, DestinationsTabFragment.newInstance());
+                destinationTransaction1.commit();
         }
     }
 

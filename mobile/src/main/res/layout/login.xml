@@ -42,8 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/login_edittext_height"
                 android:layout_marginTop="@dimen/login_edittext_marginTop"
-                android:hint="@string/emailid_mobilenumber"
-                android:inputType="textEmailAddress" />
+                android:hint="@string/emailid_mobilenumber" />
 
             <EditText
                 android:id="@+id/EditText_password"

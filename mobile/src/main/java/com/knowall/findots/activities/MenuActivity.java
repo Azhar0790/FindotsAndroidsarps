@@ -245,6 +245,14 @@ public class MenuActivity extends RuntimePermissionActivity
                 initialFragment.commit();
                 break;
 
+            default:
+                if (fromRegister) {
+                    showJoinATeamDialog(true);
+                } else {
+                    FragmentTransaction initialFragment1 = getSupportFragmentManager().beginTransaction();
+                    initialFragment1.replace(R.id.FrameLayout_content, InitialFragment.newInstance());
+                    initialFragment1.commit();
+                }
         }
     }
 
@@ -259,6 +267,7 @@ public class MenuActivity extends RuntimePermissionActivity
                 break;
 
             default:
+                mTextView_heading.setText(getString(R.string.destinations));
                 break;
         }
     }
@@ -266,7 +275,6 @@ public class MenuActivity extends RuntimePermissionActivity
     @Override
     protected void onResume() {
         super.onResume();
-
         FinDotsApplication.getInstance().trackScreenView("Home Screen");
     }
 
@@ -324,8 +332,10 @@ public class MenuActivity extends RuntimePermissionActivity
                 break;
 
             default:
-                menuItems = new String[]{};
-                icons = new int[]{};
+//                menuItems = new String[]{};
+//                icons = new int[]{};
+                menuItems = getResources().getStringArray(R.array.menu_items);
+                icons = ICONS;
                 break;
         }
 
