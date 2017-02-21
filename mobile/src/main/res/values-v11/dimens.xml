@@ -4,4 +4,5 @@
     <dimen name="tool_bar_paddingTop">0dp</dimen>
     <dimen name="header_paddingTop">0dp</dimen>
 
+    <dimen name="toolbar_line_height">1dp</dimen>
 </resources>

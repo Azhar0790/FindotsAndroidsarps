@@ -14,6 +14,11 @@
             android:id="@+id/ToolBar_actionbar"
             layout="@layout/tool_bar" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_25"/>
+
         <FrameLayout
             android:id="@+id/FrameLayout_content"
             android:layout_width="match_parent"
