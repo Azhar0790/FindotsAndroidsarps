@@ -3,10 +3,16 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- custom drawer -->
+    <dimen name="drawer_barlength">18dp</dimen>
+    <dimen name="drawer_gapbetweenbars">3dp</dimen>
+    <dimen name="drawer_drawablesize">24dp</dimen>
+
     <!-- Tool Bar -->
     <dimen name="tool_bar_paddingTop">0dp</dimen>
     <dimen name="textView_heading_textSize">20sp</dimen>
     <dimen name="imageView_back_marginLeft">10dp</dimen>
+    <dimen name="toolbar_height">58dp</dimen>
 
     <!-- Drawer Layout -->
     <dimen name="drawer_layout_elevation">4dp</dimen>
@@ -78,6 +84,7 @@
 
     <!-- Destination tabs -->
     <dimen name="calendarViewHeight">26dp</dimen>
+    <dimen name="calendar_view_textsize">12sp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>

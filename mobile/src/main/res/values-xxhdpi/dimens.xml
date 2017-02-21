@@ -12,6 +12,7 @@
     <dimen name="tool_bar_paddingTop">0dp</dimen>
     <dimen name="textView_heading_textSize">20sp</dimen>
     <dimen name="imageView_back_marginLeft">10dp</dimen>
+    <dimen name="toolbar_height">80dp</dimen>
 
     <!-- Drawer Layout -->
     <dimen name="drawer_layout_elevation">4dp</dimen>
@@ -82,8 +83,8 @@
     <dimen name="floating_button_margin">10dp</dimen>
 
     <!-- Destination tabs -->
-    <dimen name="calendarViewHeight">26dp</dimen>
-
+    <dimen name="calendarViewHeight">40dp</dimen>
+    <dimen name="calendar_view_textsize">16sp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>

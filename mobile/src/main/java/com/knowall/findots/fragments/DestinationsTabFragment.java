@@ -258,7 +258,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     public static CalendarDay mCalendarDay = null;
 
     public void materialCalendarViewSettings() {
-        materialCalendarView.setTileHeightDp(26);
+
+        int calendarViewHeight = (int) getActivity().getResources().getDimension(R.dimen.calendar_view_height);
+        materialCalendarView.setTileHeightDp(calendarViewHeight);
         materialCalendarView.state().edit()
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .commit();
