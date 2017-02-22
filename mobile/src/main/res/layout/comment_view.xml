@@ -14,12 +14,12 @@
         <TextView
             android:id="@+id/textViewAdminCommentHeading"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="@dimen/textViewAdminCommentHeading_height"
             android:gravity="center"
             android:text="Admin Comment"
             android:textColor="@color/app_color_80"
             android:background="@color/app_color_10"
-            android:textSize="18sp"
+            android:textSize="@dimen/textViewAdminCommentHeading_textsize"
             android:textStyle="bold" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:text="One of their projects came in use in one of my current Android projects: Dagger, a light-weight dependency injection library that can be used in Java and Android projects. Dagger kind of introduced me to the world of dependency injection libraries for Android."
             android:textColor="@color/black_70"
-            android:textSize="14sp"
+            android:textSize="@dimen/textViewAdminComment_textsize"
             android:textStyle="normal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="15dp"/>
@@ -40,12 +40,12 @@
         <TextView
             android:id="@+id/textViewUserCommentHeading"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="@dimen/textViewAdminCommentHeading_height"
             android:background="@color/app_color_10"
             android:gravity="center"
             android:text="User Comment"
             android:textColor="@color/app_color_80"
-            android:textSize="18sp"
+            android:textSize="@dimen/textViewAdminCommentHeading_textsize"
             android:textStyle="bold" />
 
         <TextView
@@ -57,7 +57,7 @@
             android:layout_gravity="center"
             android:text="One of "
             android:textColor="@color/black_70"
-            android:textSize="14sp"
+            android:textSize="@dimen/textViewAdminComment_textsize"
             android:textStyle="normal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>

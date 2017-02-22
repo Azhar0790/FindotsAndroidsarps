@@ -83,8 +83,10 @@
     <dimen name="floating_button_margin">10dp</dimen>
 
     <!-- Destination tabs -->
-    <dimen name="calendarViewHeight">26dp</dimen>
+    <dimen name="calendar_view_height">26dp</dimen>
     <dimen name="calendar_view_textsize">12sp</dimen>
+    <dimen name="calendar_view_gap_between_dates">30dp</dimen>
+    <dimen name="tabs_height">40dp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>
@@ -92,6 +94,16 @@
     <dimen name="linearLayout_destination_padding">8dp</dimen>
     <dimen name="textView_assignedBy_height">40dp</dimen>
     <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
+    <dimen name="textViewSchedule_height">40dp</dimen>
+    <dimen name="textViewSchedule_textsize">16sp</dimen>
+    <dimen name="textView_destinationScheduled_textsize">16sp</dimen>
+    <dimen name="textView_destinationAssignedBy_width">100dp</dimen>
+    <dimen name="textView_destinationAssignedBy_textsize">12sp</dimen>
+    <dimen name="inflater_relative_layout_height">78dp</dimen>
+    <dimen name="textView_destinationName_textsize">22sp</dimen>
+    <dimen name="button_checkIncheckOut_height">54dp</dimen>
+    <dimen name="button_checkIncheckOut_textsize">20sp</dimen>
+    <dimen name="textViewTravelTime_textsize">14sp</dimen>
 
     <!-- Modify  Destination-->
     <dimen name="top_loc_padding">14dp</dimen>
@@ -122,5 +134,18 @@
     <dimen name="linearLayoutCheckIn_marginTop">6dp</dimen>
     <dimen name="textViewTimeTaken_marginLeft">10dp</dimen>
     <dimen name="textViewTimeTaken_textSize">14sp</dimen>
+    <dimen name="not_checkedin_textsize">12sp</dimen>
+
+    <!-- Comment View -->
+    <dimen name="textViewAdminCommentHeading_height">32dp</dimen>
+    <dimen name="textViewAdminCommentHeading_textsize">18sp</dimen>
+    <dimen name="textViewAdminComment_textsize">14sp</dimen>
+
+    <!-- detail Destination -->
+    <dimen name="destModify_textsize">14sp</dimen>
+    <dimen name="relativeLayout_address_height">60dp</dimen>
+    <dimen name="textView_map_km_width">70dp</dimen>
+    <dimen name="textView_map_km_textsize">14sp</dimen>
+    <dimen name="textView_address_textsize">15sp</dimen>
 
 </resources>

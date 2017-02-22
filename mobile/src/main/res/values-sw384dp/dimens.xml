@@ -84,8 +84,9 @@
     <dimen name="floating_button_margin">10dp</dimen>
 
     <!-- Destination tabs -->
-    <dimen name="calendarViewHeight">26dp</dimen>
-    <dimen name="calendar_view_textsize">12sp</dimen>
+    <dimen name="calendar_view_height">26dp</dimen>
+    <dimen name="calendar_view_textsize">14sp</dimen>
+    <dimen name="tabs_height">40dp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>

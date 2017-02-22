@@ -84,15 +84,26 @@
 
     <!-- Destination tabs -->
     <dimen name="calendar_view_height">45dp</dimen>
-    <dimen name="calendar_view_textsize">16sp</dimen>
-
+    <dimen name="calendar_view_textsize">20sp</dimen>
+    <dimen name="calendar_view_gap_between_dates">80dp</dimen>
+    <dimen name="tabs_height">70dp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>
-    <dimen name="linearLayout_destination_marginTop">15dp</dimen>
-    <dimen name="linearLayout_destination_padding">8dp</dimen>
-    <dimen name="textView_assignedBy_height">40dp</dimen>
-    <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
+    <dimen name="linearLayout_destination_marginTop">25dp</dimen>
+    <dimen name="linearLayout_destination_padding">14dp</dimen>
+    <dimen name="textView_assignedBy_height">60dp</dimen>
+    <dimen name="textView_assignedBy_drawablePadding">14dp</dimen>
+    <dimen name="textViewSchedule_height">60dp</dimen>
+    <dimen name="textViewSchedule_textsize">20sp</dimen>
+    <dimen name="textView_destinationScheduled_textsize">22sp</dimen>
+    <dimen name="textView_destinationAssignedBy_width">150dp</dimen>
+    <dimen name="textView_destinationAssignedBy_textsize">16sp</dimen>
+    <dimen name="inflater_relative_layout_height">108dp</dimen>
+    <dimen name="textView_destinationName_textsize">36sp</dimen>
+    <dimen name="button_checkIncheckOut_height">70dp</dimen>
+    <dimen name="button_checkIncheckOut_textsize">28sp</dimen>
+    <dimen name="textViewTravelTime_textsize">20sp</dimen>
 
     <!-- Modify  Destination-->
     <dimen name="top_loc_padding">14dp</dimen>
@@ -106,22 +117,35 @@
 
     <!-- Store Inflater Layout -->
     <dimen name="relativeLayoutCheckInOut_margin">10dp</dimen>
-    <dimen name="buttonCheckINOUT_width_height">32dp</dimen>
-    <dimen name="buttonCheckINOUT_textSize">13sp</dimen>
+    <dimen name="buttonCheckINOUT_width_height">45dp</dimen>
+    <dimen name="buttonCheckINOUT_textSize">20sp</dimen>
     <dimen name="line_width">1dp</dimen>
-    <dimen name="line_height">25dp</dimen>
+    <dimen name="line_height">35dp</dimen>
     <dimen name="textViewCheckInOutStoreName_marginLeft">10dp</dimen>
     <dimen name="textViewCheckInStoreName_marginTop">5dp</dimen>
     <dimen name="textViewCheckOutStoreName_marginTop">21dp</dimen>
-    <dimen name="textViewCheckInOutStoreName_textSize">16sp</dimen>
-    <dimen name="textViewCheckInOutStoreAddress_textSize">14sp</dimen>
+    <dimen name="textViewCheckInOutStoreName_textSize">26sp</dimen>
+    <dimen name="textViewCheckInOutStoreAddress_textSize">24sp</dimen>
     <dimen name="textViewCheckInOutStoreAddress_marginTop">4dp</dimen>
     <dimen name="buttonCheckOutTime_marginTop">16dp</dimen>
-    <dimen name="buttonCheckInOutTime_width">100dp</dimen>
-    <dimen name="buttonCheckInOutTime_height">28dp</dimen>
-    <dimen name="buttonCheckInOutTime_textSize">16sp</dimen>
+    <dimen name="buttonCheckInOutTime_width">160dp</dimen>
+    <dimen name="buttonCheckInOutTime_height">38dp</dimen>
+    <dimen name="buttonCheckInOutTime_textSize">26sp</dimen>
     <dimen name="linearLayoutCheckIn_marginTop">6dp</dimen>
     <dimen name="textViewTimeTaken_marginLeft">10dp</dimen>
-    <dimen name="textViewTimeTaken_textSize">14sp</dimen>
+    <dimen name="textViewTimeTaken_textSize">24sp</dimen>
+    <dimen name="not_checkedin_textsize">16sp</dimen>
+
+    <!-- Comment View -->
+    <dimen name="textViewAdminCommentHeading_height">42dp</dimen>
+    <dimen name="textViewAdminCommentHeading_textsize">26sp</dimen>
+    <dimen name="textViewAdminComment_textsize">24sp</dimen>
+
+    <!-- detail Destination -->
+    <dimen name="destModify_textsize">24sp</dimen>
+    <dimen name="relativeLayout_address_height">120dp</dimen>
+    <dimen name="textView_map_km_width">110dp</dimen>
+    <dimen name="textView_map_km_textsize">18sp</dimen>
+    <dimen name="textView_address_textsize">22sp</dimen>
 
 </resources>

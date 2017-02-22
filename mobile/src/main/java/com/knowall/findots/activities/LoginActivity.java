@@ -101,8 +101,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         buildGoogleApiClient();
         Log.d("jomy","Token: "+ FirebaseInstanceId.getInstance().getToken());
 
-        //mEditText_userName.setText("vanithaergam405@gmail.com");
-        //mEditText_password.setText("1234");
+        mEditText_userName.setText("prince2004kumar@gmail.com");
+        mEditText_password.setText("123456");
 
         //mEditText_userName.setText("pnelapati@bridgetree.com");
         //mEditText_password.setText("12345");

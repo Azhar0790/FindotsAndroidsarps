@@ -3,46 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/materialCalendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        app:mcv_showOtherDates="all"
+        android:background="@color/white"
         app:mcv_arrowColor="@color/transparent"
         app:mcv_firstDayOfWeek="monday"
         app:mcv_selectionColor="@color/blue"
-        android:background="@color/white"
+        app:mcv_showOtherDates="all"
+        app:mcv_tileWidth="@dimen/calendar_view_gap_between_dates"
         />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_line_height"
-        android:background="@color/black_25"/>
+        android:layout_below="@+id/materialCalendarView"
+        android:background="@color/black_25" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayoutDestinations"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/tabs_height"
         android:layout_below="@+id/materialCalendarView"
+        android:layout_marginTop="1dp"
         android:background="@color/white"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:tabTextAppearance="@style/custom_tablayout"/>
+        app:tabGravity="center"
+        app:tabMaxWidth="0dp"
+        app:tabTextAppearance="@style/custom_tablayout" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipeRefresh"
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_line_height"
         android:layout_below="@+id/tabLayoutDestinations"
+        android:background="@color/black_25"
+        android:layout_marginTop="1dp"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPagerDestinations"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/tabLayoutDestinations">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPagerDestinations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -53,8 +67,7 @@
         android:layout_alignRight="@+id/swipeRefresh"
         android:layout_marginBottom="@dimen/floating_button_margin"
         android:layout_marginRight="@dimen/floating_button_margin"
-        android:src="@drawable/fab_add"/>
-
+        android:src="@drawable/fab_add" />
 
 
 </RelativeLayout>

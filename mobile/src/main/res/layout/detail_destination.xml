@@ -32,7 +32,8 @@
         android:textColor="@color/app_color"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:textSize="@dimen/destModify_textsize"/>
 
     <TextView
         android:id="@+id/destSchedule"
@@ -46,12 +47,13 @@
         android:layout_marginLeft="20dp"
         android:clickable="true"
         android:visibility="visible"
+        android:textSize="@dimen/destModify_textsize"
         />
 
     <RelativeLayout
         android:id="@+id/RelativeLayout_address"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/relativeLayout_address_height"
         android:layout_above="@+id/LinearLayout_checkIncheckOut"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="2dp"
@@ -60,7 +62,7 @@
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/TextView_map_km"
-            android:layout_width="70dp"
+            android:layout_width="@dimen/textView_map_km_width"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
@@ -69,7 +71,7 @@
             android:gravity="center_horizontal"
             android:maxLines="2"
             android:textColor="@color/black_70"
-            android:textSize="14sp"
+            android:textSize="@dimen/textView_map_km_textsize"
             autofit:minTextSize="7sp"/>
 
         <TextView
@@ -85,7 +87,7 @@
             android:scrollbars="vertical"
             android:text="@string/bd"
             android:textColor="@color/black_70"
-            android:textSize="15sp" />
+            android:textSize="@dimen/textView_address_textsize" />
     </RelativeLayout>
 
     <LinearLayout
@@ -104,7 +106,7 @@
         <Button
             android:id="@+id/Button_checkIncheckOut"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/button_height"
+            android:layout_height="@dimen/button_checkIncheckOut_height"
             android:layout_gravity="center"
             android:background="@null"
             android:drawablePadding="10dp"
@@ -112,7 +114,7 @@
             android:text="Checked out at 2.30pm"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/button_checkIncheckOut_textsize" />
 
     </LinearLayout>
 

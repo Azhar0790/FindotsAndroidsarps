@@ -97,6 +97,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("Trips"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
