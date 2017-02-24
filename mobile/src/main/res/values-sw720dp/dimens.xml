@@ -3,7 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="add_destination_icon_margin">30dp</dimen>
+    <dimen name="add_destination_icon_margin">57dp</dimen>
 
     <!-- custom drawer -->
     <dimen name="drawer_barlength">30dp</dimen>
