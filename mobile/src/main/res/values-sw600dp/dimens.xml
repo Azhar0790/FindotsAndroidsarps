@@ -3,6 +3,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="add_destination_icon_margin">30dp</dimen>
+
+    <!-- custom drawer -->
+    <dimen name="drawer_barlength">22dp</dimen>
+    <dimen name="drawer_gapbetweenbars">3dp</dimen>
+    <dimen name="drawer_drawablesize">28dp</dimen>
+
     <!-- Tool Bar -->
     <dimen name="tool_bar_paddingTop">0dp</dimen>
     <dimen name="textView_heading_textSize">20sp</dimen>
@@ -80,7 +87,8 @@
     <!-- Destination tabs -->
     <dimen name="calendar_view_height">26dp</dimen>
     <dimen name="calendar_view_textsize">14sp</dimen>
-    <dimen name="tabs_height">40dp</dimen>
+    <dimen name="calendar_view_gap_between_dates">50dp</dimen>
+    <dimen name="tabs_height">50dp</dimen>
 
     <!-- Destination Inflater -->
     <dimen name="linearLayout_destination_height">220dp</dimen>
@@ -88,6 +96,16 @@
     <dimen name="linearLayout_destination_padding">8dp</dimen>
     <dimen name="textView_assignedBy_height">40dp</dimen>
     <dimen name="textView_assignedBy_drawablePadding">10dp</dimen>
+    <dimen name="textViewSchedule_height">40dp</dimen>
+    <dimen name="textViewSchedule_textsize">16sp</dimen>
+    <dimen name="textView_destinationScheduled_textsize">16sp</dimen>
+    <dimen name="textView_destinationAssignedBy_width">100dp</dimen>
+    <dimen name="textView_destinationAssignedBy_textsize">12sp</dimen>
+    <dimen name="inflater_relative_layout_height">86dp</dimen>
+    <dimen name="textView_destinationName_textsize">24sp</dimen>
+    <dimen name="button_checkIncheckOut_height">60dp</dimen>
+    <dimen name="button_checkIncheckOut_textsize">24sp</dimen>
+    <dimen name="textViewTravelTime_textsize">14sp</dimen>
 
     <!-- Modify  Destination-->
     <dimen name="top_loc_padding">14dp</dimen>
@@ -118,5 +136,21 @@
     <dimen name="linearLayoutCheckIn_marginTop">6dp</dimen>
     <dimen name="textViewTimeTaken_marginLeft">10dp</dimen>
     <dimen name="textViewTimeTaken_textSize">14sp</dimen>
+    <dimen name="not_checkedin_textsize">10sp</dimen>
+
+    <!-- detail Destination -->
+    <dimen name="destModify_textsize">16sp</dimen>
+    <dimen name="relativeLayout_address_height">90dp</dimen>
+    <dimen name="textView_map_km_width">70dp</dimen>
+    <dimen name="textView_map_km_textsize">18sp</dimen>
+    <dimen name="textView_address_textsize">15sp</dimen>
+
+
+    <!-- Comment View -->
+    <dimen name="textViewAdminCommentHeading_height">32dp</dimen>
+    <dimen name="textViewAdminCommentHeading_textsize">18sp</dimen>
+    <dimen name="textViewAdminComment_textsize">14sp</dimen>
+
+
 
 </resources>
