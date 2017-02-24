@@ -19,7 +19,7 @@
     <!-- Drawer Layout -->
     <dimen name="drawer_layout_elevation">4dp</dimen>
     <dimen name="recyclerView_menu_items_dividerHeight">1dp</dimen>
-    <dimen name="recyclerView_menu_items_width">640dp</dimen>
+    <dimen name="recyclerView_menu_items_width">680dp</dimen>
 
     <!-- Header Layout -->
     <dimen name="imageView_userImage_width_height">45dp</dimen>
