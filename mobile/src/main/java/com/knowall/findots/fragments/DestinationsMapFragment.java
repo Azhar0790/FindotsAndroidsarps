@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,8 +82,12 @@ public class DestinationsMapFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.destinations_map, null);
 
+
+
         supportMapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(DestinationsMapFragment.this);
+
+
 
         return rootView;
     }

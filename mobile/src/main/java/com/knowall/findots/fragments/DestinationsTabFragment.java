@@ -54,6 +54,8 @@ import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
+import static com.knowall.findots.R.id.fabAddDestination;
+
 
 public class DestinationsTabFragment extends Fragment implements IGetDestinations, IHistory {
 
@@ -68,6 +70,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
     private static final int REQUEST_CODE_ADD_DESTINATION = 9999;
     public static ArrayList<HistoryData> historyDatas = new ArrayList<HistoryData>();
     boolean resetViewPager = false;
+    FloatingActionButton floatingbtn_download = null;
 
     public static DestinationsTabFragment newInstance() {
         DestinationsTabFragment destinationsTabFragment = new DestinationsTabFragment();
@@ -98,6 +101,9 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         tabLayout.addTab(tabLayout.newTab().setText("Trips"));
         tabLayout.addTab(tabLayout.newTab().setText("History"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        floatingbtn_download = (FloatingActionButton) rootView.findViewById(R.id.floatingbtn_generate_pdf);
+
 
         FloatingActionButton fabAddDestination = (FloatingActionButton) rootView.findViewById(R.id.fabAddDestination);
         fabAddDestination.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +148,12 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                 Log.i("Tab", "pagerCurrentItem --> " + pagerCurrentItem);
 
                 if (pagerCurrentItem == 2) {
+                    floatingbtn_download.setVisibility(View.VISIBLE);
+                } else {
+                    floatingbtn_download.setVisibility(View.GONE);
+                }
+
+                if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
                     } else {
@@ -166,6 +178,13 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+                if (pagerCurrentItem == 2) {
+                    floatingbtn_download.setVisibility(View.VISIBLE);
+                } else {
+                    floatingbtn_download.setVisibility(View.GONE);
+                }
+
                 if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today())))
                         callHistoryRestCall();
