@@ -81,6 +81,8 @@
             android:name=".activities.AdminActivity"
             android:screenOrientation="unspecified" />
 
+        <activity android:name=".activities.ViewHistoryFileActivity"/>
+
         <provider
             android:name="com.knowall.findots.database.DatabaseProvider"
             android:authorities="com.knowall.findots"

@@ -1,6 +1,7 @@
 package com.knowall.findots.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,9 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -258,5 +262,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         return timeDifference;
     }
+
+
 
 }
