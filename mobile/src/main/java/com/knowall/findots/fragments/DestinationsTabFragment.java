@@ -54,8 +54,6 @@ import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 
-import static com.knowall.findots.R.id.fabAddDestination;
-
 
 public class DestinationsTabFragment extends Fragment implements IGetDestinations, IHistory {
 
@@ -96,6 +94,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
         Log.d("paul", "oncreateViewTab..");
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.app_color, R.color.darkgreen, R.color.darkblue);
+        mSwipeRefreshLayout.setEnabled(true);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayoutDestinations);
         tabLayout.addTab(tabLayout.newTab().setText("Map"));
         tabLayout.addTab(tabLayout.newTab().setText("Trips"));
@@ -145,15 +144,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPagerDestinations.setCurrentItem(tab.getPosition());
                 pagerCurrentItem = tab.getPosition();
-                Log.i("Tab", "pagerCurrentItem --> " + pagerCurrentItem);
+
 
                 if (pagerCurrentItem == 2) {
+                    mSwipeRefreshLayout.setEnabled(true);
                     floatingbtn_download.setVisibility(View.VISIBLE);
-                } else {
-                    floatingbtn_download.setVisibility(View.GONE);
-                }
-
-                if (pagerCurrentItem == 2) {
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
                     } else {
@@ -161,8 +156,14 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
                 } else if (pagerCurrentItem == 1) {
+                    mSwipeRefreshLayout.setEnabled(true);
+                    floatingbtn_download.setVisibility(View.GONE);
                     EventBus.getDefault().post(AppEvents.SCHEDULEDDATELIST);
                     Log.i("paul", "pagerCurrentItemEvent --> " + pagerCurrentItem);
+                }
+                else {
+                    floatingbtn_download.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setEnabled(false);
                 }
             }
 
@@ -192,6 +193,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                     callDestinationRestOperation();
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
+
             }
 
         });

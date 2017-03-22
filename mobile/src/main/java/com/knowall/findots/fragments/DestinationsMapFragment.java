@@ -13,7 +13,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -158,7 +157,6 @@ public class DestinationsMapFragment extends Fragment
 //            AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
 //            alertDialogAndroid.show();
         }
-
     }
 
     /**
@@ -169,6 +167,10 @@ public class DestinationsMapFragment extends Fragment
 //        int height = MenuActivity.ContextMenuActivity.getResources().getDisplayMetrics().heightPixels;
 //        final int padding = 150;
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(getCenterCoordinates(), 150));
+
+        //setting zoom level if no destionation is available
+        if(!(arrayList!=null && arrayList.size()>0))
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
 
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override

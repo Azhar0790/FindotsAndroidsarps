@@ -101,8 +101,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
         buildGoogleApiClient();
         Log.d("jomy","Token: "+ FirebaseInstanceId.getInstance().getToken());
 
-        mEditText_userName.setText("prince2004kumar@gmail.com");
-        mEditText_password.setText("123456");
+//        mEditText_userName.setText("prince2004kumar@gmail.com");
+//        mEditText_password.setText("123456");
 
         //mEditText_userName.setText("pnelapati@bridgetree.com");
         //mEditText_password.setText("12345");
@@ -246,7 +246,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginRestCall, 
                 GeneralUtils.setSharedPreferenceString(this, AppStringConstants.NAME, loginModel.getLoginData()[0].getName());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.USERID, loginModel.getLoginData()[0].getUserID());
                 GeneralUtils.setSharedPreferenceInt(this, AppStringConstants.CORPORATEUSERID, loginModel.getLoginData()[0].getCorporateUserID());
-
+                GeneralUtils.setSharedPreferenceString(this, AppStringConstants.DEVICE_GPS_UPDATETIME, loginModel.getLoginData()[0].getDeviceGpsUpdateTime());
+                GeneralUtils.setSharedPreferenceString(this, AppStringConstants.DEVICE_GPS_UPDATEDISTANCE, loginModel.getLoginData()[0].getDeviceGpsUpdateDistance());
+                GeneralUtils.setSharedPreferenceString(this, AppStringConstants.LOCATION_SYNC_TIME, loginModel.getLoginData()[0].getLocationServiceUpdateTime());
                 if (userTypeID == CORPORATE_ADMIN) {
                     GeneralUtils.createAlertDialog(LoginActivity.this, getString(R.string.adminAlert));
                 } else {

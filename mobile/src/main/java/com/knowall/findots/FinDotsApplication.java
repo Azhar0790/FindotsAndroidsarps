@@ -23,6 +23,7 @@ import com.knowall.findots.locationUtils.LocationRequestData;
 import com.knowall.findots.locationUtils.TrackLocationPreferencesManager;
 import com.knowall.findots.restservice.RestClient;
 import com.knowall.findots.utils.AnalyticsTrackers;
+import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 
 import java.util.List;
@@ -104,10 +105,27 @@ public class FinDotsApplication extends MultiDexApplication {
 
     public LocationRequest createLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(locationRequestData.getInterval());
+
+        long device_interval;
+        float device_distance;
+        try {
+            device_interval=Long.parseLong(GeneralUtils.getSharedPreferenceString(this, AppStringConstants.DEVICE_GPS_UPDATETIME));
+            device_distance=Float.parseFloat(GeneralUtils.getSharedPreferenceString(this, AppStringConstants.DEVICE_GPS_UPDATEDISTANCE));
+            //converting it into milli seconds
+            device_interval=device_interval*1000;
+        }
+        catch (NumberFormatException e)
+        {
+
+            device_interval=locationRequestData.getInterval();
+            device_distance=locationRequestData.getSmallestDisplacement();
+        }
+        locationRequest.setInterval(device_interval);
         locationRequest.setFastestInterval(locationRequestData.getFastestInterval());
         locationRequest.setPriority(locationRequestData.getPriority());
-        locationRequest.setSmallestDisplacement(locationRequestData.getSmallestDisplacement());
+        locationRequest.setSmallestDisplacement(device_distance);
+
+        Log.d("jomy","Loc Time : "+locationRequest.getInterval()+" Loc Dist : "+locationRequest.getSmallestDisplacement());
         return locationRequest;
     }
 

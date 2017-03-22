@@ -15,4 +15,7 @@ public class AppStringConstants {
     public static String USER_TYPE_ID = "userTypeID";
     public static String ADMIN_ID = "adminID";
     public static String SELECTED_USERNAME = "selectedUserName";
+    public static String DEVICE_GPS_UPDATETIME = "deviceGpsUpdateTime";
+    public static String DEVICE_GPS_UPDATEDISTANCE="deviceGpsUpdateDistance";
+    public static String LOCATION_SYNC_TIME = "locationServiceUpdateTime";
 }

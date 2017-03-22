@@ -45,6 +45,12 @@ public class LoginData {
 
     private String mobileNumber;
 
+    private String deviceGpsUpdateTime;
+
+    private String deviceGpsUpdateDistance;
+
+    private String locationServiceUpdateTime;
+
     public String getBase64Imagestring ()
     {
         return base64Imagestring;
@@ -233,6 +239,30 @@ public class LoginData {
     public void setMobileNumber (String mobileNumber)
     {
         this.mobileNumber = mobileNumber;
+    }
+
+    public String getDeviceGpsUpdateTime() {
+        return deviceGpsUpdateTime;
+    }
+
+    public void setDeviceGpsUpdateTime(String deviceGpsUpdateTime) {
+        this.deviceGpsUpdateTime = deviceGpsUpdateTime;
+    }
+
+    public String getDeviceGpsUpdateDistance() {
+        return deviceGpsUpdateDistance;
+    }
+
+    public void setDeviceGpsUpdateDistance(String deviceGpsUpdateDistance) {
+        this.deviceGpsUpdateDistance = deviceGpsUpdateDistance;
+    }
+
+    public String getLocationServiceUpdateTime() {
+        return locationServiceUpdateTime;
+    }
+
+    public void setLocationServiceUpdateTime(String locationServiceUpdateTime) {
+        this.locationServiceUpdateTime = locationServiceUpdateTime;
     }
 
     @Override
