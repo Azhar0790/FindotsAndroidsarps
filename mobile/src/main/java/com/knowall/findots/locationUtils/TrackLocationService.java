@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationServices;
 import com.knowall.findots.FinDotsApplication;
 import com.knowall.findots.database.DataHelper;
 import com.knowall.findots.locationUtils.LocationModel.LocationData;
+import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
 import com.knowall.findots.utils.timeUtils.TimeSettings;
 
@@ -151,9 +152,21 @@ public class TrackLocationService extends Service implements GoogleApiClient.Con
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, TrackLocationSyncReceiver.class);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        long sync_interval;
+        try {
+            sync_interval=Long.parseLong(GeneralUtils.getSharedPreferenceString(this, AppStringConstants.LOCATION_SYNC_TIME));
+            //converting it into milli seconds
+            sync_interval=sync_interval*1000;
+        }
+        catch (NumberFormatException e)
+        {
 
+            sync_interval=SYNCHRONIZATION_INTERVAL;
+        }
+
+        Log.d("jomy","sync Loc Time : "+ sync_interval);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                SYNCHRONIZATION_INTERVAL, alarmIntent);
+                sync_interval, alarmIntent);
     }
 
     private void stopDataSynchronization() {
