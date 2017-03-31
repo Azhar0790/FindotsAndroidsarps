@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.joanzapata.pdfview.PDFView;
 import com.knowall.findots.R;
 import com.knowall.findots.utils.AppStringConstants;
 import com.knowall.findots.utils.GeneralUtils;
@@ -65,11 +62,12 @@ public class ViewHistoryFileActivity extends Activity {
 
         final File file = new File(filepath);
 
+
         PDFView pdfView = (PDFView) findViewById(R.id.pdfView);
         pdfView.fromFile(file)
                 .defaultPage(0)
-                .enableAnnotationRendering(true)
-                .scrollHandle(new DefaultScrollHandle(this))
+                .showMinimap(false)
+                .enableSwipe(true)
                 .load();
 
 

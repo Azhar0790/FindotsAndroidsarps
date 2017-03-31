@@ -148,7 +148,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
 
                 if (pagerCurrentItem == 2) {
                     mSwipeRefreshLayout.setEnabled(true);
-                    floatingbtn_download.setVisibility(View.VISIBLE);
+                    floatingbtn_download.setVisibility(View.GONE);
                     if (mCalendarDay != null && !(mCalendarDay.isAfter(CalendarDay.today()))) {
                         callHistoryRestCall();
                     } else {
@@ -300,6 +300,7 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
                         callHistoryRestCall();
                     } else {
                         historyDatas.clear();
+                        floatingbtn_download.setVisibility(View.GONE);
                         EventBus.getDefault().post(AppEvents.NOHISTORY);
                     }
                 }
@@ -470,9 +471,11 @@ public class DestinationsTabFragment extends Fragment implements IGetDestination
             Log.d("paul", "historySucess...");
             historyDatas.addAll(historyModel.getHistoryData());
             EventBus.getDefault().post(AppEvents.HISTORY);
+            floatingbtn_download.setVisibility(View.VISIBLE);
         } else {
             historyDatas.clear();
             EventBus.getDefault().post(AppEvents.NOHISTORY);
+            floatingbtn_download.setVisibility(View.GONE);
         }
     }
 

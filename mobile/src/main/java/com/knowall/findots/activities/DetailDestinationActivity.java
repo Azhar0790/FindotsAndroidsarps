@@ -83,9 +83,6 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-import static android.R.id.message;
-import static com.knowall.findots.R.string.admin;
-
 
 /**
  * Created by parijathar on 6/21/2016.
@@ -827,6 +824,7 @@ public class DetailDestinationActivity extends AppCompatActivity implements
                         try {
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.msg_watsapp)+ " "+getResources().getString(R.string.app_name));
                             sendIntent.setPackage("com.whatsapp");
                             sendIntent.setType("text/plain");
                             startActivity(sendIntent);
